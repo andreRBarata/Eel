@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Hello World!</title>
+
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+	</head>
+	<body ng-app="termApp">
+		<div ng-controller="mainController">
+			<pre ng-bind="output">
+
+			</pre>
+			<div class="commandPane">
+				<input type="text" ng-model="command" ng-keypress="execute($event)"/>
+			</div>
+		</div>
+	</body>
+
+	<script src="./bower_components/angular/angular.js"></script>
+	<script src="./js/app.js"></script>
+	<script src="./js/controllers/term.ctrl.js"></script>
+
+</html>
