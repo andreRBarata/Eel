@@ -1,5 +1,5 @@
-termApp.controller("mainController", function($scope) {
-	var terminal = require('child_process').spawn('bash');
+termApp.controller("mainController", function($scope, $childProcess, $electron) {
+	var terminal = $childProcess.spawn('bash');
 
 	$scope.command = "";
 	$scope.output = "";
@@ -8,6 +8,8 @@ termApp.controller("mainController", function($scope) {
 		// Receive results from child process
 		$scope.output += m;
 		$scope.$apply();
+
+		window.scrollTo(0,document.body.scrollHeight);
 	});
 
 
@@ -16,10 +18,18 @@ termApp.controller("mainController", function($scope) {
 			terminal.stdin.write(`${$scope.command}\n`);
 
 			$scope.output += `${$scope.command}\n\n`;
+
+			$scope.command = "";
 		}
 	}
 
-	window.onbeforeunload = function() {
-		terminal.close();
-	}
+	$electron.webFrame.on("close",function() {
+			terminal.close();
+		}
+	);
+
+	terminal.on('close', function () {
+			$electron.remote.app.quit();
+		}
+	);
 });
