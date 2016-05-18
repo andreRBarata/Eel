@@ -1,5 +1,4 @@
 termApp.controller("mainController", function($scope, $childProcess, $electron) {
-	var terminal = $childProcess.spawn('bash');
 
 	$scope.command = "";
 	$scope.output = "";
