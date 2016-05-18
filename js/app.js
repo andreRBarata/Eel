@@ -1,4 +1,14 @@
-var termApp = angular.module('termApp', []);
+var termApp = angular.module('termApp', ['ngSanitize']);
+
+var vorpal = require('vorpal')();
+var asDefault = require('vorpal-as-default');
+
+vorpal
+    .command('exec')
+    .action(function (args, next) {
+
+      next();
+    });
 
 termApp.factory('$ansiToHTML', function () {
 	var Convert = require('ansi-to-html');
@@ -9,12 +19,12 @@ termApp.factory('$ansiToHTML', function () {
 	}
 });
 
-termApp.factory('$cash', function($ansiToHTML) {
+termApp.factory('$vopal', function($ansiToHTML) {
 	var remote = require('electron').remote;
 
-	return (command, options) => {
+	return (command) => {
 		return $ansiToHTML(
-			remote.require('cash')(command, options)
+			remote.require('vorpal').exec(command)
 		);
 	}
 });
