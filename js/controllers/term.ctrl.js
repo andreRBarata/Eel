@@ -1,34 +1,24 @@
-termApp.controller("mainController", function($scope, $childProcess, $electron) {
+termApp.controller("mainController", function($scope, $exec, $electron) {
 
 	$scope.command = "";
-	$scope.output = "";
-
-	terminal.stdout.on('data', function(m) {
-		// Receive results from child process
-		$scope.output += m;
-		$scope.$apply();
-
-		window.scrollTo(0,document.body.scrollHeight);
-	});
-
+	$scope.output = [];
 
 	$scope.execute = (keyEvent) => {
 		if (keyEvent.which === 13) {
-			terminal.stdin.write(`${$scope.command}\n`);
+			var line = {
+				"command": $scope.command
+			};
 
-			$scope.output += `${$scope.command}\n\n`;
+
+			$exec($scope.command, (stdout, stderr) => {
+				line.result = stdout;
+
+				$scope.$apply();
+			});
+
+			$scope.output.push(line);
 
 			$scope.command = "";
 		}
 	}
-
-	$electron.webFrame.on("close",function() {
-			terminal.close();
-		}
-	);
-
-	terminal.on('close', function () {
-			$electron.remote.app.quit();
-		}
-	);
 });

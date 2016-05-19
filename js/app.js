@@ -1,7 +1,7 @@
-var termApp = angular.module('termApp', []);
+var termApp = angular.module('termApp', ['ngSanitize']);
 
 termApp.factory('$exec', function() {
-	return require('child_process'),exec;
+	return require('child_process').spawn;
 });
 
 termApp.factory('$electron', function() {
