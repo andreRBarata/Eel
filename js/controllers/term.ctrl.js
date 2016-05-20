@@ -1,13 +1,18 @@
-termApp.controller("mainController", function($scope, $cash, $electron) {
+termApp.controller("mainController", function($scope, $exec, $electron) {
 
 	$scope.command = "";
 	$scope.output = [];
 
 	$scope.execute = (keyEvent) => {
 		if (keyEvent.which === 13) {
-			$scope.output.push({
-				"command": $scope.command,
-				"result": $cash($scope.command)
+			var screen = {
+				'command': $scope.command
+			}
+
+			$scope.output.push(screen);
+			$exec($scope.command, (result) => {
+				screen['result'] = result;
+				$scope.$apply();
 			});
 
 			$scope.command = "";
