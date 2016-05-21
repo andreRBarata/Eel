@@ -13,6 +13,7 @@ termApp.controller("mainController", function($scope, $exec, $electron) {
 			$exec($scope.command, (result) => {
 				screen['result'] = result;
 				$scope.$apply();
+				window.scrollTo(0,document.body.scrollHeight);
 			});
 
 			$scope.command = "";
