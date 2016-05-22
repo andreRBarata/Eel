@@ -1,28 +1,31 @@
 module.exports = class Command {
 
-	constructor(command, description) {
-		this.command;
-		this.description;
+
+	constructor (command, description) {
+		this.commandData = {};
+		this.commandData['command'];
+		this.commandData['description'];
+
 	}
 
 	description(description) {
-		this.description = description;
+		this.commandData['description'] = description;
 
 		return this;
 	}
 
 	help(help) {
-		this.help = help;
+		this.commandData['help'] = help;
 
 		return this;
 	}
 
 	alias(alias) {
-		if (!this.name) {
-			this.name = [];
+		if (!this.commandData['names']) {
+			this.commandData['names'] = [];
 		}
 
-		this.name.concat(
+		this.commandData['names'].concat(
 			(typeof alias !== 'array')?
 				[alias]: alias
 		);
@@ -31,7 +34,7 @@ module.exports = class Command {
 	}
 
 	validate(validation) {
-		this.validation = validation;
+		this.commandData['validation'] = validation;
 
 		return this;
 	}
@@ -44,14 +47,20 @@ module.exports = class Command {
 			description = null;
 		}
 
-		if (!this.options) {
-			this.options = [];
+		if (!this.commandData['options']) {
+			this.commandData['options'] = [];
 		}
 
 		return this;
 	}
 
 	action(action) {
-		this.action = action;
+		this.commandData['action'] = action;
+
+		return this;
+	}
+
+	get(property) {
+		return this.commandData['property'];
 	}
 }
