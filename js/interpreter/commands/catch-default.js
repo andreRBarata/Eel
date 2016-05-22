@@ -1,8 +1,8 @@
-module.exports = function (interpreter) {
+module.exports = function(commander) {
 	var ansiUp = require('ansi_up');
 	var spawn = require('child_process').spawn;
 
-	 interpreter.catch('<command> [options] [strings...]')
+	 commander.catch('<command> [options] [strings...]')
 	 	.action((args, cb) => {
 			console.log(args.command, args.options, args);
 			var process = spawn(args.command, args.options);

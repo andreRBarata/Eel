@@ -7,8 +7,8 @@ termApp.factory('$electron', function() {
 
 termApp.factory('$exec', function($electron) {
 	var remote = $electron.remote;
-	var commanderPath = './js/commander/';
-	var commander = require(commanderPath + 'commander')();
+	var commanderPath = './js/interpreter/';
+	var commander = require(commanderPath + 'interpreter');
 
 	require(commanderPath + 'commands/catch-default')(commander);
 

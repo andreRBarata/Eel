@@ -1,6 +1,5 @@
 //#InProgress:0 Finish Commander Module
-module.exports = () => {
-	var minimist = require('minimist');
+function interpreter() {
 	var Command = require('./command');
 
 	var self = {};
@@ -32,17 +31,17 @@ module.exports = () => {
 	self['catch'] = (command, description) => {
 		newCommand = self['command'](command, description);
 		defaultCommand = newCommand;
-		console.log(defaultCommand);
+
 		return newCommand;
 	}
 
 	self['exec'] = (commandLine, callback) => {
 		var [, command, options] = /(\w+)(?: (.*))?/
 			.exec(commandLine) || [];
-		var args;
+		var args, optionsParsed;
 
 		if (options) {
-			args = minimist(options);
+			optionsParsed = minimist(options);
 		}
 
 		args = {
@@ -61,3 +60,5 @@ module.exports = () => {
 
 	return self;
 }
+
+module.exports = interpreter();
