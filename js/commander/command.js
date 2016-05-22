@@ -1,31 +1,30 @@
-module.exports = class Command {
+module.exports = function Command(command, description) {
+	var self = Command.prototype;
+	var commandData = {};
 
-
-	constructor (command, description) {
-		this.commandData = {};
-		this.commandData['command'];
-		this.commandData['description'];
-
+	//TODO: Finish parameter parsing
+	{
+		this.teste = "teste";
 	}
 
-	description(description) {
-		this.commandData['description'] = description;
+	self.description = (description) => {
+		commandData['description'] = description;
 
 		return this;
 	}
 
-	help(help) {
-		this.commandData['help'] = help;
+	self.help = (help) => {
+		commandData['help'] = help;
 
 		return this;
 	}
 
-	alias(alias) {
-		if (!this.commandData['names']) {
-			this.commandData['names'] = [];
+	self.alias = (alias) => {
+		if (!commandData['names']) {
+			commandData['names'] = [];
 		}
 
-		this.commandData['names'].concat(
+		commandData['names'].concat(
 			(typeof alias !== 'array')?
 				[alias]: alias
 		);
@@ -33,34 +32,35 @@ module.exports = class Command {
 		return this;
 	}
 
-	validate(validation) {
-		this.commandData['validation'] = validation;
+	self.validate = (validation) => {
+		commandData['validation'] = validation;
 
 		return this;
 	}
 
-	option() {
+	self.option = () => {
 		var [option, description, autocomplete] = arguments;
 
-		if (typeof description === 'array') {
+		if(typeof description === 'array') {
 			autocomplete = description;
 			description = null;
 		}
 
-		if (!this.commandData['options']) {
-			this.commandData['options'] = [];
+		if(!this.commandData['options']) {
+			commandData['options'] = [];
 		}
 
 		return this;
 	}
 
-	action(action) {
-		this.commandData['action'] = action;
+	self.action = (action) => {
+		commandData['action'] = action;
 
 		return this;
 	}
 
-	get(property) {
-		return this.commandData['property'];
+	self.get = (property) => {
+		console.log(commandData);
+		return commandData[property];
 	}
 }

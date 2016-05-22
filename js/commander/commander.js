@@ -1,7 +1,8 @@
-var minimist = require('minimist');
-var Command = require('./command.js');
-
+//#InProgress:0 Finish Commander Module
 module.exports = () => {
+	var minimist = require('minimist');
+	var Command = require('./command');
+
 	var self = {};
 	var commandList = [];
 	var defaultCommand;
@@ -29,33 +30,32 @@ module.exports = () => {
 	}
 
 	self['catch'] = (command, description) => {
-		var newCommand = self['find'](command)
-
-		if (!newCommand) {
-			newCommand = new Command(command, description);
-
-			commandList.push(newCommand);
-		}
-
+		newCommand = self['command'](command, description);
+		defaultCommand = newCommand;
+		console.log(defaultCommand);
 		return newCommand;
 	}
 
-	self['exec'] = (commandLine) => {
+	self['exec'] = (commandLine, callback) => {
+		var [, command, options] = /(\w+)(?: (.*))?/
+			.exec(commandLine) || [];
+		var args;
 
-	}
+		if (options) {
+			args = minimist(options);
+		}
 
-	self['preprocessor'] = () => {
+		args = {
+			'command': command,
+			'options': args
+		};
 
-	}
-
-	self['breakdown'] = (commandline) => {
-		var [command, params] = /(.*?) (.*)/.exec(command);
-
-		if (commands.keys().contains(command)) {
+		if (find(command)) {
 
 		}
 		else {
-
+			defaultCommand
+				.get('action')(args, callback);
 		}
 	}
 

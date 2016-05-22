@@ -1,4 +1,4 @@
-termApp.controller("mainController", function($scope, $exec, $electron) {
+termApp.controller("mainController", function($scope, $exec) {
 
 	$scope.command = "";
 	$scope.output = [];

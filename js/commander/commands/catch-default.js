@@ -1,12 +1,13 @@
-var ansiUp = require('ansi_up');
-var spawn = require('child_process').spawn;
+module.exports = function(commander) {
+	var ansiUp = require('ansi_up');
+	var spawn = require('child_process').spawn;
 
-module.exports = function(vorpal) {
-	vorpal.catch('<command> [options] [strings...]')
-		.action((args, cb) => {
+	 commander.catch('<command> [options] [strings...]')
+	 	.action((args, cb) => {
+			console.log(args.command, args.options, args);
 			var process = spawn(args.command, args.options);
 
-			console.log(args.command, args.options, args);
+
 			process.stdout.on('data', (data) => {
 				cb(
 					ansiUp.ansi_to_html(
@@ -17,6 +18,5 @@ module.exports = function(vorpal) {
 					).replace(new RegExp('\n', 'g'), '<br/>')
 				);
 			});
-		})
-		.hidden();
+		});
 }

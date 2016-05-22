@@ -1,14 +1,16 @@
 var termApp = angular.module('termApp', ['ngSanitize']);
 
+
 termApp.factory('$electron', function() {
 	return require('electron');
 });
 
 termApp.factory('$exec', function($electron) {
 	var remote = $electron.remote;
-	var vorpal = remote.require('vorpal')();
+	var commanderPath = './js/commander/';
+	var commander = require(commanderPath + 'commander')();
 
-	require('./js/commands/vorpal-default')(vorpal);
+	require(commanderPath + 'commands/catch-default')(commander);
 
-	return vorpal.exec;
+	return commander.exec;
 });
