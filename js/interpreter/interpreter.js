@@ -6,6 +6,7 @@ function interpreter() {
 	var commandList = [];
 	var defaultCommand;
 
+	//FIXME: Finder function broken with update
 	self['find'] = (commandName) => {
 		for (command of commandList) {
 			if (command.get('names').contains(commandName)) {
