@@ -101,6 +101,7 @@ module.exports = function Command(command, description) {
 		return this;
 	}
 
+	//TODO: Finish this function
 	self.option = () => {
 		var [option, description, autocomplete] = arguments;
 
