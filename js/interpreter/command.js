@@ -1,11 +1,13 @@
+var parser = require('parser.js');
+
 module.exports = function Command(command, description) {
 	var self = Command.prototype;
 	var commandData = {};
 
 	function optionFor(arg) {
-		for (var i = 0, len = this.options.length; i < len; ++i) {
+		for (var i = 0, len = commandData.options.length; i < len; ++i) {
 			if (commandData.options[i].is(arg)) {
-				return this.options[i];
+				return commandData.options[i];
 			}
 		}
 	}
@@ -19,7 +21,7 @@ module.exports = function Command(command, description) {
 		for (var i = 0, len = args.length; i < len; ++i) {
 			arg = args[i];
 			if (i > 0) {
-				lastOpt = this.optionFor(args[i-1]);
+				lastOpt = optionFor(args[i-1]);
 			}
 
 			if (arg === '--') {
@@ -42,66 +44,22 @@ module.exports = function Command(command, description) {
 		return ret;
 	}
 
-	function parseExpectedArgs(args) {
-		if (!args.length) return;
-
-		if (!commandData['argDetails']) {
-			commandData['argDetails'] = [];
-		}
-
-		for (arg of args) {
-			var argDetails = {
-				required: false,
-				name: '',
-				variadic: false
-			};
-
-			switch (arg[0]) {
-				case '<':
-					argDetails.required = true;
-					argDetails.name = arg.slice(1, -1);
-					break;
-				case '[':
-					argDetails.name = arg.slice(1, -1);
-					break;
-			}
-
-			if (argDetails.name.length > 3 && argDetails.name.slice(-3) === '...') {
-				argDetails.variadic = true;
-				argDetails.name = argDetails.name.slice(0, -3);
-			}
-			if (argDetails.name) {
-				commandData['argDetails']
-					.push(argDetails);
-			}
-		}
-	}
-
-	self.description = (description) => {
-		commandData['description'] = description;
-
-		return this;
-	}
-
-	self.help = (help) => {
-		commandData['help'] = help;
-
-		return this;
-	}
-
 	self.alias = (alias) => {
-		parseExpectedArgs(command);
+		if (!commandData['command']) {
+			commandData['command'] = [];
+		}
+		if (!commandData['options']) {
+			commandData['options'] = {};
+		}
+
+		commandData['command'].push(parser.parseExpectedArgs(command));
+
+
 
 		return this;
 	}
 
-	self.validate = (validation) => {
-		commandData['validation'] = validation;
-
-		return this;
-	}
-
-	self.option = () => {
+	self.flag = () => {
 		var [option, description, autocomplete] = arguments;
 
 		if(typeof description === 'array') {
@@ -109,22 +67,38 @@ module.exports = function Command(command, description) {
 			description = null;
 		}
 
-		if(!this.commandData['options']) {
-			commandData['options'] = [];
+		if(!this.commandData['flag']) {
+			commandData['flag'] = [];
 		}
-
-		return this;
-	}
-
-	self.action = (action) => {
-		commandData['action'] = action;
 
 		return this;
 	}
 
 	//TODO: Finish parameter parsing
 	{
-		parseExpectedArgs(command);
-		console.log(this);
+		var fields = [
+			'alias',
+			'description',
+			'help',
+			'validation',
+			'flag',
+			'action'
+		];
+
+		for (field of fields) {
+			if (!self[field]) {
+				self[field] = (arg) => {
+					if (!args) {
+						return commandData[field]
+					}
+					else {
+						commandData[field] = description;
+						return this;
+					}
+				}
+			}
+		}
+
+		self.alias(command);
 	}
 }
