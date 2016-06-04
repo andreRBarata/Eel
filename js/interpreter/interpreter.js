@@ -1,43 +1,35 @@
 //#InProgress:0 Finish Interpreter Module
 var Command = require('./command');
+var interpreter;
 
-{
-	'use strict';
-
-<<<<<<< Updated upstream
-	//FIXME: Finder function broken with update
-	self['find'] = (commandName) => {
-		for (command of commandList) {
-=======
-
-module.exports = {
+module.exports = interpreter = {
 	'_commands_': [],
-	'_defaultCommand_': null,
+	'defaultCommand': null,
 	//TODO:50 Fix find function
 	'find': (commandName) => {
-		for (var command of this._commands_) {
->>>>>>> Stashed changes
+		/*for (var command of interpreter._commands_) {
 			if (command.get('names').contains(commandName)) {
 				return command;
 			}
-		}
+		}*/
 
 		return false;
 	},
 	'command': (command, description) => {
-		var newCommand = this.find(command);
+		var newCommand = interpreter.find(command);
 
 		if (!newCommand) {
 			newCommand = new Command(command, description);
 
-			commandList.push(newCommand);
+			interpreter._commands_.push(newCommand);
 		}
 
 		return newCommand;
 	},
 	'catch': (command, description) => {
-		var newCommand = this.command(command, description);
-		var defaultCommand = newCommand;
+		var newCommand = interpreter.command(command, description);
+
+		interpreter.defaultCommand = newCommand;
 
 		return newCommand;
 	},
@@ -45,20 +37,13 @@ module.exports = {
 	'exec': (commandLine, callback) => {
 		var [, command, options] = /(\w+)(?: (.*))?/
 			.exec(commandLine) || [];
-		var args, optionsParsed;
 
-		args = {
-			'command': command,
-			'options': args
-		};
-
-		if (find(command)) {
+		if (interpreter.find(command)) {
 
 		}
 		else {
-			defaultCommand
-				.get('action')(args, callback);
+			interpreter.defaultCommand
+				.exec(options, callback);
 		}
 	}
 };
-}

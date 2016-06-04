@@ -3,6 +3,9 @@ module.exports = function(commander) {
 	var spawn = require('child_process').spawn;
 
 	 commander.catch('<command> [options] [strings...]')
+	 	.deconstructor((args) => {
+			return args.match(/(?:\s("\w*"|\'\w*\'|\w+)\s*)/);
+		})
 	 	.action((args, cb) => {
 			console.log(args.command, args.options, args);
 			var process = spawn(args.command, args.options);
@@ -19,4 +22,4 @@ module.exports = function(commander) {
 				);
 			});
 		});
-}
+};
