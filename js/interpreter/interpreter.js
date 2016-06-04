@@ -1,24 +1,31 @@
-//#InProgress:0 Finish Commander Module
-function interpreter() {
-	var Command = require('./command');
+//#InProgress:0 Finish Interpreter Module
+var Command = require('./command');
 
-	var self = {};
-	var commandList = [];
-	var defaultCommand;
+{
+	'use strict';
 
+<<<<<<< Updated upstream
 	//FIXME: Finder function broken with update
 	self['find'] = (commandName) => {
 		for (command of commandList) {
+=======
+
+module.exports = {
+	'_commands_': [],
+	'_defaultCommand_': null,
+	//TODO:50 Fix find function
+	'find': (commandName) => {
+		for (var command of this._commands_) {
+>>>>>>> Stashed changes
 			if (command.get('names').contains(commandName)) {
 				return command;
 			}
 		}
 
 		return false;
-	}
-
-	self['command'] = (command, description) => {
-		var newCommand = self['find'](command)
+	},
+	'command': (command, description) => {
+		var newCommand = this.find(command);
 
 		if (!newCommand) {
 			newCommand = new Command(command, description);
@@ -27,23 +34,18 @@ function interpreter() {
 		}
 
 		return newCommand;
-	}
-
-	self['catch'] = (command, description) => {
-		newCommand = self['command'](command, description);
-		defaultCommand = newCommand;
+	},
+	'catch': (command, description) => {
+		var newCommand = this.command(command, description);
+		var defaultCommand = newCommand;
 
 		return newCommand;
-	}
-
-	self['exec'] = (commandLine, callback) => {
+	},
+	//TODO:40 Fix exec function
+	'exec': (commandLine, callback) => {
 		var [, command, options] = /(\w+)(?: (.*))?/
 			.exec(commandLine) || [];
 		var args, optionsParsed;
-
-		if (options) {
-			optionsParsed = minimist(options);
-		}
 
 		args = {
 			'command': command,
@@ -58,8 +60,5 @@ function interpreter() {
 				.get('action')(args, callback);
 		}
 	}
-
-	return self;
+};
 }
-
-module.exports = interpreter();

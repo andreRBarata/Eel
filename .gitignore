@@ -1,3 +1,5 @@
 node_modules
 .atom-build.yml
 .imdone
+.tags
+.tags1
