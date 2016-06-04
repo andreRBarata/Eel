@@ -59,7 +59,24 @@ module.exports = function Command(command, description) {
 		return this;
 	}
 
+<<<<<<< HEAD
 	self.flag = () => {
+=======
+	self.alias = (alias) => {
+		parseExpectedArgs(command);
+
+		return this;
+	}
+
+	self.validate = (validation) => {
+		commandData['validation'] = validation;
+
+		return this;
+	}
+
+	//TODO: Finish this function
+	self.option = () => {
+>>>>>>> 61ef9ec057a144d8d3b444f4ca1cd4ef7a6d2b5a
 		var [option, description, autocomplete] = arguments;
 
 		if(typeof description === 'array') {
