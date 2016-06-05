@@ -2,19 +2,23 @@ var parser;
 
 module.exports = parser = {
 	'argMatcher': /(?:\[|<).*(?:\]|>)/g,
-	'matchCommand': (command) => {
+	//TODO:0 Finish command matching method
+	'matchCommand': (command, argsline) => {
+		var commandLiterals = command.format();
 
+		for (var letter of argsline.split('')) {
+
+		}
 	},
 	'getArgsLiteral': (argsline) => {
-		if (!argsline || typeof argsline !== 'string') {
+		if (!argsline || argsline instanceof String) {
 			return new Error('Invalid Parameter');
 		}
 
-		return argsline.split(new RegExp(parser.argMatcher, 'g'))
-			.map((line) => line.trim());
+		return argsline.split(parser.argMatcher);
 	},
 	'parseExpectedArgs': (argsline) => {
-		if (!argsline || typeof argsline !== 'string') {
+		if (!argsline || argsline instanceof String) {
 			return new Error('Invalid Parameter');
 		}
 		var variables = {};
@@ -22,7 +26,6 @@ module.exports = parser = {
 		argsline
 			.match(parser.argMatcher)
 			.forEach((variable) => {
-				//TODO:70 Is this being overwritten?
 				var varoptions = {};
 				var matches;
 				var name;

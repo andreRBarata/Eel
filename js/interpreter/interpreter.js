@@ -5,7 +5,7 @@ var interpreter;
 module.exports = interpreter = {
 	'_commands_': [],
 	'defaultCommand': null,
-	//TODO:50 Fix find function
+	//TODO:10 Fix find function
 	'find': (commandName) => {
 		/*for (var command of interpreter._commands_) {
 			if (command.get('names').contains(commandName)) {
@@ -14,6 +14,9 @@ module.exports = interpreter = {
 		}*/
 
 		return false;
+	},
+	'use': (module) => {
+		require(module)(interpreter);
 	},
 	'command': (command, description) => {
 		var newCommand = interpreter.find(command);
@@ -33,17 +36,15 @@ module.exports = interpreter = {
 
 		return newCommand;
 	},
-	//TODO:40 Fix exec function
+	//TODO:20 Fix exec function
 	'exec': (commandLine, callback) => {
-		var [, command, options] = /(\w+)(?: (.*))?/
-			.exec(commandLine) || [];
 
-		if (interpreter.find(command)) {
+		if (interpreter.find(commandLine)) {
 
 		}
 		else {
 			interpreter.defaultCommand
-				.exec(options, callback);
+				.exec(commandLine, callback);
 		}
 	}
 };

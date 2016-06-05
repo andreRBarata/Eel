@@ -2,14 +2,9 @@ module.exports = function(commander) {
 	var ansiUp = require('ansi_up');
 	var spawn = require('child_process').spawn;
 
-	 commander.catch('<command> [options] [strings...]')
-	 	.deconstructor((args) => {
-			return args.match(/(?:\s("\w*"|\'\w*\'|\w+)\s*)/);
-		})
+	 commander.catch()
 	 	.action((args, cb) => {
-			console.log(args.command, args.options, args);
-			var process = spawn(args.command, args.options);
-
+			var process = spawn(args[0], args.slice(1));
 
 			process.stdout.on('data', (data) => {
 				cb(

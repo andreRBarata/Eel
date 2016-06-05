@@ -1,7 +1,6 @@
 //Add option for parameter decontructor
 module.exports = (() => {
 	var parser = require('./parser');
-	console.log(parser);
 	var commandData = {
 		'format': '',
 		'description': '',
@@ -9,19 +8,19 @@ module.exports = (() => {
 		'validation': null,//function
 		'option': {},
 		'action': null,//function
-		'deconstructor': null
 	};
 
 	function Command(formatstring, description) {
+		var args;
 		this.command = Object.assign({}, commandData);
 
 		this.command.description = description;
 
-		if (!this.command.args) {
+		if (args && !this.command.args) {
 			this.command.args = {};
 		}
 
-		var args = parser.parseExpectedArgs(formatstring);
+		args = parser.parseExpectedArgs(formatstring);
 
 		this.command.format = parser.getArgsLiteral(formatstring);
 
@@ -30,11 +29,18 @@ module.exports = (() => {
 		}
 	}
 
+	//TODO:30 Make usage of streams
 	Command.prototype.exec = function(args, callback) {
-		this.action()(this.deconstructor()(args), callback);
+		var decontructedArgs;
+
+		if (!this.command.args) {
+			decontructedArgs = args.match(/(".*"|\'.*\'|\S+)/g);
+		}
+		console.log(decontructedArgs, args);
+		this.action()(decontructedArgs, callback);
 	};
 
-	//TODO: Finish this function
+	//TODO:40 Finish option function
 	Command.prototype.option = function() {
 		var option, description, autocomplete;
 
@@ -54,7 +60,6 @@ module.exports = (() => {
 		return this;
 	};
 
-	//TODO: Fix this
 	Object.keys(commandData).forEach(
 		(field) => {
 			if (!Command.prototype[field]) {

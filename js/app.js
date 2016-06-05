@@ -1,15 +1,13 @@
 var termApp = angular.module('termApp', ['ngSanitize']);
 
-
 termApp.factory('$electron', function() {
 	return require('electron');
 });
 
 termApp.factory('$exec', function() {
-	var commanderPath = './js/interpreter/';
-	var commander = require(commanderPath + 'interpreter');
+	var interpreter = require('./js/interpreter/interpreter');
 
-	require(commanderPath + 'commands/catch-default')(commander);
+	interpreter.use('./commands/catch-default');
 
-	return commander.exec;
+	return interpreter.exec;
 });
