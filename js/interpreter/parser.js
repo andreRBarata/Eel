@@ -12,14 +12,19 @@ module.exports = parser = {
 	},
 	'getArgsLiteral': (argsline) => {
 		if (!argsline || argsline instanceof String) {
-			return;
+			throw new TypeError('Must have a string parameter');
+		}
+		var literals = argsline.split(parser.argMatcher);
+
+		if (argsline.match(new RegExp('^' + parser.argMatcher.source))) {
+			literals.unshift('');
 		}
 
-		return argsline.split(parser.argMatcher);
+		return literals;
 	},
 	'parseExpectedArgs': (argsline) => {
 		if (!argsline || argsline instanceof String) {
-			return new Error('Invalid Parameter');
+			throw new TypeError('Must have a string parameter');
 		}
 		var variables = {};
 

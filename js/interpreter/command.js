@@ -15,20 +15,13 @@ module.exports = (() => {
 
 		this.command = Object.assign({}, commandData);
 		this.command.description = description;
-
-		if (!this.command.args) {
-			this.command.args = {};
-		}
+		this.command.args = args || {};
 
 		this.command.format = parser.getArgsLiteral(formatstring);
-
-		for (var key of Object.keys(args)) {
-			this.command.args[key] = args[key];
-		}
 	}
 
 	//TODO:30 Make usage of streams
-	Command.prototype.exec = (args, environment, callback) => {
+	Command.prototype.exec = function (args, environment, callback) {
 		var decontructedArgs;
 
 		if (Object.keys(this.command.args).length === 0) {
@@ -42,7 +35,7 @@ module.exports = (() => {
 	};
 
 	//TODO:40 Finish option function
-	Command.prototype.option = () => {
+	Command.prototype.option = function () {
 		var optionName, description, autocomplete;
 
 		if (arguments.length === 3) {
