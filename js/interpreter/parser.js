@@ -12,7 +12,7 @@ module.exports = parser = {
 	},
 	'getArgsLiteral': (argsline) => {
 		if (!argsline || argsline instanceof String) {
-			return new Error('Invalid Parameter');
+			return;
 		}
 
 		return argsline.split(parser.argMatcher);
@@ -40,10 +40,10 @@ module.exports = parser = {
 				if (matches !== null) {
 					name = matches[1];
 
-					if ((matches = name.matches(/(.*)\.\.\./))) {
+					if ((matches = name.match(/(.*)\.\.\./))) {
 						varoptions.multiple = true;
 					}
-					name = matches[1] || name;
+					name = (matches)? matches[1]: name;
 				}
 
 				if (variables[name]) {

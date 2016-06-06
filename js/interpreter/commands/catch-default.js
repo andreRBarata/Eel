@@ -1,10 +1,10 @@
-module.exports = function(commander) {
+module.exports = function(interpreter) {
 	var ansiUp = require('ansi_up');
 	var spawn = require('child_process').spawn;
 
-	 commander.catch()
-	 	.action((args, cb) => {
-			var process = spawn(args[0], args.slice(1));
+	 interpreter.catch()
+	 	.action((args, environment, cb) => {
+			var process = spawn(args[0], args.slice(1), environment);
 
 			process.stdout.on('data', (data) => {
 				cb(

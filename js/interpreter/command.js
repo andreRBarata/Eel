@@ -2,7 +2,7 @@
 module.exports = (() => {
 	var parser = require('./parser');
 	var commandData = {
-		'format': '',
+		'format': [],
 		'description': '',
 		'help': '',
 		'validation': null,//function
@@ -11,16 +11,14 @@ module.exports = (() => {
 	};
 
 	function Command(formatstring, description) {
-		var args;
-		this.command = Object.assign({}, commandData);
+		var args = parser.parseExpectedArgs(formatstring);
 
+		this.command = Object.assign({}, commandData);
 		this.command.description = description;
 
-		if (args && !this.command.args) {
+		if (!this.command.args) {
 			this.command.args = {};
 		}
-
-		args = parser.parseExpectedArgs(formatstring);
 
 		this.command.format = parser.getArgsLiteral(formatstring);
 
@@ -30,29 +28,34 @@ module.exports = (() => {
 	}
 
 	//TODO:30 Make usage of streams
-	Command.prototype.exec = function(args, callback) {
+	Command.prototype.exec = (args, environment, callback) => {
 		var decontructedArgs;
 
-		if (!this.command.args) {
+		if (Object.keys(this.command.args).length === 0) {
 			decontructedArgs = args.match(/(".*"|\'.*\'|\S+)/g);
 		}
-		console.log(decontructedArgs, args);
-		this.action()(decontructedArgs, callback);
+		else {
+			//TODO: Use minimist and parse module for parameter parse
+		}
+
+		this.action()(decontructedArgs, environment, callback);
 	};
 
 	//TODO:40 Finish option function
-	Command.prototype.option = function() {
-		var option, description, autocomplete;
+	Command.prototype.option = () => {
+		var optionName, description, autocomplete;
 
+		if (arguments.length === 3) {
+			[optionName, description, autocomplete] = arguments;
+		}
 		if (arguments.length <= 2) {
-			option = arguments[0];
-			autocomplete = arguments[1];
+			[optionName, autocomplete] = arguments;
 		}
-		else {
-			[option, description, autocomplete] = arguments;
+		else if (arguments.length === 0) {
+			return this.command.option;
 		}
 
-		if(description instanceof Array) {
+		if (description instanceof Array) {
 			autocomplete = description;
 			description = null;
 		}

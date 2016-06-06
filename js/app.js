@@ -4,10 +4,11 @@ termApp.factory('$electron', function() {
 	return require('electron');
 });
 
-termApp.factory('$exec', function() {
+termApp.factory('interpreter', function() {
 	var interpreter = require('./js/interpreter/interpreter');
 
 	interpreter.use('./commands/catch-default');
+	interpreter.use('./commands/cd');
 
-	return interpreter.exec;
+	return interpreter;
 });

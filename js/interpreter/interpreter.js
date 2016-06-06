@@ -1,50 +1,58 @@
 //#InProgress:0 Finish Interpreter Module
-var Command = require('./command');
-var interpreter;
+module.exports = (() => {
+	var Command = require('./command');
+	var environment = {
+		'cwd': '/home/andre',
+		'env': {}
+	};
 
-module.exports = interpreter = {
-	'_commands_': [],
-	'defaultCommand': null,
-	//TODO:10 Fix find function
-	'find': (commandName) => {
-		/*for (var command of interpreter._commands_) {
-			if (command.get('names').contains(commandName)) {
-				return command;
+
+	var interpreter = {
+		'_commands_': [],
+		'defaultCommand': null,
+		//TODO:20 Fix find function
+		'find': (commandName) => {
+			/*for (var command of interpreter._commands_) {
+				if (command.get('names').contains(commandName)) {
+					return command;
+				}
+			}*/
+
+			return false;
+		},
+		'use': (module) => {
+			require(module)(interpreter);
+		},
+		'command': (command, description) => {
+			var newCommand = interpreter.find(command);
+
+			if (!newCommand) {
+				newCommand = new Command(command, description);
+
+				interpreter._commands_.push(newCommand);
 			}
-		}*/
 
-		return false;
-	},
-	'use': (module) => {
-		require(module)(interpreter);
-	},
-	'command': (command, description) => {
-		var newCommand = interpreter.find(command);
+			return newCommand;
+		},
+		'catch': (command, description) => {
+			var newCommand = interpreter.command(command, description);
 
-		if (!newCommand) {
-			newCommand = new Command(command, description);
+			interpreter.defaultCommand = newCommand;
 
-			interpreter._commands_.push(newCommand);
-		}
+			return newCommand;
+		},
+		//#Done:0 Fix exec function
+		'exec': (commandLine, callback) => {
+			var command = interpreter.find(commandLine);
 
-		return newCommand;
-	},
-	'catch': (command, description) => {
-		var newCommand = interpreter.command(command, description);
+			if (!command) {
+				command = interpreter.defaultCommand;
+			}
 
-		interpreter.defaultCommand = newCommand;
-
-		return newCommand;
-	},
-	//TODO:20 Fix exec function
-	'exec': (commandLine, callback) => {
-
-		if (interpreter.find(commandLine)) {
+			command.exec(commandLine, environment, callback);
 
 		}
-		else {
-			interpreter.defaultCommand
-				.exec(commandLine, callback);
-		}
-	}
-};
+	};
+
+	return interpreter;
+})();
