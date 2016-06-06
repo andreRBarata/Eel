@@ -11,13 +11,17 @@ module.exports = (() => {
 	};
 
 	function Command(formatstring, description) {
-		var args = parser.parseExpectedArgs(formatstring);
+		var args;
 
 		this.command = Object.assign({}, commandData);
 		this.command.description = description;
-		this.command.args = args || {};
 
-		this.command.format = parser.getArgsLiteral(formatstring);
+		if (formatstring) {
+			args = parser.parseExpectedArgs(formatstring);
+			this.command.format = parser.getArgsLiteral(formatstring);
+		}
+
+		this.command.args = args || {};
 	}
 
 	//TODO:30 Make usage of streams

@@ -1,11 +1,10 @@
-//#InProgress:0 Finish Interpreter Module
 module.exports = (() => {
+	var homedir = require('homedir');
 	var Command = require('./command');
 	var environment = {
-		'cwd': '/home/andre',
+		'cwd': homedir(),
 		'env': {}
 	};
-
 
 	var interpreter = {
 		'_commands_': [],

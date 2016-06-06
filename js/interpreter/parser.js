@@ -1,7 +1,7 @@
 var parser;
 
 module.exports = parser = {
-	'argMatcher': /(?:\[|<).*(?:\]|>)/g,
+	'argMatcher': /\[.*\]|<.*?>/g,
 	//TODO:0 Finish command matching method
 	'matchCommand': (command, argsline) => {
 		var commandLiterals = command.format();
@@ -14,13 +14,8 @@ module.exports = parser = {
 		if (!argsline || argsline instanceof String) {
 			throw new TypeError('Must have a string parameter');
 		}
-		var literals = argsline.split(parser.argMatcher);
 
-		if (argsline.match(new RegExp('^' + parser.argMatcher.source))) {
-			literals.unshift('');
-		}
-
-		return literals;
+		return argsline.split(parser.argMatcher);
 	},
 	'parseExpectedArgs': (argsline) => {
 		if (!argsline || argsline instanceof String) {
@@ -52,7 +47,7 @@ module.exports = parser = {
 				}
 
 				if (variables[name]) {
-					return new Error('Repeating variable');
+					throw new Error('Repeating variable');
 				}
 
 				variables[name] = varoptions;
