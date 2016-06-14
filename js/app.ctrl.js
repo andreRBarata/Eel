@@ -1,4 +1,6 @@
 termApp.controller('mainController', function($scope, interpreter) {
+	interpreter.use('./js/interpreter/commands/catch-default');
+	interpreter.use('./js/interpreter/commands/command-cd');
 
 	$scope.command = '';
 	$scope.output = [];

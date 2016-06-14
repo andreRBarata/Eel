@@ -1,6 +1,4 @@
-module.exports = (() => {
-	var homedir = require('homedir');
-	var Command = require('./command');
+termApp.factory('interpreter', function(Command, homedir) {
 	var environment = {
 		'cwd': homedir(),
 		'env': {}
@@ -40,7 +38,7 @@ module.exports = (() => {
 
 			return newCommand;
 		},
-		//#Done:0 Fix exec function
+		//TODO: Add REPL
 		'exec': (commandLine, callback) => {
 			var command = interpreter.find(commandLine);
 
@@ -54,4 +52,4 @@ module.exports = (() => {
 	};
 
 	return interpreter;
-})();
+});

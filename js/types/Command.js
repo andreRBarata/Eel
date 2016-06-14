@@ -1,6 +1,5 @@
 //Add option for parameter decontructor
-module.exports = (() => {
-	var parser = require('./parser');
+termApp.factory('Command', function(parser) {
 	var commandData = {
 		'format': [],
 		'description': '',
@@ -77,4 +76,4 @@ module.exports = (() => {
 	);
 
 	return Command;
-})();
+});
