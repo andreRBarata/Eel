@@ -2,7 +2,7 @@ module.exports = function(interpreter) {
 	var ansiUp = require('ansi_up');
 	var spawn = require('child_process').spawn;
 
-	 interpreter.catch()
+	interpreter.catch()
 	 	.action((args, environment, cb) => {
 			var process = spawn(args[0], args.slice(1), environment);
 
