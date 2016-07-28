@@ -5,7 +5,7 @@ angular.module('termApp')
 
 		$scope.command = '';
 		$scope.output = [];
-
+		
 		$scope.execute = (keyEvent) => {
 			if (keyEvent.which === 13) {
 				var screen = {

@@ -1,29 +1,32 @@
 angular.module('termApp')
 	.factory('parser', function() {
 		var parser = {
-			'argMatcher': /\[.*\]|<.*?>/g,
+			argMatcher: /\[.*\]|<.*?>/g,
 			//TODO:0 Finish command matching method
-			'matchCommand': (command, argsline) => {
+			interpretArguments(command, argsline) {
 				var commandLiterals = command.format();
 
 				for (var letter of argsline.split('')) {
 
 				}
 			},
-			'getArgsLiteral': (argsline) => {
-				if (!argsline || argsline instanceof String) {
+			commandNameOf(formatstring) {
+				return formatstring.split(' ')[0];
+			},
+			commandComponents(formatstring) {
+				if (!formatstring || formatstring instanceof String) {
 					throw new TypeError('Must have a string parameter');
 				}
 
-				return argsline.split(parser.argMatcher);
+				return formatstring.split(parser.argMatcher);
 			},
-			'parseExpectedArgs': (argsline) => {
-				if (!argsline || argsline instanceof String) {
+			parseExpectedArgs(formatstring) {
+				if (!formatstring || formatstring instanceof String) {
 					throw new TypeError('Must have a string parameter');
 				}
 				var variables = {};
 
-				argsline
+				formatstring
 					.match(parser.argMatcher)
 					.forEach((variable) => {
 						var varoptions = {};

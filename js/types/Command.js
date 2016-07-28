@@ -1,6 +1,6 @@
 //Add option for parameter decontructor
 angular.module('termApp')
-	.factory('Command', function(parser) {
+	.factory('Command', function(Terminal, parser) {
 		var commandData = {
 			'format': [],
 			'description': '',
@@ -18,7 +18,7 @@ angular.module('termApp')
 
 			if (formatstring) {
 				args = parser.parseExpectedArgs(formatstring);
-				this.command.format = parser.getArgsLiteral(formatstring);
+				this.command.format = parser.commandComponents(formatstring);
 			}
 
 			this.command.args = args || {};
@@ -32,7 +32,7 @@ angular.module('termApp')
 				decontructedArgs = args.match(/(".*"|\'.*\'|\S+)/g);
 			}
 			else {
-				//TODO: Use minimist and parse module for parameter parse
+				//TODO:10 Use minimist and parse module for parameter parse
 			}
 
 			this.action()(decontructedArgs, environment, callback);

@@ -1,38 +1,19 @@
 angular.module('termApp')
 	.factory('interpreter', function(Command) {
 		var homedir = require('homedir');
-		var repl = require('repl');
 		var environment = {
 			'cwd': homedir(),
 			'env': {}
 		};
 
-		var interpreter;
-		var shell;
+		var interpreter = {
+			commands: [],
+			defaultCommand: null,
 
-		shell = repl.start({
-			prompt: '>',
-			eval: () => callback(null,cmd),
-			writer: (output) => output.toUpperCase()
-		});
-
-		interpreter = {
-			'commands': [],
-			'defaultCommand': null,
-			//TODO:20 Fix find function
-			'find': (commandName) => {
-				/*for (var command of interpreter.commands_) {
-					if (command.get('names').contains(commandName)) {
-						return command;
-					}
-				}*/
-
-				return false;
-			},
-			'use': (module) => {
+			use(module) {
 				require(module)(interpreter);
 			},
-			'command': (command, description) => {
+			command(command, description) {
 				var newCommand = interpreter.find(command);
 
 				if (!newCommand) {
@@ -43,20 +24,18 @@ angular.module('termApp')
 
 				return newCommand;
 			},
-			'catch': (command, description) => {
+			catch(command, description) {
 				var newCommand = interpreter.command(command, description);
 
 				interpreter.defaultCommand = newCommand;
 
 				return newCommand;
 			},
-			//TODO: Add REPL
-			'exec': (commandLine, callback) => {
+			//#InProgress:0 Add REPL and use Sweet.js
+			//TODO: Move code to new terminal object
+			exec(commandLine, callback) {
 
 
-
-
-				shell.input.write(`${commandLine}\n`);
 				//shell.input.on('data', callback);
 
 				/*var command = interpreter.find(commandLine);
