@@ -1,7 +1,7 @@
 const expect = require('expect');
 
-const Process = require('../Process');
-const system = require('../system')({});
+const Process = require('../src/Process');
+const system = require('../src/system')({});
 
 const forEach = require('mocha-each');
 

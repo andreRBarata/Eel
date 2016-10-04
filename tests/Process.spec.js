@@ -1,7 +1,7 @@
 const expect = require('expect');
 const forEach = require('mocha-each');
 
-const Process = require('../Process');
+const Process = require('../src/Process');
 
 describe('Process', () => {
 	let process;

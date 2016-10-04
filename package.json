@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha ./tests/*.spec.js",
     "test-debug": "node-debug",
-    "start": "node console.js"
+    "start": "node src/console.js"
   },
   "author": "André Barata",
   "license": "ISC",
