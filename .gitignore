@@ -1,2 +1,4 @@
 node_modules
 .atom-build.yml
+.tern-project
+.imdone

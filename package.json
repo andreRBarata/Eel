@@ -1,28 +1,50 @@
 {
-  "name": "electron-quick-start",
+  "name": "eel",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "description": "",
+  "main": "console.js",
   "scripts": {
-    "start": "electron main.js"
+    "test": "mocha ./tests/*.spec.js",
+    "test-debug": "node-debug",
+    "start": "node console.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/electron/electron-quick-start.git"
+  "author": "André Barata",
+  "license": "ISC",
+  "jshintConfig": {
+    "esversion": 6,
+    "browser": true,
+    "node": true,
+    "camelcase": true,
+    "eqeqeq": true,
+    "latedef": true,
+    "quotmark": "single",
+    "newcap": true,
+    "undef": true,
+    "unused": true,
+    "globals": {
+      "jasmine": true,
+      "angular": true,
+      "browser": true,
+      "element": true,
+      "it": true,
+      "describe": true,
+      "beforeEach": true,
+      "by": true,
+      "io": true,
+      "_": false,
+      "$": false
+    }
   },
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "bugs": {
-    "url": "https://github.com/electron/electron-quick-start/issues"
+  "dependencies": {
+    "baconjs": "^0.7.85",
+    "chai": "^3.5.0",
+    "command-exists": "^1.0.2",
+    "highland": "2.10.0",
+    "mocha": "^3.0.2",
+    "mocha-each": "^1.0.3"
   },
-  "homepage": "https://github.com/electron/electron-quick-start#readme",
   "devDependencies": {
-    "electron-prebuilt": "^1.0.1"
+    "expect": "^1.20.2",
+    "node-inspector": "^0.12.8"
   }
 }
