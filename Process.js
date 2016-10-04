@@ -27,6 +27,7 @@ class Process {
 		return process;
 	}
 
+	//#ForThisSprint:30 Alter function to use standard chaining
 	/**
 	*	Add callback to be used when the process
 	*	is complete
@@ -37,9 +38,7 @@ class Process {
 		this.stdout.toArray(onFulfilled, onRejected);
 	}
 
-	/*FIXME:0 Add tests
-		This component must be tested
-	*/
+	//TODO:20 Add tests for Process.catch function
 	catch(onRejected) {
 		this.stdout.errors((err, push) => {
 			onRejected(err);

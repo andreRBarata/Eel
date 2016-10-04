@@ -17,16 +17,15 @@ module.exports = function (context) {
 					return target[name];
 				}
 
-				//TODO: Add error stream connectors
 				return function (args) {
 					let appProcess = new Process();
 					let systemProcess = spawn(name, (args)? args.split(' '): []);
-
 
 					systemProcess.stdout.pipe(appProcess.stdout);
 
 					appProcess.stdin.pipe(systemProcess.stdin);
 
+					//TODO:10 Add error propagation to backend
 					(new Highland(systemProcess.stderr))
 						.map((err) => Highland.fromError(err))
 						.merge().pipe(appProcess.stdout, {end: false});

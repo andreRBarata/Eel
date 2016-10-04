@@ -12,14 +12,14 @@ describe('system', () => {
 		system.thisCommandDoesNotExist().catch((err) => {
 			expect(err).toBeAn(Error);
 			done();
-		});/*.stdout.errors((err) => {
+		}).stdout.errors((err) => {
 			expect(err).toBeAn(Error);
 			done();
-		})**/;
+		});
 	});
 
 	describe('man command', () => {
-		//FIXME: Fix test
+		//TODO:30 Complete tests for man command error propagation
 		it('should place error in output stream if has no arguments', () => {
 
 		});
@@ -65,6 +65,7 @@ describe('system', () => {
 			process.stdout.end();
 		});
 
+		//#ForThisSprint:50 Alter tests for different pipes
 		it('should output "test" when piped from echo', (done) => {
 			let command = system.cat().pipe(system.echo('test'));
 
