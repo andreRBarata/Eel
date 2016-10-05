@@ -2,11 +2,11 @@
   "name": "eel",
   "version": "1.0.0",
   "description": "",
-  "main": "console.js",
+  "main": "src/REPL.js",
   "scripts": {
     "test": "mocha ./tests/*.spec.js",
     "test-debug": "node-debug",
-    "start": "node src/console.js"
+    "start": "node src/REPL.js"
   },
   "author": "André Barata",
   "license": "ISC",
