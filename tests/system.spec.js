@@ -66,7 +66,7 @@ describe('system', () => {
 			process.stdout.end();
 		});
 
-		//#ForThisSprint:60 Alter tests for different pipes
+		//#ForThisSprint:70 Alter tests for different pipes
 		it('should output "test" when piped from echo', (done) => {
 			let command = system.cat().pipe(system.echo('test'));
 
