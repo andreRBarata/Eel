@@ -1,12 +1,16 @@
-const vm = require('vm');
+const vm		= require('vm');
+const Highland	= require('highland');
 
-const system = require('./system');
+const system	= require('./system');
 
 
 class Interpreter {
 	constructor() {
+		this.stdout = new Highland();
+
 		this.context = vm.createContext(system({
-			'$env': process.env
+			'$env': process.env,
+			'echo': (text) => this.stdout.write(text) //TODO: Replace temporary echo function
 		}));
 	}
 

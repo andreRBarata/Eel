@@ -15,6 +15,7 @@ class Process {
 		this.stdin.write(value);
 	}
 
+	//#ForThisSprint:60 Alter function to use standard chaining
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
@@ -27,7 +28,7 @@ class Process {
 		return process;
 	}
 
-	//#ForThisSprint:50 Alter function to use standard chaining
+
 	/**
 	*	Add callback to be used when the process
 	*	is complete
@@ -38,7 +39,7 @@ class Process {
 		this.stdout.toArray(onFulfilled, onRejected);
 	}
 
-	//TODO:20 Add tests for Process.catch function
+	//TODO:30 Add tests for Process.catch function
 	catch(onRejected) {
 		this.stdout.errors((err, push) => {
 			onRejected(err);

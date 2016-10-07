@@ -19,7 +19,7 @@ describe('Interpreter', () => {
 		expect(result).toEqual(2);
 	});
 
-	//#ForThisSprint:0 Discover why echo function not defined
+	//#ForThisSprint:10 Discover why echo function not defined
 	it('should run echo command when it is sent', (done) => {
 		let stream = interpreter.runCode(`echo('test')`);
 

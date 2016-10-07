@@ -20,9 +20,12 @@ describe('system', () => {
 	});
 
 	describe('man command', () => {
-		//TODO:30 Complete tests for man command error propagation
-		it('should place error in output stream if has no arguments', () => {
-
+		//#ForThisSprint:30 Complete tests for man command error propagation
+		it('should place error in output stream if has no arguments', (done) => {
+			system.man().stdout.errors((err) => {
+				expect(err).toBeAn(Error);
+				done();
+			});
 		});
 	});
 
@@ -66,7 +69,7 @@ describe('system', () => {
 			process.stdout.end();
 		});
 
-		//#ForThisSprint:70 Alter tests for different pipes
+		//#ForThisSprint:80 Alter tests for different pipes
 		it('should output "test" when piped from echo', (done) => {
 			let command = system.cat().pipe(system.echo('test'));
 

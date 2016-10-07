@@ -8,7 +8,7 @@ let test = process.env.PATH.split(':');
 const readdir = Highland.wrapCallback(fs.readdir);
 //const stat = Highland.wrapCallback(fs.stat);
 
-//#ForThisSprint:10 Needs filtering for non excutables
+//#ForThisSprint:20 Needs filtering for non excutables
 let commands = new Highland(test)
 	.map((path) => readdir(path)
 		.errors((err) => console.log(err))

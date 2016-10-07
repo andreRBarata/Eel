@@ -1,9 +1,9 @@
-const Process = require('./Process');
+const Process	= require('./Process');
 
-const Highland = require('highland');
-const fs = require('fs');
-const readdir = Highland.wrapCallback(fs.readdir);
-const spawn = require('child_process').spawn;
+const Highland	= require('highland');
+const fs		= require('fs');
+const readdir	= Highland.wrapCallback(fs.readdir);
+const spawn 	= require('child_process').spawn;
 
 
 //#Done:10 Add check to see if command exists
@@ -18,10 +18,10 @@ module.exports = function (context) {
 		context.$env.PATH.split(':')
 	))
 	.map((path) => readdir(path)
-		.errors((err) => console.error(err))
+		.errors(() => {}) //TODO:10 Do something with these errors
 	)
 	.flatten()
-	.uniq()
+	.filter((command) => !context[command])
 	.each((command) => Object.defineProperty(context, command, {
 		get: function() {
 			return function (args) {
@@ -32,7 +32,7 @@ module.exports = function (context) {
 
 				appProcess.stdin.pipe(systemProcess.stdin);
 
-				//TODO:10 Add error propagation to backend
+				//TODO:20 Add error propagation to backend
 				(new Highland(systemProcess.stderr))
 					.map((err) => Highland.fromError(err))
 					.merge().pipe(appProcess.stdout, {end: false});
