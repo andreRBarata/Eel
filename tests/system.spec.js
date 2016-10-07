@@ -1,21 +1,22 @@
 const expect = require('expect');
 
 const Process = require('../src/Process');
-const system = require('../src/system')({});
+const system = require('../src/system')({
+	'$env': process.env
+});
 
 const forEach = require('mocha-each');
 
 
 describe('system', () => {
 
-	it('should return error to stdout if command does not exist', (done) => {
-		system.thisCommandDoesNotExist().catch((err) => {
+	it('should return error to stdout if command does not exist', () => {
+		try {
+			system.thisCommandDoesNotExist();
+		}
+		catch(err) {
 			expect(err).toBeAn(Error);
-			done();
-		}).stdout.errors((err) => {
-			expect(err).toBeAn(Error);
-			done();
-		});
+		}
 	});
 
 	describe('man command', () => {
@@ -65,7 +66,7 @@ describe('system', () => {
 			process.stdout.end();
 		});
 
-		//#ForThisSprint:50 Alter tests for different pipes
+		//#ForThisSprint:60 Alter tests for different pipes
 		it('should output "test" when piped from echo', (done) => {
 			let command = system.cat().pipe(system.echo('test'));
 

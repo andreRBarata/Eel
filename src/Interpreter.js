@@ -1,12 +1,13 @@
 const vm = require('vm');
-const Highland = require('highland');
 
 const system = require('./system');
 
 
 class Interpreter {
 	constructor() {
-		this.context = vm.createContext(system({}));
+		this.context = vm.createContext(system({
+			'$env': process.env
+		}));
 	}
 
 	/**

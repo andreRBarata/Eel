@@ -36,15 +36,13 @@
     }
   },
   "dependencies": {
-    "baconjs": "^0.7.85",
-    "chai": "^3.5.0",
     "command-exists": "^1.0.2",
-    "highland": "2.10.0",
-    "mocha": "^3.0.2",
-    "mocha-each": "^1.0.3"
+    "highland": "^2.10.0"
   },
   "devDependencies": {
     "expect": "^1.20.2",
-    "node-inspector": "^0.12.8"
+    "node-inspector": "^0.12.8",
+	"mocha": "^3.0.2",
+	"mocha-each": "^1.0.3"
   }
 }

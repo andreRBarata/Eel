@@ -1,48 +1,52 @@
 const Process = require('./Process');
 
-const commandExists = require('command-exists');
-const spawn = require('child_process').spawn;
 const Highland = require('highland');
+const fs = require('fs');
+const readdir = Highland.wrapCallback(fs.readdir);
+const spawn = require('child_process').spawn;
 
+
+//#Done:10 Add check to see if command exists
 module.exports = function (context) {
+	if (!context.$env) {
+		context.$env = {
+			PATH: ''
+		};
+	}
 
-	return new Proxy(context,
-		{
-			/**
-			* Runs system command
-			* @returns {Process}
-			*/
-			get: function (target, name) {
-				if (target[name]) {
-					return target[name];
-				}
+	(new Highland(
+		context.$env.PATH.split(':')
+	))
+	.map((path) => readdir(path)
+		.errors((err) => console.error(err))
+	)
+	.flatten()
+	.uniq()
+	.each((command) => Object.defineProperty(context, command, {
+		get: function() {
+			return function (args) {
+				let appProcess = new Process();
+				let systemProcess = spawn(command, (args)? args.split(' '): []);
 
-				return function (args) {
-					let appProcess = new Process();
-					let systemProcess = spawn(name, (args)? args.split(' '): []);
+				systemProcess.stdout.pipe(appProcess.stdout);
 
-					systemProcess.stdout.pipe(appProcess.stdout);
+				appProcess.stdin.pipe(systemProcess.stdin);
 
-					appProcess.stdin.pipe(systemProcess.stdin);
+				//TODO:10 Add error propagation to backend
+				(new Highland(systemProcess.stderr))
+					.map((err) => Highland.fromError(err))
+					.merge().pipe(appProcess.stdout, {end: false});
 
-					//TODO:10 Add error propagation to backend
-					(new Highland(systemProcess.stderr))
-						.map((err) => Highland.fromError(err))
-						.merge().pipe(appProcess.stdout, {end: false});
+				systemProcess.on('error',
+					(err) => Highland
+						.fromError(err)
+						.pipe(appProcess.stdout, {end: false})
+				);
 
-					systemProcess.on('error',
-						(err) => Highland
-							.fromError(err)
-							.pipe(appProcess.stdout, {end: false})
-					);
+				return appProcess;
+			};
+		}}
+	));
 
-					return appProcess;
-				};
-
-			},
-			set: function (target, name, value) {
-				target[name] = value;
-			}
-		}
-	);
+	return context;
 };

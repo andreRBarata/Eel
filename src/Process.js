@@ -27,7 +27,7 @@ class Process {
 		return process;
 	}
 
-	//#ForThisSprint:30 Alter function to use standard chaining
+	//#ForThisSprint:40 Alter function to use standard chaining
 	/**
 	*	Add callback to be used when the process
 	*	is complete
