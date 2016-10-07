@@ -15,7 +15,7 @@ class Process {
 		this.stdin.write(value);
 	}
 
-	//#ForThisSprint:60 Alter function to use standard chaining
+	//#ForThisSprint:40 Alter function to use standard chaining
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
