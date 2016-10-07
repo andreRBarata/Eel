@@ -1,6 +1,7 @@
 const vm		= require('vm');
 const Highland	= require('highland');
 
+const Process	= require('./Process');
 const system	= require('./system');
 
 
@@ -9,8 +10,7 @@ class Interpreter {
 		this.stdout = new Highland();
 
 		this.context = vm.createContext(system({
-			'$env': process.env,
-			'echo': (text) => this.stdout.write(text) //TODO: Replace temporary echo function
+			'$env': process.env
 		}));
 	}
 
@@ -21,8 +21,16 @@ class Interpreter {
 	runCode(code) {
 		let output = vm.runInContext(code, this.context);
 
-		return output;
+		if (output instanceof Process) {
+			output.stdout.pipe(this.stdout, {end: false});
+			
+			return;
+		}
+		else {
+			this.stdout.write(output);
 
+			return output;
+		}
 	}
 }
 
