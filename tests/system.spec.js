@@ -1,11 +1,11 @@
-const expect = require('expect');
+const expect	= require('expect');
+const forEach	= require('mocha-each');
 
-const Process = require('../src/Process');
-const system = require('../src/system')({
+const Process	= require('../src/Process');
+const system	= require('../src/system')({
 	'$env': process.env
 });
 
-const forEach = require('mocha-each');
 
 
 describe('system', () => {

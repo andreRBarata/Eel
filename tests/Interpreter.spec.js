@@ -1,7 +1,8 @@
-const Interpreter = require('../src/Interpreter');
+const expect		= require('expect');
 
-const expect = require('expect');
+const Interpreter	= require('../src/Interpreter');
 
+//TODO: Write more Interpreter tests
 describe('Interpreter', () => {
 	let interpreter;
 
@@ -19,11 +20,11 @@ describe('Interpreter', () => {
 		expect(result).toEqual(2);
 	});
 
-	//#Done:20 Discover why echo function not defined
+	//#TODO:20 Discover why echo function not defined
 	it('should run echo command when it is sent', (done) => {
-		let stream = interpreter.runCode(`echo('test')`);
+		interpreter.runCode(`echo('test')`);
 
-		stream.then((data) => {
+		interpreter.stdout.each((data) => {
 			expect(data[0]).toEqual('test\n');
 			done();
 		});
