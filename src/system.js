@@ -1,9 +1,9 @@
-const Process = require('./Process');
+const Process	= require('./Process');
 
-const Highland = require('highland');
-const fs = require('fs');
-const readdir = Highland.wrapCallback(fs.readdir);
-const spawn = require('child_process').spawn;
+const Highland	= require('highland');
+const fs		= require('fs');
+const readdir	= Highland.wrapCallback(fs.readdir);
+const spawn		= require('child_process').spawn;
 
 
 //#Done:10 Add check to see if command exists
@@ -15,6 +15,7 @@ module.exports = function (context) {
 	}
 
 	(new Highland(
+		//TODO: Check windows support
 		context.$env.PATH.split(':')
 	))
 	.map((path) => readdir(path)

@@ -10,7 +10,9 @@
 	- [Design](#design)
 		- [Syntax](#syntax)
 			- [Basic Example](#basic-example)
-			- [Example with varibles](#example-with-varibles)
+			- [Example with variables](#example-with-variables)
+			- [Examples with pipes](#examples-with-pipes)
+				- [Simple Pipe](#simple-pipe)
 
 <!-- tocstop -->
 
@@ -35,13 +37,13 @@ The idea for this project came from the now defunct project TermKit. It had as o
 I believe that using the new Electron App Engine it is possible to accomplish what this project intended. However I also intend to try to go beyond the original objective of the project and add the ability to do scripting in this shell using an superset of Javascript. This is possible through the usage of SweetJs which allows the creation of macros for Javascript transpiling.
 
 ### Websites
-TermKit				- https://github.com/unconed/TermKit
-Electron App Engine - http://electron.atom.io/
-SweetJs				- http://sweetjs.org/
+- TermKit				- https://github.com/unconed/TermKit
+- Electron App Engine - http://electron.atom.io/
+- SweetJs				- http://sweetjs.org/
 
 ### Books
 
-Learning Node Second Edition
+- Learning Node Second Edition
 
 ## Design
 
@@ -49,6 +51,10 @@ Learning Node Second Edition
 #ForThisSprint:0 Write API drafts
 -->
 ### Syntax
+
+The following are examples for the planned of lines of code before and after the SweetJs scripts alter them.
+
+_**These are subject to changes.**_
 
 #### Basic Example
 
@@ -64,7 +70,7 @@ Learning Node Second Edition
 	ls('-r','./');
 ```
 
-#### Example with varibles
+#### Example with variables
 
 **Input code**
 
@@ -76,4 +82,20 @@ Learning Node Second Edition
 
 ``` javascript
 	ls('-r',path);
+```
+
+#### Examples with pipes
+
+##### Simple Pipe
+
+**Input code**
+
+``` javascript
+	cat() | ls();
+```
+
+**Executed code**
+
+``` javascript
+	_.pipeline(cat(), ls());
 ```

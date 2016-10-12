@@ -1,7 +1,7 @@
 const Highland = require('highland');
 
 class Process {
-
+	//TODO: Create from function to generate Processes
 	constructor() {
 		this.stdout = new Highland();
 		this.stdin = new Highland();

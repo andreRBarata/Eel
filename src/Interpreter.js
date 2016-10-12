@@ -14,6 +14,7 @@ class Interpreter {
 		}));
 	}
 
+	//TODO: Rewrite stdout connections
 	/**
 	*	Runs Code in the current instance
 	*	@param {string} code - Code to be executed
@@ -23,7 +24,7 @@ class Interpreter {
 
 		if (output instanceof Process) {
 			output.stdout.pipe(this.stdout, {end: false});
-			
+
 			return;
 		}
 		else {
