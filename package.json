@@ -5,7 +5,7 @@
   "main": "src/REPL.js",
   "scripts": {
     "test": "mocha ./tests/*.spec.js",
-    "test-debug": "node-debug",
+    "test-debug": "node-inspector; node --debug-brk ./src/Interpreter.js",
     "start": "node src/REPL.js"
   },
   "author": "André Barata",
@@ -28,6 +28,7 @@
       "element": true,
       "it": true,
       "describe": true,
+      "before": true,
       "beforeEach": true,
       "by": true,
       "io": true,
@@ -37,12 +38,13 @@
   },
   "dependencies": {
     "command-exists": "^1.0.2",
+    "defaults": "^1.0.3",
     "highland": "^2.10.0"
   },
   "devDependencies": {
     "expect": "^1.20.2",
     "node-inspector": "^0.12.8",
-	"mocha": "^3.0.2",
-	"mocha-each": "^1.0.3"
+    "mocha": "^3.0.2",
+    "mocha-each": "^1.0.3"
   }
 }

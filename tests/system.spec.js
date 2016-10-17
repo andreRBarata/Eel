@@ -2,15 +2,24 @@ const expect	= require('expect');
 const forEach	= require('mocha-each');
 
 const Process	= require('../src/Process');
-const system	= require('../src/system')({
-	'$env': process.env
-});
 
 
 
 describe('system', () => {
+	let system;
 
-	it('should return error to stdout if command does not exist', () => {
+	before((done) => {
+		require('../src/system')({
+			$env: process.env
+		}).then((_system) => {
+			system = _system;
+			done();
+		}).catch(
+			(err) => console.log(err)
+		);
+   	});
+
+	it('should throw error if command does not exist', () => {
 		try {
 			system.thisCommandDoesNotExist();
 		}
@@ -22,7 +31,7 @@ describe('system', () => {
 	describe('man command', () => {
 		//#ForThisSprint:20 Complete tests for man command error propagation
 		it('should place error in output stream if has no arguments', (done) => {
-			system.man().stdout.errors((err) => {
+			system.man().catch((err) => {
 				expect(err).toBeAn(Error);
 				done();
 			});
@@ -31,7 +40,7 @@ describe('system', () => {
 
 	describe('echo command', () => {
 		it('should output "test" when sent as parameter', (done) => {
-			system.echo('test').stdout.each((data) => {
+			system.echo('test').then((data) => {
 					expect(data).toEqual('test\n');
 					done();
 				}
@@ -57,12 +66,12 @@ describe('system', () => {
 			let command = system.cat().pipe(process);
 
 			command.stdin.on('data', (data) => {
-					expect(data).toEqual('test');
+				expect(data).toEqual('test');
 			});
 
 			command.stdout.on('data', (data) => {
-					expect(data).toEqual('test');
-					done();
+				expect(data).toEqual('test');
+				done();
 			});
 
 			process.stdout.write('test');
@@ -73,7 +82,7 @@ describe('system', () => {
 		it('should output "test" when piped from echo', (done) => {
 			let command = system.cat().pipe(system.echo('test'));
 
-			command.stdout.on('data', (data) => {
+			command.then((data) => {
 					expect(data).toEqual('test\n');
 					done();
 				}

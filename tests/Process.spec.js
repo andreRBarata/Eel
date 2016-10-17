@@ -6,7 +6,7 @@ const Process 	= require('../src/Process');
 describe('Process', () => {
 	let process;
 
-	beforeEach(function() {
+	beforeEach(() => {
 		process = new Process();
 	});
 
