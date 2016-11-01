@@ -16,5 +16,3 @@ repl.start({
 });
 
 interpreter.stdout.each((text) => process.stdout.write(`${text}\n`));
-//#Done:0 Find out provide access to standard js functions using a proxy context and implement it
-//#Done:30 Join outputed stream to standard output to have it display values

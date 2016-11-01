@@ -1,25 +1,20 @@
-const vm			= require('vm');
-const EventEmitter	= require('events').EventEmitter;
-const Highland		= require('highland');
-
-const Process		= require('./Process');
-const system		= require('./system');
-
+const vm = require('vm');
 
 class Interpreter {
 	constructor() {
-		this.status = new EventEmitter();
-		this.stdout = new Highland();
-		
-		system({
-			$env: process.env
-		}).then((system) => {
-			this.context = vm.createContext(system);
-			this.status.emit('load');
-		});
+		let context = require('./context')
+			.getInstance();
+
+		this.status = context.status;
+		this.stdout = context.stdout;
+		this.context = vm.createContext(
+			context.system
+		);
+
+
 	}
 
-	//TODO: Rewrite stdout connections
+	//TODO: Rewrite stdout connections id:11
 	/**
 	*	Runs Code in the current instance
 	*	@param {string} code - Code to be executed
@@ -29,7 +24,9 @@ class Interpreter {
 			return new Error('System not loaded');
 		}
 
-		return vm.runInContext(code, this.context);
+		return vm.runInContext(code, this
+			.context
+		);
 	}
 }
 

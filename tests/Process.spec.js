@@ -72,7 +72,7 @@ describe('Process', () => {
 				done();
 			});
 
-			process.pipe(pipingProcess);
+			pipingProcess.pipe(process);
 
 			pipingProcess.stdout.write('test');
 		});

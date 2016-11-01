@@ -13,6 +13,7 @@
 			- [Example with variables](#example-with-variables)
 			- [Examples with pipes](#examples-with-pipes)
 				- [Simple Pipe](#simple-pipe)
+		- [Structure](#structure)
 
 <!-- tocstop -->
 
@@ -47,8 +48,9 @@ I believe that using the new Electron App Engine it is possible to accomplish wh
 
 ## Design
 
+
 <!--
-#ForThisSprint:0 Write API drafts
+#ForThisSprint: Write API drafts id:9
 -->
 ### Syntax
 
@@ -99,3 +101,5 @@ _**These are subject to changes.**_
 ``` javascript
 	_.pipeline(cat(), ls());
 ```
+
+### Structure
