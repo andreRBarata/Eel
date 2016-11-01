@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/REPL.js",
   "scripts": {
-    "test": "mocha ./tests/*.spec.js",
+    "test": "mocha $(find './tests' -type f -name '*.spec.js')",
     "test-debug": "node-inspector; node --debug-brk ./src/Interpreter.js",
     "start": "node src/REPL.js"
   },

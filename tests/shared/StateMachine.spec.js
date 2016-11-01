@@ -1,6 +1,6 @@
 const expect	= require('expect');
 
-const StateMachine	= require('../src/shared/StateMachine');
+const StateMachine	= require('../../src/shared/StateMachine');
 
 describe('StateMachine', () => {
 	let stateMachine;
