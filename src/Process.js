@@ -31,7 +31,7 @@ class Process {
 	*	@return {Process}
 	*/
 	pipe(process) {
-		this.stdout.pipe(process.stdin);
+		this.stdout.through(process.stdin);
 
 		return process;
 	}
@@ -42,11 +42,12 @@ class Process {
 	*	@param {Highland} stream - Default output stream
 	*/
 	defaultOutput(stream) {
-		this.stdout.on('end', () => {
-			if (!this.stdout._consumers.length) {
-				this.stdout.pipe(stream, {end: false});
-			}
-		});
+		/*this.stdout.through(stream, {end: false});
+
+		this.stdout.on('pipe', () => {
+			console.log('teste2');
+			this.stdout.unpipe(stream);
+		});*/
 	}
 
 	//TODO: Add tests for pipeline id:0
@@ -54,7 +55,8 @@ class Process {
 	//TODO: Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
-	*	@param {---Process} args - Processes to be piped
+	* 	@static
+	*	@param {Process[]} args - Processes to be piped
 	*	@return {Process}
 	*/
 	static pipeline(...args) {
@@ -102,9 +104,9 @@ class Process {
 
 		switch (source.constructor) {
 			case Function: {
-				process.stdout = new Highland((push, next) => {
+				(new Highland((push, next) => {
 					source(push, next, process.stdin);
-				});
+				})).pipe(process.stdout);
 
 				return process;
 			}
@@ -112,7 +114,8 @@ class Process {
 			case String:
 			case Promise:
 			case Stream.Readable: {
-				process.stdout = new Highland(source);
+				(new Highland(source))
+					.pipe(process.stdout);
 				process.readonly = true;
 
 				return process;

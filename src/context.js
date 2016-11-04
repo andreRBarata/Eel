@@ -17,7 +17,9 @@ module.exports = {
 				}
 			}),
 			system: {
-				$env: process.env
+				$env: process.env,
+				echo: (data) => console.log(data),
+				'_' : Process
 			}
 		};
 
@@ -32,6 +34,7 @@ module.exports = {
 			)
 			.flatten()
 			.uniq()
+			.filter((command) => !context.system[command])
 			.each((command) => {
 				context.system[command] = function(...args) {
 					//TODO: Add error propagation to backend id:7
@@ -39,22 +42,20 @@ module.exports = {
 
 					let appProcess = new Process((push, next, input) => {
 						systemProcess.stdout.on('data',
-							(data) => {
-								push(null, data);
-							}
+							(data) => push(null, data)
 						);
 
 						systemProcess.stderr.on('data',
-							(err) => {
-								push(new Error(err), null);
-							}
+							(err) => push(err, null)
 						);
 
 						input.pipe(systemProcess.stdin);
 					});
 
 					systemProcess.stdout.on('end',
-						() => appProcess.stdout.end()
+						() => {
+							appProcess.stdout.end();
+						}
 					);
 
 					appProcess.defaultOutput(context.stdout);

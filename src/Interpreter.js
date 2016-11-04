@@ -10,8 +10,6 @@ class Interpreter {
 		this.context = vm.createContext(
 			context.system
 		);
-
-
 	}
 
 	//TODO: Rewrite stdout connections id:11
