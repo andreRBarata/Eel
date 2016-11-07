@@ -1,22 +1,26 @@
-const Highland	= require('highland');
-const Stream	= require('stream');
+const Highland		= require('highland');
+const stream		= require('stream');
 
 class Process {
+
 	//TODO: Create from function to generate Processes id:12
 	//TODO: Add read only process id:13
-	constructor(source) {
-		if (!source) {
-			this.stdout = new Highland();
-			this.stdin = new Highland();
-		}
-		else {
-			return Process.from(source);
+	constructor() {
+		if (arguments.length) {
+			return Process.from(...arguments);
 		}
 
+		this.stdout = stream.Readable({
+			read() {}
+		});
+		this.stdin = stream.Writable({
+			write() {}
+		});
 	}
 
 	/**
-	*	Write into input pipe
+	*	@function input
+	* 	Write into input pipe
 	*	@param {string} value - Value to be piped in.
 	*/
 	input(value) {
@@ -31,7 +35,7 @@ class Process {
 	*	@return {Process}
 	*/
 	pipe(process) {
-		this.stdout.through(process.stdin);
+		this.stdout.pipe(process.stdin);
 
 		return process;
 	}
@@ -42,12 +46,11 @@ class Process {
 	*	@param {Highland} stream - Default output stream
 	*/
 	defaultOutput(stream) {
-		/*this.stdout.through(stream, {end: false});
+		this.stdout.pipe(stream, {end: false});
 
 		this.stdout.on('pipe', () => {
-			console.log('teste2');
 			this.stdout.unpipe(stream);
-		});*/
+		});
 	}
 
 	//TODO: Add tests for pipeline id:0
@@ -81,15 +84,17 @@ class Process {
 	*	@param {Function} onRejected
 	*/
 	then(onFulfilled, onRejected) {
-		this.stdout.toArray(onFulfilled, onRejected);
+		(new Highland(this.stdout))
+			.toArray(onFulfilled, onRejected);
 	}
 
 	//TODO: Add tests for Process.catch function id:15
 	catch(onRejected) {
-		this.stdout.errors((err, push) => {
-			onRejected(err);
-			push();
-		});
+		(new Highland(this.stdout))
+			.errors((err, push) => {
+				onRejected(err);
+				push();
+			});
 	}
 
 	//TODO: Create from function for Process id:16
@@ -104,18 +109,22 @@ class Process {
 
 		switch (source.constructor) {
 			case Function: {
-				(new Highland((push, next) => {
-					source(push, next, process.stdin);
-				})).pipe(process.stdout);
+				source(
+					(data) => process.stdout.push(data),
+					(event) => process.stdout.emit(event),
+					process.stdin
+				);
 
 				return process;
 			}
 			case Array:
 			case String:
 			case Promise:
-			case Stream.Readable: {
+			case stream.Readable: {
 				(new Highland(source))
-					.pipe(process.stdout);
+					.each(
+						(data) => process.input(data)
+					);
 				process.readonly = true;
 
 				return process;

@@ -1,5 +1,7 @@
 const expect	= require('expect');
 const forEach	= require('mocha-each');
+const Highland	= require('highland');
+
 
 const Process	= require('../src/Process');
 
@@ -56,23 +58,37 @@ describe('context', () => {
 		});
 
 		describe('echo command', () => {
-			it('should output "test" when sent as parameter', (done) => {
-				system.echo('test').then((data) => {
-						expect(data).toEqual('test\n');
-						done();
-					}
-				);
+			describe('then function', () => {
+				it('should output "test" when sent as parameter', (done) => {
+					system.echo('test').then((data) => {
+							expect(data).toEqual('test\n');
+							done();
+						}
+					);
+				});
+			});
+
+			describe('stdout once function', () => {
+				it('should output "test" when sent as parameter', (done) => {
+					system.echo('test')
+						.stdout.once('data', (data) => {
+							expect(data).toEqual('test\n');
+							done();
+						}
+					);
+				});
 			});
 
 			it('should output "test" through system stdout when sent as parameter', (done) => {
 				system.echo('test');
 
-				context.stdout.each((data) => {
+				context.stdout.once('data', (data) => {
 						expect(data).toEqual('test\n');
 						done();
 					}
 				);
 			});
+
 		});
 
 		describe('cat command', () => {
@@ -85,8 +101,9 @@ describe('context', () => {
 					}
 				);
 
-				command.input('test');
-				command.stdin.end();
+
+				Highland.of('test')
+					.pipe(command.stdin);
 			});
 
 			it('should output "test" when piped from process object', (done) => {
@@ -104,8 +121,8 @@ describe('context', () => {
 						done();
 					});
 
-				process.stdout.write('test');
-				process.stdout.end();
+				process.stdout.push('test');
+				process.stdout.push(null);
 			});
 
 			//#ForThisSprint: Alter tests for different pipes id:20

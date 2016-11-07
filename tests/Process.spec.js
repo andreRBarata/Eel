@@ -16,46 +16,33 @@ describe('Process', () => {
 			done();
 		});
 
-		process.stdout.write('test');
-		process.stdout.end();
+		process.stdout.push('test');
+		process.stdout.push(null);
 
 	});
 
 	describe('"out" stream', () => {
 		it('should call callback is done', (done) => {
-			process.stdout
-				.done(() => done());
+			process.then(() => done());
 
-			process.stdout.write('test');
-			process.stdout.end();
-		});
-
-		it('should call callback is done with toArray', (done) => {
-			process.stdout
-				.toArray((array) => {
-					expect(array).toEqual(['test']);
-					done();
-				});
-
-			process.stdout.write('test');
-			process.stdout.end();
+			process.stdout.push('test');
+			process.stdout.push(null);
 		});
 
 		it('should call callback when written on', (done) => {
-			process.stdout.each((data) => {
+			process.stdout.once('data', (data) => {
 				expect(data).toEqual('test');
 				done();
 			});
 
-			process.stdout.write('test');
-			process.stdout.end();
+			process.stdout.push('test');
+			process.stdout.push(null);
 		});
 	});
 
 	describe('"in" stream', () => {
-		it('should call callback when written on through the input function',
-			(done) => {
-				process.stdin.each((data) => {
+		it('should call callback when written on through the input function', (done) => {
+				process.stdin.once('data', (data) => {
 					expect(data).toEqual('test');
 					done();
 				});
@@ -67,14 +54,14 @@ describe('Process', () => {
 		it('should call callback when written on through pipe', (done) => {
 			let pipingProcess = new Process();
 
-			process.stdin.each((data) => {
+			process.stdin.once('data', (data) => {
 				expect(data).toEqual('test');
 				done();
 			});
 
 			pipingProcess.pipe(process);
 
-			pipingProcess.stdout.write('test');
+			pipingProcess.stdout.push('test');
 		});
 	});
 });
