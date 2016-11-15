@@ -1,5 +1,6 @@
 const expect	= require('expect');
 const forEach	= require('mocha-each');
+const Highland	= require('highland');
 
 const Process 	= require('../src/Process');
 
@@ -22,6 +23,7 @@ describe('Process', () => {
 	});
 
 	describe('"out" stream', () => {
+
 		it('should call callback is done', (done) => {
 			process.then(() => done());
 
@@ -62,6 +64,26 @@ describe('Process', () => {
 			pipingProcess.pipe(process);
 
 			pipingProcess.stdout.push('test');
+		});
+
+		it('should call not pipe to defaultOutput if other pipe is made', (done) => {
+			let defaultPipe = new Highland();
+			let pipedProcess = new Process({
+				defaultOutput: defaultPipe
+			});
+
+			process.pipe(pipedProcess);
+
+			defaultPipe.once('data', (data) => {
+				expect(data).toNotEqual('test');
+			});
+
+			pipedProcess.stdin.once('data', (data) => {
+				expect(data).toEqual('test');
+				done();
+			});
+
+			process.stdout.push('test');
 		});
 	});
 });

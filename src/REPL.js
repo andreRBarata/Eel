@@ -15,4 +15,4 @@ repl.start({
 	}
 });
 
-interpreter.stdout.each((text) => process.stdout.write(`${text}\n`));
+interpreter.stdout.on('data', (text) => process.stdout.write(`${text}\n`));

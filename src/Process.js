@@ -1,5 +1,5 @@
-const Highland		= require('highland');
-const stream		= require('stream');
+const Highland	= require('highland');
+const stream	= require('stream');
 
 class Process {
 
@@ -10,16 +10,15 @@ class Process {
 			return Process.from(...arguments);
 		}
 
-		this.stdout = stream.Readable({
+		this.stdout = new stream.Readable({
 			read() {}
 		});
-		this.stdin = stream.Writable({
-			write() {}
-		});
+		this.stdin = new Highland();
+
+		this.stdout.on('end', () => this.stdin.end());
 	}
 
 	/**
-	*	@function input
 	* 	Write into input pipe
 	*	@param {string} value - Value to be piped in.
 	*/
@@ -37,20 +36,32 @@ class Process {
 	pipe(process) {
 		this.stdout.pipe(process.stdin);
 
+		if (this._defaultOutput) {
+			this.stdout.unpipe(this._defaultOutput);
+		}
+
 		return process;
 	}
 
 	//FIXME
 	/**
-	*	Set default output stream during process
-	*	@param {Highland} stream - Default output stream
+	*	Add callback to be used when the process
+	*	is complete
+	*	@param {Function} onFulfilled
+	*	@param {Function} onRejected
 	*/
-	defaultOutput(stream) {
-		this.stdout.pipe(stream, {end: false});
+	then(onFulfilled, onRejected) {
+		(new Highland(this.stdout))
+			.toArray(onFulfilled, onRejected);
+	}
 
-		this.stdout.on('pipe', () => {
-			this.stdout.unpipe(stream);
-		});
+	//TODO: Add tests for Process.catch function id:15
+	catch(onRejected) {
+		(new Highland(this.stdout))
+			.errors((err, push) => {
+				onRejected(err);
+				push();
+			});
 	}
 
 	//TODO: Add tests for pipeline id:0
@@ -77,37 +88,34 @@ class Process {
 		return args[0];
 	}
 
-	/**
-	*	Add callback to be used when the process
-	*	is complete
-	*	@param {Function} onFulfilled
-	*	@param {Function} onRejected
-	*/
-	then(onFulfilled, onRejected) {
-		(new Highland(this.stdout))
-			.toArray(onFulfilled, onRejected);
-	}
-
-	//TODO: Add tests for Process.catch function id:15
-	catch(onRejected) {
-		(new Highland(this.stdout))
-			.errors((err, push) => {
-				onRejected(err);
-				push();
-			});
-	}
-
 	//TODO: Create from function for Process id:16
 	/**
 	*	Create a process for an object
 	*	@static
-	*	@param {Function|Array|string|Promise|Readable Stream} source - The source for the process
+	*	@param {Function|Array|string|Promise|stream.Readable} source - The source for the process
 	*	@return {Process}
 	*/
-	static from(source) {
+	static from(source, config = {}) {
 		let process = new Process();
 
+		function setConfig(_config) {
+			if (_config.defaultOutput) {
+				process._defaultOutput =
+					_config.defaultOutput;
+
+				process.stdout
+					.pipe(_config.defaultOutput);
+			}
+		}
+
+		setConfig(config);
+
 		switch (source.constructor) {
+			case Object: {
+				setConfig(source);
+
+				return process;
+			}
 			case Function: {
 				source(
 					(data) => process.stdout.push(data),
@@ -117,13 +125,17 @@ class Process {
 
 				return process;
 			}
+			case String: {
+				process.stdout.push(source);
+
+				return process;
+			}
 			case Array:
-			case String:
 			case Promise:
 			case stream.Readable: {
 				(new Highland(source))
 					.each(
-						(data) => process.input(data)
+						(data) => process.stdout.push(data)
 					);
 				process.readonly = true;
 

@@ -28,7 +28,7 @@ describe('Interpreter', () => {
 	it('should run echo command when it is sent', (done) => {
 		interpreter.runCode(`echo('test')`);
 
-		interpreter.stdout.each((data) => {
+		interpreter.stdout.on('data', (data) => {
 			expect(data).toEqual('test\n');
 			done();
 		});

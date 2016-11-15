@@ -68,7 +68,7 @@ describe('context', () => {
 				});
 			});
 
-			describe('stdout once function', () => {
+			describe('stdout.once function', () => {
 				it('should output "test" when sent as parameter', (done) => {
 					system.echo('test')
 						.stdout.once('data', (data) => {
@@ -102,8 +102,7 @@ describe('context', () => {
 				);
 
 
-				Highland.of('test')
-					.pipe(command.stdin);
+				command.input('test');
 			});
 
 			it('should output "test" when piped from process object', (done) => {

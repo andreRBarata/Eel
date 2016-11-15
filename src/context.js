@@ -2,6 +2,8 @@ const Highland		= require('highland');
 const fs			= require('fs');
 const readdir		= Highland.wrapCallback(fs.readdir);
 const spawn			= require('child_process').spawn;
+const stream		= require('stream');
+
 
 const StateMachine	= require('./shared/StateMachine');
 const Process		= require('./Process');
@@ -36,26 +38,22 @@ module.exports = {
 			.filter((command) => !context.system[command])
 			.each((command) => {
 				context.system[command] = function(...args) {
-					//TODO: Add error propagation to backend id:7
-					let systemProcess = spawn(command, (args)? args: []);
-
 					let appProcess = new Process((push, emit, input) => {
+						//TODO: Fix error propagation to backend id:7
+						let systemProcess = spawn(command, (args)? args: []);
+
 						systemProcess.stdout.on('data',
 							(data) => push(data)
 						);
 
 						systemProcess.stderr.on('data',
-							(err) => push(err)
+							(err) => emit('error', err)
 						);
 
-						input.on('data', (data) => {
-							systemProcess.stdin.push(data);
-							console.log('test', data);
-						});
+						input.pipe(systemProcess.stdin);
+					}, {
+						defaultOutput: context.stdout
 					});
-
-
-					appProcess.defaultOutput(context.stdout);
 
 					return appProcess;
 				};
