@@ -52,9 +52,10 @@ module.exports = {
 
 						input.pipe(systemProcess.stdin);
 					}, {
-						defaultOutput: context.stdout
+						defaultOutput: context.stdout,
+						$env: context.system.$env
 					});
-
+					
 					return appProcess;
 				};
 			})

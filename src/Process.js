@@ -26,7 +26,7 @@ class Process {
 		this.stdin.write(value);
 	}
 
-	//#ForThisSprint: Alter function to use standard chaining id:14
+	//#Done: Alter function to use standard chaining id:14
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
@@ -88,7 +88,8 @@ class Process {
 		return args[0];
 	}
 
-	//TODO: Create from function for Process id:16
+	//#Done: Create from function for Process id:16
+	//TODO: Pass system variable to generator function id:28
 	/**
 	*	Create a process for an object
 	*	@static

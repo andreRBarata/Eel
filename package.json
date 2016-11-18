@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha $(find './tests' -type f -name '*.spec.js')",
     "test-debug": "node-inspector; node --debug-brk ./src/Interpreter.js",
-    "start": "node src/REPL.js"
+    "start": "node src/REPL.js",
+	"console": "gnome-terminal ."
   },
   "author": "André Barata",
   "license": "ISC",
