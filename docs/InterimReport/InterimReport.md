@@ -1,10 +1,19 @@
+#CHECKLIST
+
+- [ ] Usos possíveis do programa
+- [ ] Requisitos para instalar
+- [ ] Publico alvo, exemplos
+- [ ] Casos de uso
+
 <!--
+Regex:
+[^(]#[A-Z]+
+
+---
+
 O relatório final deve ter no máximo 10.000 palavras
 
-Usos possíveis do programa
-Requisitos para instalar
-Publico alvo, exemplos
-Casos de uso
+
 
 
 Loose text:
@@ -12,6 +21,8 @@ Loose text:
 This project's scope also includes the reimplementation of commonly used commands in the command-line's native language (Javascript) to make the output a better graphical visualization of the results, and to allow the usage of said commands in any platform. Planned features also include syntax highlighting and autocomplete.
 
 Th have been some attempts to modernize the shell I came across while researching,
+
+It's an event driven language (i.e. handles asynchronicity through events and callbacks)
 -->
 
 <!-- toc orderedList:0 -->
@@ -71,6 +82,8 @@ What research has been done and what are the outputs?, This concerns background 
 While researching for this topic I started by searching for similar projects, I came across several projects but none was exactly what I had in mind.
 
 After this I did research into technologies that could be used for such a project. This lead me to decide upon the programming language and a framework and several libraries that would be good for this project.
+
+#REVIEW
 <!--
 
 What is the difference between a series and parallel circuit?
@@ -146,7 +159,7 @@ end
 ```
 *While loop*
 
-Its highlighting displays in grey a guess of what comes after given the command history making often used commands.
+Its highlighting displays in grey a guess of what comes after given the command history, making often used commands every quick to use.
 
 ![Fish Shell History](assets/fishShell-history.png)
 
@@ -156,9 +169,10 @@ The idea for this project came from the now defunct project TermKit. It had as o
 
 This project focused on getting an environment for the commands and as such did not implement a programming language or any scripting capabilities. It also was not capable of rendering interactive commands.
 
-![TermKit](https://github.com/unconed/TermKit/raw/master/Mockups/Shot-0.3.png)
+![TermKit](assets/termkit-example.png)
 *TermKit example*
 
+[#SOURCE of Image](https://github.com/unconed/TermKit/raw/master/Mockups/Shot-0.3.png)
 
 ### Blackscreen
 
@@ -168,11 +182,19 @@ While researching I discovered a project similar to what I intended #TODO
 
 ### JavaScript
 
+For the bases of the scripting for my project I decided to use JavaScript sense there is already a lot of projects that would help me extend its syntax and its functional and loosely typed nature is well suited to use as a shell language.
+
+It is possible to extend the JavaScript syntax by extending or adding on to a library to break the code down into a standard format syntax tree and using another library to convert the syntax tree back into code. This might add some overhead on the code execution but it is faster than creating a language from scratch and allows for quick changes to the syntax.
+
 ### SweetJS
+
+This library allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript.
+
+It's worth noting that SweetJS has undergone a complete rewrite so, at lest initially, I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
 
 ### NodeJS
 
-A server-side implementation of JavaScript built using googles V8 engine. It's an event driven language (i.e. handles asynchronicity through events and callbacks) and it is used a lot by companies and projects.
+A server-side implementation of JavaScript built using googles V8 engine and it is used a lot by companies and projects.
 
 It seems ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [Reference - VM Sandbox](https://nodejs.org/api/vm.html)
 
@@ -180,12 +202,20 @@ It seems ideal for my project because it has good APIs for connecting to the ope
 
 ### Mocha
 
+Mocha is a simple and fast testing framework for NodeJS, that allows for unit and integration testing.#TODO
+
 ### HighlandJS
 
 ### AngularJS
 
 ## Other Relevant Research Done
+
+
+
 ## Resultant Findings and Requirements
+
+As a result of my research I have come to decide on the technologies to use on this project #TODO
+
 ## Bibliography
 
 # Description of Solution
