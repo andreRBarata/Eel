@@ -4,7 +4,8 @@
 - [ ] Requisitos para instalar
 - [ ] Publico alvo, exemplos
 - [ ] Casos de uso
-
+- [ ] Gant
+- [ ] Screenshots to prototipo
 <!--
 Regex:
 [^(]#[A-Z]+
@@ -39,8 +40,8 @@ It's an event driven language (i.e. handles asynchronicity through events and ca
 		- [Blackscreen](#blackscreen)
 	- [Technologies Researched](#technologies-researched)
 		- [JavaScript](#javascript)
-		- [SweetJS](#sweetjs)
 		- [NodeJS](#nodejs)
+		- [SweetJS](#sweetjs)
 		- [Electron](#electron)
 		- [Mocha](#mocha)
 		- [HighlandJS](#highlandjs)
@@ -78,6 +79,7 @@ What research has been done and what are the outputs?, This concerns background 
 -->
 
 ## Background Research
+<!-- Porquê do projeto -->
 
 While researching for this topic I started by searching for similar projects, I came across several projects but none was exactly what I had in mind.
 
@@ -182,23 +184,25 @@ While researching I discovered a project similar to what I intended #TODO
 
 ### JavaScript
 
-For the bases of the scripting for my project I decided to use JavaScript sense there is already a lot of projects that would help me extend its syntax and its functional and loosely typed nature is well suited to use as a shell language.
+For the shell language I decided to use JavaScript since there is already a lot of projects that would help me extend its syntax and its functional and loosely typed nature is well suited to use as a shell language.
 
 It is possible to extend the JavaScript syntax by extending or adding on to a library to break the code down into a standard format syntax tree and using another library to convert the syntax tree back into code. This might add some overhead on the code execution but it is faster than creating a language from scratch and allows for quick changes to the syntax.
 
-### SweetJS
-
-This library allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript.
-
-It's worth noting that SweetJS has undergone a complete rewrite so, at lest initially, I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
-
 ### NodeJS
 
-A server-side implementation of JavaScript built using googles V8 engine and it is used a lot by companies and projects.
+A server-side implementation of JavaScript built using Google's V8 engine which is the JavaScript engine for the Chrome Browser. NodeJS is used several by companies and projects and its package manager NPM is a standard in web development.
 
-It seems ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [Reference - VM Sandbox](https://nodejs.org/api/vm.html)
+I think it is ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [#Reference - VM Sandbox](https://nodejs.org/api/vm.html)
+
+### SweetJS
+
+SweetJS is a NodeJS library that allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript.
+
+It's worth noting that SweetJS has undergone a complete rewrite recently so, at lest initially, I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
 
 ### Electron
+
+
 
 ### Mocha
 
@@ -227,7 +231,7 @@ As a result of my research I have come to decide on the technologies to use on t
 ## Technical Architecture Diagram
 
 ## Other Design Documents
-
+<!-- usecase, sequence -->
 # Prototyping and Development
 
 # Testing
