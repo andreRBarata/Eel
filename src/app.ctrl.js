@@ -4,24 +4,20 @@ angular.module('termApp')
 		//TODO: Fix all output to the same command error
 		$scope.output = [];
 
+		interpreter.stdout.each((result) => {
+			$scope.output.push(result);
+			$scope.$apply();
+			window.scrollTo(0,document.body.scrollHeight);
+		});
+
 		$scope.execute = (keyEvent) => {
 			if (keyEvent.which === 13) {
-				let screen = {
-					'command': $scope.command,
-					'results': []
-				};
+
+				$scope.output.push($scope.command);
 
 				interpreter.runCode($scope.command);
-				interpreter.stdout.each((result) => {
-					screen.results.push(result);
-					$scope.$apply();
-					window.scrollTo(0,document.body.scrollHeight);
-				});
-
-				$scope.output.push(screen);
 
 				$scope.command = '';
 			}
-			console.log($scope.output);
 		};
 	});

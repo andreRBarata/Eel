@@ -10,15 +10,12 @@
 	</head>
 	<body ng-app="termApp">
 		<div ng-controller="mainController">
-			<div ng-repeat="line in output">
-				<div class="commandPane" ng-bind-html="line.command">
-				</div>
-				<div ng-repeat="result in line.results">
-					<p ng-bind-html="result"></p>
+			<div ng-repeat="line in output track by $index">
+				<div class="commandPane" ng-bind="line">
 				</div>
 			</div>
 			<div class="commandPane">
-				<input type="text" ng-model="command" ng-keypress="execute($event)" autofocus/>
+				<input type="text" ng-model="command" ng-keyup="execute($event)" autofocus/>
 			</div>
 		</div>
 	</body>
