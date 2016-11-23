@@ -1,0 +1,5 @@
+#Done: Bind backend and frontend id:21
+#ForThisSprint: Add interpreter toolkit id:22
+#TODO: Decide on version for SweetJS id:23
+#TODO: Start writing SweetJS scripts id:24
+#Done: Add static pipeline function to mimic the flow of bash pipes to interpreter toolkit id:25

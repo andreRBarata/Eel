@@ -3,15 +3,18 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Hello World!</title>
-
-		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+		<script>
+			// You can also require other files to run in this process
+			require('./src/renderer.js');
+		</script>
 	</head>
 	<body ng-app="termApp">
 		<div ng-controller="mainController">
 			<div ng-repeat="line in output">
 				<div class="commandPane" ng-bind-html="line.command">
 				</div>
-				<div ng-bind-html="line.result">
+				<div ng-repeat="result in line.results">
+					<p ng-bind-html="result"></p>
 				</div>
 			</div>
 			<div class="commandPane">
@@ -19,14 +22,4 @@
 			</div>
 		</div>
 	</body>
-
-	<script src="./bower_components/angular/angular.js"></script>
-	<script src="./bower_components/angular-sanitize/angular-sanitize.js"></script>
-	<script src="./js/app.js"></script>
-	<script src="./js/app.ctrl.js"></script>
-	<script src="./js/types/Command.js"></script>
-	<script src="./js/types/Terminal.js"></script>
-	<script src="./js/interpreter/interpreter.service.js"></script>
-	<script src="./js/interpreter/parser.service.js"></script>
-
 </html>

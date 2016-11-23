@@ -1,3 +1,6 @@
 node_modules
-.imdone
+.atom-build.yml
 .tern-project
+.imdone
+*.log
+*.pdf
