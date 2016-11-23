@@ -11,8 +11,7 @@
 	<body ng-app="termApp">
 		<div ng-controller="mainController">
 			<div ng-repeat="line in output track by $index">
-				<div class="commandPane" ng-bind="line">
-				</div>
+				{{line.toString()}}
 			</div>
 			<div class="commandPane">
 				<input type="text" ng-model="command" ng-keyup="execute($event)" autofocus/>
