@@ -1,6 +1,6 @@
 const expect		= require('expect');
 
-const Interpreter	= require('../src/Interpreter');
+const Interpreter	= require('../../src/interpreter/Interpreter');
 
 //TODO: Write more Interpreter tests id:17
 describe('Interpreter', () => {

@@ -3,7 +3,7 @@ const forEach	= require('mocha-each');
 const Highland	= require('highland');
 
 
-const Process	= require('../src/Process');
+const Process	= require('../../src/interpreter/Process');
 
 
 
@@ -14,7 +14,7 @@ describe('context', () => {
 	describe('status emitter', () => {
 
 		before(() => {
-			context = require('../src/context')
+			context = require('../../src/interpreter/context')
 				.getInstance();
 		});
 
@@ -29,7 +29,7 @@ describe('context', () => {
 
 	describe('system', () => {
 		beforeEach((done) => {
-			let context = require('../src/context')
+			let context = require('../../src/interpreter/context')
 				.getInstance();
 
 			context.status.when('loaded', () => {
