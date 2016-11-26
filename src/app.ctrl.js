@@ -15,7 +15,7 @@ angular.module('termApp')
 
 				$scope.output.push($scope.command);
 
-				interpreter.runCode($scope.command);
+				console.log(interpreter.runCode($scope.command));
 
 				$scope.command = '';
 			}

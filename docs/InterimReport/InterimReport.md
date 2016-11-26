@@ -6,6 +6,7 @@
 - [ ] Casos de uso
 - [ ] Gant
 - [ ] Screenshots to prototipo
+
 <!--
 Regex:
 [^(]#[A-Z]+
@@ -41,12 +42,12 @@ It's an event driven language (i.e. handles asynchronicity through events and ca
 	- [Technologies Researched](#technologies-researched)
 		- [JavaScript](#javascript)
 		- [NodeJS](#nodejs)
+		- [AcornJS](#acornjs)
 		- [SweetJS](#sweetjs)
 		- [Electron](#electron)
 		- [Mocha](#mocha)
 		- [HighlandJS](#highlandjs)
 		- [AngularJS](#angularjs)
-	- [Other Relevant Research Done](#other-relevant-research-done)
 	- [Resultant Findings and Requirements](#resultant-findings-and-requirements)
 	- [Bibliography](#bibliography)
 - [Description of Solution](#description-of-solution)
@@ -56,6 +57,8 @@ It's an event driven language (i.e. handles asynchronicity through events and ca
 	- [Other Design Documents](#other-design-documents)
 - [Prototyping and Development](#prototyping-and-development)
 - [Testing](#testing)
+	- [Automated Testing](#automated-testing)
+	- [Human Testing](#human-testing)
 - [Issues and Risks](#issues-and-risks)
 - [Plan and Future Work](#plan-and-future-work)
 - [Conclusion](#conclusion)
@@ -178,46 +181,55 @@ This project focused on getting an environment for the commands and as such did 
 
 ### Blackscreen
 
-While researching I discovered a project similar to what I intended #TODO
+While researching I discovered a project similar to what I intended using the Electron API. It allows the execution of commands in bash  and makes use of autocomplete, highlighting and different rendering for some of the commands. However it still makes use of original commands as such it is limited in what it is capable of doing in regards to bettering their output. This is fine given that this is not their main objective, that being to create an IDE (Integrated development environment) for bash.
+
+#PLACEIMAGES
 
 ## Technologies Researched
 
 ### JavaScript
 
-For the shell language I decided to use JavaScript since there is already a lot of projects that would help me extend its syntax and its functional and loosely typed nature is well suited to use as a shell language.
+For the shell language I decided to use JavaScript since it's one of my favourite languages, there are already a lot of projects that would help me extend its syntax and its functional and loosely typed nature is well suited to use as a shell language.
 
 It is possible to extend the JavaScript syntax by extending or adding on to a library to break the code down into a standard format syntax tree and using another library to convert the syntax tree back into code. This might add some overhead on the code execution but it is faster than creating a language from scratch and allows for quick changes to the syntax.
 
 ### NodeJS
 
-A server-side implementation of JavaScript built using Google's V8 engine which is the JavaScript engine for the Chrome Browser. NodeJS is used several by companies and projects and its package manager NPM is a standard in web development.
+A server-side implementation of JavaScript built using Google's V8 engine which is the JavaScript engine for the Chrome Browser. NodeJS and NPM, its package manager, are used several by companies and projects.
 
-I think it is ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [#Reference - VM Sandbox](https://nodejs.org/api/vm.html)
+I think it is ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [#Reference - VM Sandbox](https://nodejs.org/api/vm.html) #REVIEW
+
+### AcornJS
+
+AcornJS is a Javascript library/program that breaks down Javascript into a standard format syntax tree. It is used by many code transpilers and autocompletes and can be modified using an extension API, however this API is meant for someone with deep understanding of its internal code and is not well documented. #REVIEW
 
 ### SweetJS
 
-SweetJS is a NodeJS library that allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript.
+SweetJS is a NodeJS library that allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript. However it as not been designed for dynamic transpiling of individual lines of code, this might make it a bit slow.
 
-It's worth noting that SweetJS has undergone a complete rewrite recently so, at lest initially, I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
+It's worth noting that SweetJS has undergone a complete rewrite recently so, at lest initially, if I am to use it I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
 
 ### Electron
 
-
+Electron #TODO
 
 ### Mocha
 
-Mocha is a simple and fast testing framework for NodeJS, that allows for unit and integration testing.#TODO
+Mocha is a simple and fast testing framework for NodeJS, that allows for unit and integration testing. #TODO
 
 ### HighlandJS
 
+HighlandJS is a Javascript library that adds a new kind of stream. This kind of stream is compatible with the ones in the standard NodeJS libraries and allow for the processing of the data passing through them using the standard functional toolkit functions like map, as well as others specific to it.
+
+It is not as complete as some other stream libraries out there however its simplicity and built-in compatibility with NodeJS made it ideal for this project.
+#REVIEW
+
 ### AngularJS
 
-## Other Relevant Research Done
-
-
+<!--## Other Relevant Research Done -->
 
 ## Resultant Findings and Requirements
-
+<!-- usescases -->
 As a result of my research I have come to decide on the technologies to use on this project #TODO
 
 ## Bibliography
@@ -230,11 +242,64 @@ As a result of my research I have come to decide on the technologies to use on t
 
 ## Technical Architecture Diagram
 
+```{puml}
+package interpreter {
+	class Process {
+		stdin: Highland
+		stdout: stream.Readable
+
+		readonly: boolean
+		_defaultOutput: Stream
+
+		config(config): void
+		input(value: any): void
+		pipe(process: Process): Process
+
+		toPromise(): Promise
+
+		{static} pipeline(...args: any): Process
+		{static} from(source: any, config: Object): Process
+	}
+
+	class Interpreter {
+		stdout: Highland
+		status: StateMachine
+		context: context
+
+		runCode(code: string): Object
+	}
+
+	class StateMachine {
+
+	}
+
+	Interpreter -- context
+	context --* Process
+}
+```
+
 ## Other Design Documents
 <!-- usecase, sequence -->
 # Prototyping and Development
 
 # Testing
+
+## Automated Testing
+
+Automated testing will be done through the MochaJS library with tests written for all different files and components. Testing files are identified by the .spec.js file extension and are written with the formats:
+
+	{Component} should {auction} when {trigger}
+
+for expected conditions
+
+	{Component} should {auction} if {trigger}
+
+for potential conditions
+
+![MochaJS Screenshot](assets/mochajsTests.png)
+
+## Human Testing
+
 
 # Issues and Risks
 

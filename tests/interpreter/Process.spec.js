@@ -11,26 +11,39 @@ describe('Process', () => {
 		process = new Process();
 	});
 
-	it('should call Promise when written on and ended', (done) => {
-		process.then((data) => {
-			expect(data).toEqual('test');
-			done();
-		});
+	describe('"toPromise" function', () => {
 
-		process.stdout.push('test');
-		process.stdout.push(null);
-
-	});
-
-	describe('"out" stream', () => {
-
-		it('should call callback is done', (done) => {
-			process.then(() => done());
+		it('should call then when written on and ended', (done) => {
+			process.toPromise().then((data) => {
+				expect(data[0]).toEqual('test');
+				done();
+			});
 
 			process.stdout.push('test');
 			process.stdout.push(null);
+
 		});
 
+		it('should call catch when error emitted', (done) => {
+			process.toPromise().then((data) => {
+				expect(data[0]).toNotEqual('test');
+
+			}).catch((err) => {
+				expect(err).toBeAn(Error);
+				done();
+			});
+
+			process.stdout.push('test');
+			process.stdout.emit('error', new Error('error'));
+
+		});
+
+
+	});
+
+
+
+	describe('"out" stream', () => {
 		it('should call callback when written on', (done) => {
 			process.stdout.once('data', (data) => {
 				expect(data).toEqual('test');
@@ -84,6 +97,45 @@ describe('Process', () => {
 			});
 
 			process.stdout.push('test');
+		});
+	});
+
+	describe('"from" function', () => {
+		it('should return Process with elements if an array is sent', (done) => {
+			let process = Process.from([1,2,3,4]);
+
+			expect(process).toNotEqual(null);
+
+			process.toPromise().then((array) => {
+				expect(array).toEqual([1,2,3,4]);
+				done();
+			});
+		});
+
+		it('should return Process with elements if an string is sent', (done) => {
+			let process = Process.from('test');
+
+			expect(process).toNotEqual(null);
+
+			process.toPromise().then((array) => {
+				expect(array).toEqual(['test']);
+				done();
+			});
+		});
+
+		it('should return Process with elements if an function is sent', (done) => {
+			let process = Process.from((push, emit, input) => {
+				push('test');
+
+				push(null);
+			});
+
+			expect(process).toNotEqual(null);
+
+			process.toPromise().then((array) => {
+				expect(array).toEqual(['test']);
+				done();
+			});
 		});
 	});
 });

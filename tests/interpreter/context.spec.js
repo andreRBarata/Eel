@@ -50,7 +50,7 @@ describe('context', () => {
 		describe('man command', () => {
 			//#ForThisSprint: Complete tests for man command error propagation id:19
 			it('should place error in output stream if has no arguments', (done) => {
-				system.man().catch((err) => {
+				system.man().toPromise().catch((err) => {
 					expect(err).toBeAn(Error);
 					done();
 				});
@@ -60,8 +60,8 @@ describe('context', () => {
 		describe('echo command', () => {
 			describe('then function', () => {
 				it('should output "test" when sent as parameter', (done) => {
-					system.echo('test').then((data) => {
-							expect(data).toEqual('test\n');
+					system.echo('test').toPromise().then((data) => {
+							expect(data[0]).toEqual('test\n');
 							done();
 						}
 					);
@@ -80,13 +80,13 @@ describe('context', () => {
 			});
 
 			it('should output "test" through system stdout when sent as parameter', (done) => {
-				system.echo('test');
-
 				context.stdout.once('data', (data) => {
 						expect(data).toEqual('test\n');
 						done();
 					}
 				);
+
+				system.echo('test');
 			});
 
 		});
@@ -95,7 +95,7 @@ describe('context', () => {
 			it('should output "test" when written in the input pipe', (done) => {
 				let command = system.cat();
 
-				command.then((data) => {
+				command.toPromise().then((data) => {
 						expect(data).toEqual('test');
 						done();
 					}
@@ -128,7 +128,7 @@ describe('context', () => {
 			it('should output "test" when piped from echo', (done) => {
 				let command = system.echo('test').pipe(system.cat());
 
-				command.then((data) => {
+				command.toPromise().then((data) => {
 						expect(data).toEqual('test\n');
 						done();
 					}

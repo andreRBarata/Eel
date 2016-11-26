@@ -1,21 +1,62 @@
-const Highland	= require('highland');
-const stream	= require('stream');
+const Highland			= require('highland');
+const stream			= require('stream');
+const streamToPromise	= require('stream-to-promise');
+const Type				= require('type-of-is');
 
 class Process {
+	/**
+	*	@callback ProcessGenerator
+	*	@param {Function} push - Push item into process, null to end it
+	*	@param {Function} emit - emit event in process
+	*	@param {Highland} input - Stream that in inputed into process
+	*/
 
 	//TODO: Create from function to generate Processes id:12
 	//TODO: Add read only process id:13
-	constructor() {
-		if (arguments.length) {
+	//TODO: Seperate config from "from" function
+	/**
+	*	@param {ProcessGenerator|Array|Number|string|stream.Readable} [source]
+	* 	@param {{defaultOutput: Stream}} config
+	*/
+	constructor(source, config) {
+		if (arguments.length && !Type.is(arguments[0], Object)) {
 			return Process.from(...arguments);
+		}
+		else if (Type.is(arguments[0], Object)) {
+			this.config(arguments[0]);
 		}
 
 		this.stdout = new stream.Readable({
-			read() {}
+			read() {},
+			objectMode: true
 		});
 		this.stdin = new Highland();
 
 		this.stdout.on('end', () => this.stdin.end());
+	}
+
+	/**
+	*	Turns process output into promise
+	* 	@return {Promise}
+	*/
+	toPromise() {
+		this.stdout.unpipe(this._defaultOutput);
+
+		return streamToPromise(this.stdout);
+	}
+
+	/**
+	*	Sets configurations for the process
+	* 	@param {{defaultOutput: Stream}} config - Config object
+	*/
+	config(config = {}) {
+		if (config.defaultOutput) {
+			this._defaultOutput =
+				config.defaultOutput;
+
+			this.stdout
+				.pipe(config.defaultOutput);
+		}
 	}
 
 	/**
@@ -34,6 +75,10 @@ class Process {
 	*	@return {Process}
 	*/
 	pipe(process) {
+		if (process.readonly) {
+			return new Error('Cannot pipe into readonly process');
+		}
+
 		this.stdout.pipe(process.stdin);
 
 		if (this._defaultOutput) {
@@ -43,47 +88,37 @@ class Process {
 		return process;
 	}
 
-	//FIXME
-	/**
-	*	Add callback to be used when the process
-	*	is complete
-	*	@param {Function} onFulfilled
-	*	@param {Function} onRejected
-	*/
-	then(onFulfilled, onRejected) {
-		(new Highland(this.stdout))
-			.toArray(onFulfilled, onRejected);
-	}
-
-	//TODO: Add tests for Process.catch function id:15
-	catch(onRejected) {
-		(new Highland(this.stdout))
-			.errors((err, push) => {
-				onRejected(err);
-				push();
-			});
-	}
-
 	//TODO: Add tests for pipeline id:0
 	//TODO: Complete pipeline method id:1
 	//TODO: Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
 	* 	@static
-	*	@param {Process[]} args - Processes to be piped
+	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
 	*	@return {Process}
 	*/
 	static pipeline(...args) {
-		let lastElement;
+		function * iterator() {
+			let list = args.slice(0);
 
-		args.reverse().forEach((element) => {
-			if (!lastElement) {
-				lastElement = element;
+			for (let arg of list.reverse()) {
+				if (!arg.pipe) {
+					yield Process.from(arg);
+				}
+				else {
+					yield arg;
+				}
 			}
-			else if (element) {
-				lastElement.pipe(element);
+		};
+		let last;
+
+		for (let obj of iterator()) {
+			if (last) {
+				last.pipe(obj.value);
 			}
-		});
+
+			last = obj.value;
+		}
 
 		return args[0];
 	}
@@ -93,58 +128,54 @@ class Process {
 	/**
 	*	Create a process for an object
 	*	@static
-	*	@param {Function|Array|string|Promise|stream.Readable} source - The source for the process
+	*	@param {Function|Array|Number|string|stream.Readable} source - The source for the process
+	*	@param {Object} config - Config for the creation
 	*	@return {Process}
 	*/
-	static from(source, config = {}) {
+	static from(source = null, config = {}) {
+		if (!Type.any(source,
+			[String, Function, Number, Array, stream.Readable])) {
+				return null;
+		}
 		let process = new Process();
 
-		function setConfig(_config) {
-			if (_config.defaultOutput) {
-				process._defaultOutput =
-					_config.defaultOutput;
+		process.config(config);
 
-				process.stdout
-					.pipe(_config.defaultOutput);
-			}
+		if (Type.is(source, Function)) {
+			source(
+				(data) => process.stdout.push(data),
+				(event) => process.stdout.emit(event),
+				process.stdin
+			);
+
+			return process;
 		}
+		else {
+			process.readonly = true;
 
-		setConfig(config);
+			function * iterator() {
+				if (Type.is(source, stream.Readable)) {
+					let item;
+					while ((item = source.read()) !== null) {
+						yield item;
+					}
+				}
+				else if (Type.is(source, Array)) {
+					yield * source;
+				}
+				else {
+					yield source;
+				}
 
-		switch (source.constructor) {
-			case Object: {
-				setConfig(source);
-
-				return process;
+				yield null;
 			}
-			case Function: {
-				source(
-					(data) => process.stdout.push(data),
-					(event) => process.stdout.emit(event),
-					process.stdin
-				);
 
-				return process;
+			for (let item of iterator()) {
+				process.stdout.push(item);
 			}
-			case String: {
-				process.stdout.push(source);
 
-				return process;
-			}
-			case Array:
-			case Promise:
-			case stream.Readable: {
-				(new Highland(source))
-					.each(
-						(data) => process.stdout.push(data)
-					);
-				process.readonly = true;
-
-				return process;
-			}
+			return process;
 		}
-
-		return null;
 	}
 }
 

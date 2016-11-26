@@ -46,6 +46,10 @@ module.exports = {
 							(data) => push(data)
 						);
 
+						systemProcess.stdout.on('end',
+							() => push(null)
+						);
+
 						systemProcess.stderr.on('data',
 							(err) => emit('error', err)
 						);
@@ -55,7 +59,7 @@ module.exports = {
 						defaultOutput: context.stdout,
 						$env: context.system.$env
 					});
-					
+
 					return appProcess;
 				};
 			})
