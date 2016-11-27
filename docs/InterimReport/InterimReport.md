@@ -1,3 +1,7 @@
+<!--
+Regex:
+[^(]#[A-Z]+
+
 #CHECKLIST
 
 - [ ] Usos possíveis do programa
@@ -6,10 +10,6 @@
 - [ ] Casos de uso
 - [ ] Gant
 - [ ] Screenshots to prototipo
-
-<!--
-Regex:
-[^(]#[A-Z]+
 
 ---
 
@@ -27,46 +27,18 @@ Th have been some attempts to modernize the shell I came across while researchin
 It's an event driven language (i.e. handles asynchronicity through events and callbacks)
 -->
 
+<!-- untoc -->
+# Table of Contents
+
 <!-- toc orderedList:0 -->
 
-- [Project Statement](#project-statement)
-- [Research](#research)
-	- [Background Research](#background-research)
-	- [Alternative Existing Solutions to Your Problem](#alternative-existing-solutions-to-your-problem)
-		- [Bash](#bash)
-		- [ZShell](#zshell)
-		- [PowerShell](#powershell)
-		- [Fish Shell](#fish-shell)
-		- [Termkit](#termkit)
-		- [Blackscreen](#blackscreen)
-	- [Technologies Researched](#technologies-researched)
-		- [JavaScript](#javascript)
-		- [NodeJS](#nodejs)
-		- [AcornJS](#acornjs)
-		- [SweetJS](#sweetjs)
-		- [Electron](#electron)
-		- [Mocha](#mocha)
-		- [HighlandJS](#highlandjs)
-		- [AngularJS](#angularjs)
-	- [Resultant Findings and Requirements](#resultant-findings-and-requirements)
-	- [Bibliography](#bibliography)
-- [Description of Solution](#description-of-solution)
-- [Approach and Development](#approach-and-development)
-- [Design](#design)
-	- [Technical Architecture Diagram](#technical-architecture-diagram)
-	- [Other Design Documents](#other-design-documents)
-- [Prototyping and Development](#prototyping-and-development)
-- [Testing](#testing)
-	- [Automated Testing](#automated-testing)
-	- [Human Testing](#human-testing)
-- [Issues and Risks](#issues-and-risks)
-- [Plan and Future Work](#plan-and-future-work)
-- [Conclusion](#conclusion)
+
 
 <!-- tocstop -->
 
+<p style="page-break-after: always"></p>
 
-# Project Statement
+# 1. Project Statement
 
 For many years the concept of a command-line has not really changed, and has stayed not only intimidating for new users but also very limited in the way it can display information. This was fine when the totality of the interaction with the system was through the terminal but no longer makes sense given the current graphical capabilities of computers.
 
@@ -76,17 +48,17 @@ Adding programmability in the form of an extended version of the JavaScript synt
 
 
 
-# Research
+# 2. Research
 <!--
 What research has been done and what are the outputs?, This concerns background research on the topic itself, as well as any research on the data analytics that you plan to perform and the technologies that you wish to use. Use the following headlines to fill in your information.
 -->
 
-## Background Research
+## A. Background Research
 <!-- Porquê do projeto -->
 
 While researching for this topic I started by searching for similar projects, I came across several projects but none was exactly what I had in mind.
 
-After this I did research into technologies that could be used for such a project. This lead me to decide upon the programming language and a framework and several libraries that would be good for this project.
+After this I did research into technologies that could be used for such a project. This led me to decide upon the programming language and a framework and several libraries that would be good for this project.
 
 #REVIEW
 <!--
@@ -102,9 +74,9 @@ Which cleaning products kill the most bacteria?
 keywords: terminal,
 -->
 
+<!-- pagebreak -->
 
-
-## Alternative Existing Solutions to Your Problem
+## B. Alternative Existing Solutions to Your Problem
 
 ### Bash
 
@@ -125,6 +97,7 @@ done
 
 This shell is the baseline for any modern shell language.
 
+<!-- pagebreak -->
 ### ZShell
 
 The ZShell is an alternative to Bash, that will extending upon the syntax of Bash it adds an extremely configurable history and highlighting. Code for this language is for the most part interchangeable with bash.
@@ -132,7 +105,7 @@ The ZShell is an alternative to Bash, that will extending upon the syntax of Bas
 
 ### PowerShell
 
-PowerShell is a shell language with the #TODO
+PowerShell is a shell language with a very large library of functions for automating parts of the operating system. While focused on automation it also has some UI features like syntax highlighting and IntelliSense tab completion. One very interesting feature of the language is the ability of doing pipes of objects and not just strings which opens a lot of doors with its scripting.
 
 ``` powershell
 Write-Host Hello World
@@ -167,14 +140,16 @@ end
 Its highlighting displays in grey a guess of what comes after given the command history, making often used commands every quick to use.
 
 ![Fish Shell History](assets/fishShell-history.png)
+*Example*
 
+<!-- pagebreak -->
 ### Termkit
 
 The idea for this project came from the now defunct project TermKit. It had as objective to create a graphical, user friendly interface for the traditional Unix command-line as well as expanding the capabilities of some of the commands. This project came to a halt when it’s creator hit a blocker with WebKit, the engine he was using.
 
 This project focused on getting an environment for the commands and as such did not implement a programming language or any scripting capabilities. It also was not capable of rendering interactive commands.
 
-![TermKit](assets/termkit-example.png)
+![TermKit](https://github.com/unconed/TermKit/raw/master/Mockups/Shot-0.3.png)
 *TermKit example*
 
 [#SOURCE of Image](https://github.com/unconed/TermKit/raw/master/Mockups/Shot-0.3.png)
@@ -183,9 +158,10 @@ This project focused on getting an environment for the commands and as such did 
 
 While researching I discovered a project similar to what I intended using the Electron API. It allows the execution of commands in bash  and makes use of autocomplete, highlighting and different rendering for some of the commands. However it still makes use of original commands as such it is limited in what it is capable of doing in regards to bettering their output. This is fine given that this is not their main objective, that being to create an IDE (Integrated development environment) for bash.
 
-#PLACEIMAGES
+![Blackscreen](assets/blackscreen.png)
 
-## Technologies Researched
+<!-- pagebreak -->
+## C. Technologies Researched
 
 ### JavaScript
 
@@ -195,9 +171,10 @@ It is possible to extend the JavaScript syntax by extending or adding on to a li
 
 ### NodeJS
 
-A server-side implementation of JavaScript built using Google's V8 engine which is the JavaScript engine for the Chrome Browser. NodeJS and NPM, its package manager, are used several by companies and projects.
+A server-side implementation of JavaScript built using Google's V8 engine which is the JavaScript engine for the Chrome Browser. NodeJS and NPM, its package manager, are used by several companies and projects.
 
-I think it is ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating system and allows the creation of programmable, self contained interpreters for it's self. Using this language no extra work is necessary to sandbox the interpreter. [#Reference - VM Sandbox](https://nodejs.org/api/vm.html) #REVIEW
+I think it is ideal for my project because it has good APIs for connecting to the operating system, is compatible with multiple operating systems and allows the creation of programmable, self contained interpreters for its self. Using this language no extra work is necessary to sandbox the interpreter. This is also a language that I have experience with from previous projects.
+[#Reference - VM Sandbox](https://nodejs.org/api/vm.html)
 
 ### AcornJS
 
@@ -205,42 +182,48 @@ AcornJS is a Javascript library/program that breaks down Javascript into a stand
 
 ### SweetJS
 
-SweetJS is a NodeJS library that allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. By having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript. However it as not been designed for dynamic transpiling of individual lines of code, this might make it a bit slow.
+SweetJS is a NodeJS library that allows for the creation of scripts to extend the JavaScript syntax taking care of the breakdown and regeneration of the code. Having this in a single API makes it the simplest solution I came across for the problem of customising JavaScript. However, since it has not been designed for dynamic transpiling of individual lines of code, it might be a bit slow. This is acceptable since the console is designed for human interaction this will probably not be noticeable.
 
-It's worth noting that SweetJS has undergone a complete rewrite recently so, at lest initially, if I am to use it I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
+It's worth noting that SweetJS has undergone a complete rewrite recently so, at least initially, if I am to use it I will use the older version of it as features like the persistent loading of syntax scripts and syntax for adding operators have yet to be readded and are needed for the project. #REVIEW
 
 ### Electron
 
-Electron #TODO
+Electron is a library for NodeJS that allows the creation of desktop apps using HTML, CSS and JavaScript. The use of HTML and CSS for the styling of the app is helpful due to previous experience using those technologies, and to all the CSS frameworks available as well as it being a commonly used and very well documented language.
+
+#REVIEW
 
 ### Mocha
 
-Mocha is a simple and fast testing framework for NodeJS, that allows for unit and integration testing. #TODO
+Mocha is a simple and fast testing framework for NodeJS, that allows for unit and integration testing. It splits the tests by their components using `describe` blocks and delineates tests using `it` blocks.
 
 ### HighlandJS
 
 HighlandJS is a Javascript library that adds a new kind of stream. This kind of stream is compatible with the ones in the standard NodeJS libraries and allow for the processing of the data passing through them using the standard functional toolkit functions like map, as well as others specific to it.
 
 It is not as complete as some other stream libraries out there however its simplicity and built-in compatibility with NodeJS made it ideal for this project.
-#REVIEW
 
-### AngularJS
+### AngularJS and Angular 2
 
-<!--## Other Relevant Research Done -->
+AngularJS and Angular 2 are popular frameworks for the development of single page applications in JavaScript. They have features like two way binding (linking a part of the page to a JavaScript object) and html templating that make them good choice for this project.
 
-## Resultant Findings and Requirements
-<!-- usescases -->
-As a result of my research I have come to decide on the technologies to use on this project #TODO
 
-## Bibliography
+## D. Resultant Findings and Requirements
+<!-- usescases, technologies chosen -->
+As a result of my research I have come to decide on the technologies to use on this project SweetJS over AcornJS due to how complicated learning the internals of Acorn proved to be.
+I also have decided to use Angular 1 over Angular 2 since there is more in the way of extensions made for it at the moment and I feel it has a simpler syntax and install process.
 
-# Description of Solution
+The requirements for the project are
+#TODO
 
-# Approach and Development
+## E. Bibliography
 
-# Design
+# 3. Description of Solution
+<!-- possiveis usos -->
+# 4. Approach and Development
 
-## Technical Architecture Diagram
+# 5. Design
+
+## A. Technical Architecture Diagram
 
 ```{puml}
 package interpreter {
@@ -278,13 +261,70 @@ package interpreter {
 }
 ```
 
-## Other Design Documents
+## B. Other Design Documents
+
+### Syntax
 <!-- usecase, sequence -->
-# Prototyping and Development
+The following are some examples for the planned of lines of code before and after the SweetJs scripts alter them.
 
-# Testing
+_**These are subject to changes.**_
 
-## Automated Testing
+#### Basic Example
+
+**Input code**
+
+``` javascript
+ls -r ./;
+```
+
+**Executed code**
+
+``` javascript
+ls('-r','./');
+```
+
+#### Example with variables
+
+**Input code**
+
+``` javascript
+ls -r ${path};
+```
+
+**Executed code**
+
+``` javascript
+ls('-r', path);
+```
+
+#### Simple Pipe
+
+**Input code**
+
+``` javascript
+cat() | ls();
+```
+
+**Executed code**
+
+``` javascript
+_.pipeline(cat(), ls());
+```
+
+### Commands
+
+#### cat
+
+Plans for the cat command include adding the ability to display images, rendering code with features such as highlighting and line numbers and opening files of types such as XML and JSON with line folding.
+
+#### ls
+
+For ls the objective is to firstly add previews or icons for the file type, depending on what is available, next to the file names listed. Planned is also to have the files in the list be links allowing that #TODO
+# 6. Prototyping and Development
+
+# 7. Testing
+
+## A. Automated Testing
 
 Automated testing will be done through the MochaJS library with tests written for all different files and components. Testing files are identified by the .spec.js file extension and are written with the formats:
 
@@ -298,11 +338,12 @@ for potential conditions
 
 ![MochaJS Screenshot](assets/mochajsTests.png)
 
-## Human Testing
+## B. Manual Testing
 
+For manual testing I will provide the software to testers for both learning the viability of my design decisions and for testing of the software proper.
 
-# Issues and Risks
+# 8. Issues and Risks
 
-# Plan and Future Work
+# 9. Plan and Future Work
 
-# Conclusion
+# 10. Conclusion
