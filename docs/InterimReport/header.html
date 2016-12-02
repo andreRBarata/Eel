@@ -1,13 +1,38 @@
 <!DOCTYPE html>
+<html><head><script>
+function subst() {
+	var vars = {};
+	var query_strings_from_url = document.location.search.substring(1).split('&');
+	for (var query_string in query_strings_from_url) {
+		if (query_strings_from_url.hasOwnProperty(query_string)) {
+			var temp_var = query_strings_from_url[query_string].split('=', 2);
+			vars[temp_var[0]] = decodeURI(temp_var[1]);
+		}
+	}
+	var css_selector_classes = ['page', 'frompage', 'topage', 'webpage', 'section', 'subsection', 'date', 'isodate', 'time', 'title', 'doctitle', 'sitepage', 'sitepages'];
+	for (var css_class in css_selector_classes) {
+		if (css_selector_classes.hasOwnProperty(css_class)) {
+			var element = document.getElementsByClassName(css_selector_classes[css_class]);
+			for (var j = 0; j < element.length; ++j) {
+				element[j].textContent = vars[css_selector_classes[css_class]];
+			}
+		}
+	}
+}
+</script>
+</head>
+<body style="border:0; margin: 0;" onload="subst()">
 
-<div style="position: fixed; top: 0; font-size: 12px; left: 40px;">
-<span id="pdfkit_page_current"></span>
-</div>
-<div style="font-size: 12px; text-align: right; border-right-style: solid; border-right-color: darkgrey; border-right-width: 1px; right: 0; padding-right: 5px; margin-right: 40px">
-	DIT<br/>
-	<b>
-	  	DT228 B.Sc. (Hons.) in Computer Science<br/>
-		Interim Progress Report 2016/17<br/>
-	</b>
-</div>
-<div style="padding-bottom: 20px;"><div>
+	<div style="position: fixed; top: 0; font-size: 12px; left: 40px;">
+	<span class="page"></span>
+	</div>
+	<div style="font-size: 12px; text-align: right; border-right-style: solid; border-right-color: darkgrey; border-right-width: 1px; right: 0; padding-right: 5px; margin-right: 40px">
+		DIT<br/>
+		<b>
+		  	DT228 B.Sc. (Hons.) in Computer Science<br/>
+			Interim Progress Report 2016/17<br/>
+		</b>
+	</div>
+	<div style="padding-bottom: 20px;"><div>
+<body>
+</html>

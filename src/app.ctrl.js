@@ -4,10 +4,13 @@ angular.module('termApp')
 		//TODO: Fix all output to the same command error
 		$scope.output = [];
 
+		//TODO: See about treatment of nulls
 		interpreter.stdout.each((result) => {
-			$scope.output.push(result);
-			$scope.$apply();
-			window.scrollTo(0,document.body.scrollHeight);
+			if (result !== null) {
+				$scope.output.push(result);
+				$scope.$apply();
+				window.scrollTo(0,document.body.scrollHeight);
+			}
 		});
 
 		$scope.execute = (keyEvent) => {

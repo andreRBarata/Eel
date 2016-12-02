@@ -44,6 +44,7 @@
     "highland": "^2.10.0",
     "pastafarian": "^1.2.1",
     "stream-to-promise": "^2.2.0",
+    "sweet.js": "^0.7.8",
     "type-of-is": "^3.4.0"
   },
   "devDependencies": {

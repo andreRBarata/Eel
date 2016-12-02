@@ -1,0 +1,17 @@
+gantt
+    title Diagram for project tasks plan
+
+	section Complete
+	Research					:r, 2016-06-04, 2016-10
+	Basic Command running		:bcr, 2016-07-24, 2016-08-10
+	Automatic command loading	:acl, 2016-08-10, 2016-09
+	Catching command output		:cco, 2016-10, 2016-11-20
+	Electron engine addition	:eea, 2016-11-23, 2016-11-23
+	section To Do
+	Piping						:p, 2016-10, 2016-12-10
+	SweetJS Scripts				:sws, 2016-12-04, 2016-12-12
+	Command API					:ca, 2016-12-12, 2016-12-30
+	Renderer API				:ra, 2017-01-14, 2017-01-30
+	Replacement of functionality of native commands :rnc, 2017-01-30, 2017-04-04
+	UI design					:ud, 2017-01-14, 2017-01-24
+	Autocomplete				:au, 2017-01-30, 2017-04-04
