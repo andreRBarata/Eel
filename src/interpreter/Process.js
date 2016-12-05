@@ -19,6 +19,12 @@ class Process {
 	* 	@param {{defaultOutput: Stream}} config
 	*/
 	constructor(source, config) {
+		this.stdout = new stream.Readable({
+			read() {},
+			objectMode: true
+		});
+		this.stdin = new Highland();
+
 		if (arguments.length && !Type.is(arguments[0], Object)) {
 			return Process.from(...arguments);
 		}
@@ -26,13 +32,8 @@ class Process {
 			this.config(arguments[0]);
 		}
 
-		this.stdout = new stream.Readable({
-			read() {},
-			objectMode: true
-		});
-		this.stdin = new Highland();
-
-		this.stdout.on('end', () => this.stdin.end());
+		this.on = (...args) => this.stdout.on(...args);
+		//this.stdout.on('end', () => this.stdin.end());
 	}
 
 	/**
@@ -98,29 +99,28 @@ class Process {
 	*	@return {Process}
 	*/
 	static pipeline(...args) {
-		function * iterator() {
-			let list = args.slice(0);
+		let first = false;
+		let previous;
+		let process = new Process();
+		let processes = args
+			.map((e) => (!e.pipe)? Process.from(e): e)
+			.reverse();
 
-			for (let arg of list.reverse()) {
-				if (!arg.pipe) {
-					yield Process.from(arg);
-				}
-				else {
-					yield arg;
-				}
+		for (let obj of processes) {
+			let tmp = obj;
+
+			if (!first) {
+				first = tmp;
 			}
-		};
-		let last;
-
-		for (let obj of iterator()) {
-			if (last) {
-				last.pipe(obj.value);
+			if (previous) {
+				previous.pipe(tmp);
 			}
 
-			last = obj.value;
+
+			previous = tmp;
 		}
 
-		return args[0];
+
 	}
 
 	//#Done: Create from function for Process id:16
@@ -137,6 +137,7 @@ class Process {
 			[String, Function, Number, Array, stream.Readable])) {
 				return null;
 		}
+
 		let process = new Process();
 
 		process.config(config);
@@ -153,26 +154,22 @@ class Process {
 		else {
 			process.readonly = true;
 
-			function * iterator() {
-				if (Type.is(source, stream.Readable)) {
-					let item;
-					while ((item = source.read()) !== null) {
-						yield item;
-					}
+			if (Type.is(source, stream.Readable)) {
+				let item;
+				while ((item = source.read()) !== null) {
+					process.stdout.push(item);
 				}
-				else if (Type.is(source, Array)) {
-					yield * source;
+			}
+			else if (source[Symbol.iterator]) {
+				for (let item of source) {
+					process.stdout.push(item);
 				}
-				else {
-					yield source;
-				}
-
-				yield null;
+			}
+			else {
+				process.stdout.push(source);
 			}
 
-			for (let item of iterator()) {
-				process.stdout.push(item);
-			}
+			process.stdout.push(null);
 
 			return process;
 		}

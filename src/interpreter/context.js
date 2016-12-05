@@ -20,6 +20,11 @@ module.exports = {
 			}),
 			system: {
 				$env: process.env,
+				writeFile(file) {
+					return new Process((push, emit, input) => {
+						input.pipe(fs.WriteStream(file));
+					});
+				},
 				'_' : Process
 			}
 		};

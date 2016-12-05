@@ -1,5 +1,5 @@
 const vm		= require('vm');
-const sweetJS	= require('sweet.js');
+const sweet	= require('sweet.js');
 
 class Interpreter {
 	constructor() {
@@ -12,13 +12,7 @@ class Interpreter {
 			context.system
 		);
 
-		/*sweetJS.loadModule(`
-			macro define {
-				rule { $items:item (,) ... ; } => {
-			    	$items (;) ...
-				}
-			}
-		`);*/
+		sweet.loadMacro('./src/interpreter/sweetScripts/operators.sjs');
 	}
 
 	//TODO: Rewrite stdout connections id:11
@@ -30,10 +24,10 @@ class Interpreter {
 		if (!this.context) {
 			return new Error('System not loaded');
 		}
-
+		console.log(sweet.compile(code).code);
 		return vm.runInContext(
-			 sweetJS.compile(code),
-			 this.context
+			sweet.compile(code).code,
+			this.context
 		);
 	}
 }

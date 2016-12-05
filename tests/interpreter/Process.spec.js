@@ -109,6 +109,8 @@ describe('Process', () => {
 			process.toPromise().then((array) => {
 				expect(array).toEqual([1,2,3,4]);
 				done();
+			}).catch((err) => {
+				console.log('Error:', err);
 			});
 		});
 
@@ -120,6 +122,8 @@ describe('Process', () => {
 			process.toPromise().then((array) => {
 				expect(array).toEqual(['test']);
 				done();
+			}).catch((err) => {
+				console.log('Error:', err);
 			});
 		});
 
@@ -135,6 +139,8 @@ describe('Process', () => {
 			process.toPromise().then((array) => {
 				expect(array).toEqual(['test']);
 				done();
+			}).catch((err) => {
+				console.log('Error:', err);
 			});
 		});
 	});
