@@ -31,17 +31,44 @@ class Process {
 		else if (Type.is(arguments[0], Object)) {
 			this.config(arguments[0]);
 		}
-
-		this.on = (...args) => this.stdout.on(...args);
-		//this.stdout.on('end', () => this.stdin.end());
 	}
+
+	//TODO: Write description
+	// Stream Compatibility
+	on(...args) {
+		return this.stdout.on(...args);
+	}
+
+	once(...args) {
+		return this.stdout.once(...args);
+	}
+
+	removeListener(...args) {
+		return this.stdout.removeListener(...args);
+	}
+
+	end() {
+		this.stdin.end();
+	}
+
+	emit(...args) {
+		return this.stdout.emit(...args)
+	}
+
+	write(chunk, encoding, callback) {
+		return this.stdin.write(chunk, encoding, callback);
+	}
+
+
 
 	/**
 	*	Turns process output into promise
 	* 	@return {Promise}
 	*/
 	toPromise() {
-		this.stdout.unpipe(this._defaultOutput);
+		if (this._defaultOutput) {
+			this.stdout.unpipe(this._defaultOutput);
+		}
 
 		return streamToPromise(this.stdout);
 	}
@@ -55,17 +82,8 @@ class Process {
 			this._defaultOutput =
 				config.defaultOutput;
 
-			this.stdout
-				.pipe(config.defaultOutput);
+			this.pipe(config.defaultOutput, { end: false });
 		}
-	}
-
-	/**
-	* 	Write into input pipe
-	*	@param {string} value - Value to be piped in.
-	*/
-	input(value) {
-		this.stdin.write(value);
 	}
 
 	//#Done: Alter function to use standard chaining id:14
@@ -75,18 +93,12 @@ class Process {
 	*	@param {Process} process - The process to pipe into.
 	*	@return {Process}
 	*/
-	pipe(process) {
-		if (process.readonly) {
-			return new Error('Cannot pipe into readonly process');
-		}
-
-		this.stdout.pipe(process.stdin);
-
+	pipe(...args) {
 		if (this._defaultOutput) {
 			this.stdout.unpipe(this._defaultOutput);
 		}
 
-		return process;
+		return this.stdout.pipe(...args);
 	}
 
 	//TODO: Add tests for pipeline id:0
@@ -101,26 +113,36 @@ class Process {
 	static pipeline(...args) {
 		let first = false;
 		let previous;
-		let process = new Process();
+		let toReturn = new Process();
 		let processes = args
-			.map((e) => (!e.pipe)? Process.from(e): e)
-			.reverse();
+			.map((e) => {
+				if (e.pipe) {
+					return e;
+				}
+				else if (Type.is(e, String)) {
+					return Highland.of(e);
+				}
+				else {
+					return new Highland(e);
+				}
+			});
 
 		for (let obj of processes) {
-			let tmp = obj;
-
 			if (!first) {
-				first = tmp;
+				first = obj;
 			}
+
 			if (previous) {
-				previous.pipe(tmp);
+				previous.pipe(obj);
 			}
 
-
-			previous = tmp;
+			previous = obj;
 		}
 
+		toReturn.stdout = previous;
+		toReturn.stdin = first;
 
+		return toReturn;
 	}
 
 	//#Done: Create from function for Process id:16
@@ -160,7 +182,7 @@ class Process {
 					process.stdout.push(item);
 				}
 			}
-			else if (source[Symbol.iterator]) {
+			else if (source[Symbol.iterator] && !Type.is(source, String)) {
 				for (let item of source) {
 					process.stdout.push(item);
 				}

@@ -72,7 +72,7 @@ describe('context', () => {
 				it('should output "test" when sent as parameter', (done) => {
 					system.echo('test')
 						.stdout.once('data', (data) => {
-							expect(data).toEqual('test\n');
+							expect(data).toEqual('test');
 							done();
 						}
 					);
@@ -81,7 +81,7 @@ describe('context', () => {
 
 			it('should output "test" through system stdout when sent as parameter', (done) => {
 				context.stdout.once('data', (data) => {
-						expect(data).toEqual('test\n');
+						expect(data).toEqual('test');
 						done();
 					}
 				);
@@ -102,12 +102,16 @@ describe('context', () => {
 				);
 
 
-				command.input('test');
+				command.write('test');
 			});
 
 			it('should output "test" when piped from process object', (done) => {
+				let command;
 				let process = new Process();
-				let command = process.pipe(system.cat());
+
+				process.stdout.push('test');
+
+				command = process.pipe(system.cat());
 
 				command.stdin
 					.once('data', (data) => {
@@ -120,8 +124,7 @@ describe('context', () => {
 						done();
 					});
 
-				process.stdout.push('test');
-				process.stdout.push(null);
+
 			});
 
 			//#ForThisSprint: Alter tests for different pipes id:20
@@ -129,7 +132,7 @@ describe('context', () => {
 				let command = system.echo('test').pipe(system.cat());
 
 				command.toPromise().then((data) => {
-						expect(data).toEqual('test\n');
+						expect(data).toEqual('test');
 						done();
 					}
 				);

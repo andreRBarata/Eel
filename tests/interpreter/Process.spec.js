@@ -11,6 +11,26 @@ describe('Process', () => {
 		process = new Process();
 	});
 
+	it('should be receive pipe from Highland Stream', (done) => {
+		Highland.of('test').pipe(process);
+
+		process.stdin.once('data', (data) => {
+			expect(data).toEqual('test');
+			done();
+		});
+	});
+
+	it('should be receive pipe from other process', (done) => {
+		let output = new Process('test');
+
+		output.pipe(process);
+
+		process.stdin.once('data', (data) => {
+			expect(data).toEqual('test');
+			done();
+		});
+	});
+
 	describe('"toPromise" function', () => {
 
 		it('should call then when written on and ended', (done) => {
@@ -37,11 +57,7 @@ describe('Process', () => {
 			process.stdout.emit('error', new Error('error'));
 
 		});
-
-
 	});
-
-
 
 	describe('"out" stream', () => {
 		it('should call callback when written on', (done) => {
@@ -62,7 +78,7 @@ describe('Process', () => {
 					done();
 				});
 
-				process.input('test');
+				process.write('test');
 			}
 		);
 

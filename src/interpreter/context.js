@@ -21,9 +21,16 @@ module.exports = {
 			system: {
 				$env: process.env,
 				writeFile(file) {
-					return new Process((push, emit, input) => {
-						input.pipe(fs.WriteStream(file));
-					});
+					return fs.WriteStream(file);
+				},
+				map(cb) {
+					return (new Highland()).map(cb)
+				},
+				reduce(cb) {
+					return (new Highland()).reduce(cb)
+				},
+				filter(cb) {
+					return (new Highland()).filter(cb)
 				},
 				'_' : Process
 			}
@@ -47,12 +54,16 @@ module.exports = {
 						//TODO: Fix error propagation to backend id:7
 						let systemProcess = spawn(command, (args)? args: []);
 
-						systemProcess.stdout.on('data',
-							(data) => push(data)
-						);
+						(new Highland(systemProcess.stdout))
+							.splitBy('\n')
+							.each(push);
 
-						systemProcess.stderr.on('data',
-							(err) => emit('error', err)
+						systemProcess.stdin.on('end', () => {
+							appProcess.end();
+						});
+
+						systemProcess.stderr.on('readable',
+							() => push(systemProcess.stderr.read())
 						);
 
 						input.pipe(systemProcess.stdin);
