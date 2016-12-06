@@ -36,14 +36,14 @@ module.exports = {
 			}
 		};
 
-		//TODO: System command outputs id:3
-		//TODO: Change system file to global context file id:4
+		//TODO:240 System command outputs id:3
+		//TODO:140 Change system file to global context file id:4
 		(new Highland(
-				//TODO: Check windows support id:5
+				//TODO:150 Check windows support id:5
 				context.system.$env.PATH.split(':')
 			))
 			.map((path) => readdir(path)
-				.errors(() => {}) //TODO: Do something with these errors id:6
+				.errors(() => {}) //TODO:170 Do something with these errors id:6
 			)
 			.flatten()
 			.uniq()
@@ -51,11 +51,12 @@ module.exports = {
 			.each((command) => {
 				context.system[command] = function(...args) {
 					let appProcess = new Process((push, emit, input) => {
-						//TODO: Fix error propagation to backend id:7
+						//TODO:200 Fix error propagation to backend id:7
 						let systemProcess = spawn(command, (args)? args: []);
 
 						(new Highland(systemProcess.stdout))
-							.splitBy('\n')
+							.split()
+							.filter((data) => data !== '')
 							.map((data) => data + '\n')
 							.each(push);
 

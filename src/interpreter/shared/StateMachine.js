@@ -32,7 +32,7 @@ class StateMachine extends _StateMachine {
 		* 	@return {StateMachine}
 		*/
 		this.when = (evt, fn) => {
-			//TODO: Fix event type cheking id:26
+			//TODO:210 Fix event type checking id:26
 			/*if (config.states.keys().indexOf(evt) === -1) {
 				throw new Error('State does not exist');
 			}*/

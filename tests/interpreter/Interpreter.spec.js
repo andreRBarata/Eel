@@ -2,7 +2,7 @@ const expect		= require('expect');
 
 const Interpreter	= require('../../src/interpreter/Interpreter');
 
-//TODO: Write more Interpreter tests id:17
+//TODO:270 Write more Interpreter tests id:17
 describe('Interpreter', () => {
 	let interpreter;
 
@@ -24,12 +24,12 @@ describe('Interpreter', () => {
 		expect(result).toEqual(2);
 	});
 
-	//#TODO: Discover why echo function not defined id:18
+	//#TODO:160 Discover why echo function not defined id:18
 	it('should run echo command when it is sent', (done) => {
 		interpreter.runCode(`echo('test')`);
 
 		interpreter.stdout.on('data', (data) => {
-			expect(data).toEqual('test');
+			expect(data).toEqual('test\n');
 			done();
 		});
 	});

@@ -11,55 +11,36 @@ class Process {
 	*	@param {Highland} input - Stream that in inputed into process
 	*/
 
-	//TODO: Create from function to generate Processes id:12
-	//TODO: Add read only process id:13
-	//TODO: Seperate config from "from" function
+	//#Done:90 Seperate config from "from" function
+	//#Done:80 Create from function for Process id:16
+	//TODO:220 Pass system variable to generator function id:28
 	/**
 	*	@param {ProcessGenerator|Array|Number|string|stream.Readable} [source]
 	* 	@param {{defaultOutput: Stream}} config
 	*/
-	constructor(source, config) {
+	constructor(...args) {
 		this.stdout = new stream.Readable({
 			read() {},
 			objectMode: true
 		});
 		this.stdin = new Highland();
 
-		if (arguments.length && !Type.is(arguments[0], Object)) {
-			return Process.from(...arguments);
+
+		if (Type.is(args[0], Function)) {
+			args[0](
+				(data) => this.stdout.push(data),
+				(event) => this.stdout.emit(event),
+				this.stdin
+			);
+
+			if (Type.is(args[1], Object)) {
+				this.config(args[1]);
+			}
 		}
-		else if (Type.is(arguments[0], Object)) {
-			this.config(arguments[0]);
+		else if (Type.is(args[0], Object)) {
+			this.config(args[0]);
 		}
 	}
-
-	//TODO: Write description
-	// Stream Compatibility
-	on(...args) {
-		return this.stdout.on(...args);
-	}
-
-	once(...args) {
-		return this.stdout.once(...args);
-	}
-
-	removeListener(...args) {
-		return this.stdout.removeListener(...args);
-	}
-
-	end() {
-		this.stdin.end();
-	}
-
-	emit(...args) {
-		return this.stdout.emit(...args)
-	}
-
-	write(chunk, encoding, callback) {
-		return this.stdin.write(chunk, encoding, callback);
-	}
-
-
 
 	/**
 	*	Turns process output into promise
@@ -76,6 +57,7 @@ class Process {
 	/**
 	*	Sets configurations for the process
 	* 	@param {{defaultOutput: Stream}} config - Config object
+	* 	@returns {Process}
 	*/
 	config(config = {}) {
 		if (config.defaultOutput) {
@@ -84,9 +66,11 @@ class Process {
 
 			this.pipe(config.defaultOutput, { end: false });
 		}
+
+		return this;
 	}
 
-	//#Done: Alter function to use standard chaining id:14
+	//#Done:30 Alter function to use standard chaining id:14
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
@@ -101,9 +85,8 @@ class Process {
 		return this.stdout.pipe(...args);
 	}
 
-	//TODO: Add tests for pipeline id:0
-	//TODO: Complete pipeline method id:1
-	//TODO: Warning for readonly processes id:2
+	//#Done:60 Complete pipeline method id:1
+	//TODO:250 Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
 	* 	@static
@@ -139,62 +122,37 @@ class Process {
 			previous = obj;
 		}
 
+		//TODO:280 Write this better
 		toReturn.stdout = previous;
 		toReturn.stdin = first;
 
 		return toReturn;
 	}
 
-	//#Done: Create from function for Process id:16
-	//TODO: Pass system variable to generator function id:28
-	/**
-	*	Create a process for an object
-	*	@static
-	*	@param {Function|Array|Number|string|stream.Readable} source - The source for the process
-	*	@param {Object} config - Config for the creation
-	*	@return {Process}
-	*/
-	static from(source = null, config = {}) {
-		if (!Type.any(source,
-			[String, Function, Number, Array, stream.Readable])) {
-				return null;
-		}
+	//TODO:260 Write description
+	// Stream Compatibility
+	on(...args) {
+		return this.stdout.on(...args);
+	}
 
-		let toReturn = new Process();
+	once(...args) {
+		return this.stdout.once(...args);
+	}
 
-		toReturn.config(config);
+	removeListener(...args) {
+		return this.stdout.removeListener(...args);
+	}
 
-		if (Type.is(source, Function)) {
-			source(
-				(data) => toReturn.stdout.push(data),
-				(event) => toReturn.stdout.emit(event),
-				process.stdin
-			);
+	end() {
+		this.stdin.end();
+	}
 
-			return toReturn;
-		}
-		else {
-			toReturn.readonly = true;
+	emit(...args) {
+		return this.stdout.emit(...args)
+	}
 
-			if (Type.is(source, stream.Readable)) {
-				let item;
-				while ((item = source.read()) !== null) {
-					toReturn.stdout.push(item);
-				}
-			}
-			else if (source[Symbol.iterator] && !Type.is(source, String)) {
-				for (let item of source) {
-					toReturn.stdout.push(item);
-				}
-			}
-			else {
-				toReturn.stdout.push(source);
-			}
-
-			toReturn.stdout.push(null);
-
-			return toReturn;
-		}
+	write(chunk, encoding, callback) {
+		return this.stdin.write(chunk, encoding, callback);
 	}
 }
 

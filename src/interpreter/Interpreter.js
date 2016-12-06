@@ -15,7 +15,7 @@ class Interpreter {
 		sweet.loadMacro('./src/interpreter/sweetScripts/operators.sjs');
 	}
 
-	//TODO: Rewrite stdout connections id:11
+	//#Done:100 Rewrite stdout connections id:11
 	/**
 	*	Runs Code in the current instance
 	*	@param {string} code - Code to be executed

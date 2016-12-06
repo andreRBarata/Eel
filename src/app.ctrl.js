@@ -1,10 +1,10 @@
 angular.module('termApp')
 	.controller('mainController', function($scope, interpreter) {
 		$scope.command = '';
-		//TODO: Fix all output to the same command error
+		//TODO:190 Fix all output to the same command error
 		$scope.output = [];
 
-		//TODO: See about treatment of nulls
+		//TODO:230 See about treatment of nulls
 		interpreter.stdout.each((result) => {
 			if (result !== null) {
 				$scope.output.push(result);
