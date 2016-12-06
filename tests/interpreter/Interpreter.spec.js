@@ -29,7 +29,7 @@ describe('Interpreter', () => {
 		interpreter.runCode(`echo('test')`);
 
 		interpreter.stdout.on('data', (data) => {
-			expect(data).toEqual('test\n');
+			expect(data).toEqual('test');
 			done();
 		});
 	});

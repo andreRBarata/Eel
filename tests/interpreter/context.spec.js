@@ -61,7 +61,7 @@ describe('context', () => {
 			describe('then function', () => {
 				it('should output "test" when sent as parameter', (done) => {
 					system.echo('test').toPromise().then((data) => {
-							expect(data[0]).toEqual('test\n');
+							expect(data).toEqual(['test']);
 							done();
 						}
 					);

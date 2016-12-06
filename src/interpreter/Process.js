@@ -160,40 +160,40 @@ class Process {
 				return null;
 		}
 
-		let process = new Process();
+		let toReturn = new Process();
 
-		process.config(config);
+		toReturn.config(config);
 
 		if (Type.is(source, Function)) {
 			source(
-				(data) => process.stdout.push(data),
-				(event) => process.stdout.emit(event),
+				(data) => toReturn.stdout.push(data),
+				(event) => toReturn.stdout.emit(event),
 				process.stdin
 			);
 
-			return process;
+			return toReturn;
 		}
 		else {
-			process.readonly = true;
+			toReturn.readonly = true;
 
 			if (Type.is(source, stream.Readable)) {
 				let item;
 				while ((item = source.read()) !== null) {
-					process.stdout.push(item);
+					toReturn.stdout.push(item);
 				}
 			}
 			else if (source[Symbol.iterator] && !Type.is(source, String)) {
 				for (let item of source) {
-					process.stdout.push(item);
+					toReturn.stdout.push(item);
 				}
 			}
 			else {
-				process.stdout.push(source);
+				toReturn.stdout.push(source);
 			}
 
-			process.stdout.push(null);
+			toReturn.stdout.push(null);
 
-			return process;
+			return toReturn;
 		}
 	}
 }

@@ -56,6 +56,7 @@ module.exports = {
 
 						(new Highland(systemProcess.stdout))
 							.splitBy('\n')
+							.map((data) => data + '\n')
 							.each(push);
 
 						systemProcess.stdin.on('end', () => {
