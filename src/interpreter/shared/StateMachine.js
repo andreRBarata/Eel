@@ -1,52 +1,53 @@
-let _StateMachine = require('pastafarian');
+const EventEmitter = require('events').EventEmitter;
 
-class StateMachine extends _StateMachine {
+class StateMachine extends EventEmitter {
 	constructor(config) {
-		super(config);
-		let self = this;
+		super();
 
-		/**
-		*	Trigger on the next state change to the
-		*	given state
-		*	@param {string} evt - The state to trigger to
-		*	@param {Function} fn - Callback to trigger
-		*	@return {StateMachine}
-		*	Taken from: {@link https://github.com/orbitbot/pastafarian}
-		*/
-		this.once = (evt, fn) => {
-			this.on(evt, function onceCb() {
-				fn.apply(fn, Array.prototype.slice
-					.call(arguments));
-				self.unbind(evt, onceCb);
-			});
+		this.currentState = config.initial;
+		this.states = config.states;
+	}
 
-			return this;
-		};
+	/**
+	*	Alter Current state
+	*	@param {string} state - State to change to
+	*/
+	go(state) {
+		if (!this.states[this.currentState]
+			.includes(state)) {
+				throw new Error('Invalid state change');
+		}
 
-		/**
-		*	Whenever the object is in state is true
-		* 	run the the callback, if the state is already true
-		* 	run it right away
-		* 	@param {string} evt - The state to trigger to
-		* 	@param {Function} fn - Callback to trigger
-		* 	@return {StateMachine}
-		*/
-		this.when = (evt, fn) => {
-			//TODO:210 Fix event type checking id:26
-			/*if (config.states.keys().indexOf(evt) === -1) {
-				throw new Error('State does not exist');
-			}*/
+		this.emit(state);
+		this.currentState = state;
+	}
 
-			if (this.current === evt) {
-				fn();
-			}
-			else {
-				this.once(evt, () => fn());
-			}
+	/**
+	*	Whenever the object is in state is true
+	* 	run the the callback, if the state is already true
+	* 	run it right away
+	* 	@param {string} evt - The state to trigger to
+	* 	@param {Function} fn - Callback to trigger
+	* 	@return {StateMachine}
+	*/
+	when(evt, fn) {
+		//#Done:110 Fix event type checking id:26
+		let possibleStates =
+			this.states[this.currentState];
 
-			return this;
-		};
+		if (!possibleStates ||
+			!possibleStates.includes(evt)) {
+				throw new Error('Invalid state change');
+		}
 
+		if (this.currentState === evt) {
+			fn();
+		}
+		else {
+			this.once(evt, () => fn());
+		}
+
+		return this;
 	}
 }
 

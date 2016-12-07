@@ -3,19 +3,17 @@ const stream			= require('stream');
 const streamToPromise	= require('stream-to-promise');
 const Type				= require('type-of-is');
 
-class Process {
-	/**
-	*	@callback ProcessGenerator
-	*	@param {Function} push - Push item into process, null to end it
-	*	@param {Function} emit - emit event in process
-	*	@param {Highland} input - Stream that in inputed into process
-	*/
+/**
+*	@callback ProcessGenerator
+*	@param {Function} push - Push item into process, null to end it
+*	@param {Function} emit - emit event in process
+*	@param {Highland} input - Stream that in inputed into process
+*/
 
-	//#Done:90 Seperate config from "from" function
-	//#Done:80 Create from function for Process id:16
-	//TODO:220 Pass system variable to generator function id:28
+class Process {
+	//TODO:120 Pass system variable to generator function id:28
 	/**
-	*	@param {ProcessGenerator|Array|Number|string|stream.Readable} [source]
+	*	@param {ProcessGenerator} [source]
 	* 	@param {{defaultOutput: Stream}} config
 	*/
 	constructor(...args) {
@@ -24,7 +22,6 @@ class Process {
 			objectMode: true
 		});
 		this.stdin = new Highland();
-
 
 		if (Type.is(args[0], Function)) {
 			args[0](
@@ -70,7 +67,6 @@ class Process {
 		return this;
 	}
 
-	//#Done:30 Alter function to use standard chaining id:14
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
@@ -85,8 +81,7 @@ class Process {
 		return this.stdout.pipe(...args);
 	}
 
-	//#Done:60 Complete pipeline method id:1
-	//TODO:250 Warning for readonly processes id:2
+	//TODO:150 Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
 	* 	@static
@@ -122,14 +117,14 @@ class Process {
 			previous = obj;
 		}
 
-		//TODO:280 Write this better
+		//TODO:170 Write this better
 		toReturn.stdout = previous;
 		toReturn.stdin = first;
 
 		return toReturn;
 	}
 
-	//TODO:260 Write description
+	//TODO:160 Write description
 	// Stream Compatibility
 	on(...args) {
 		return this.stdout.on(...args);
@@ -148,7 +143,7 @@ class Process {
 	}
 
 	emit(...args) {
-		return this.stdout.emit(...args)
+		return this.stdout.emit(...args);
 	}
 
 	write(chunk, encoding, callback) {

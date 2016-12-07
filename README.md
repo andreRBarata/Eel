@@ -49,9 +49,6 @@ I believe that using the new Electron App Engine it is possible to accomplish wh
 ## Design
 
 
-<!--
-#Done:70 Write API drafts id:9
--->
 ### Syntax
 
 The following are examples for the planned of lines of code before and after the SweetJs scripts alter them.

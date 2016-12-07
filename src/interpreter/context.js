@@ -2,84 +2,91 @@ const Highland		= require('highland');
 const fs			= require('fs');
 const readdir		= Highland.wrapCallback(fs.readdir);
 const spawn			= require('child_process').spawn;
-const stream		= require('stream');
-
 
 const StateMachine	= require('./shared/StateMachine');
 const Process		= require('./Process');
 
-module.exports = {
+//TODO: Create tests for loadSystem and generateSystemFunction
+let ContextGenerator = {
+	loadSystem(path) {
+		//TODO:140 System command outputs id:3
+		//TODO:60 Change system file to global context file id:4
+		return new Highland(
+			path
+		)
+		.map((path) => readdir(path)
+			.errors(() => {}) //#ForThisSprint:20 Do something with these errors id:6
+		)
+		.flatten()
+		.uniq();
+	},
+	generateSystemFunction(command, options) {
+		return function(...args) {
+			let appProcess = new Process((push, emit, input) => {
+				//TODO:100 Fix error propagation to backend id:7
+				let systemProcess = spawn(command, (args)? args: []);
+
+				(new Highland(systemProcess.stdout))
+					.splitBy(/([^\n]+\n)/)
+					.filter((line) => line !== '')
+					.each(push);
+
+				systemProcess.stdin.on('end', () => {
+					appProcess.end();
+				});
+
+				systemProcess.stderr.on('readable',
+					() => push(systemProcess.stderr.read())
+				);
+
+				input.pipe(systemProcess.stdin);
+			}, options);
+
+			return appProcess;
+		};
+	},
 	getInstance() {
-		let context = {
-			stdout: new Highland(),
-			status: new StateMachine({
+		let context = Object.assign(
+			new StateMachine({
 				initial: 'unloaded',
 				states: {
 					unloaded: ['loaded']
 				}
-			}),
-			system: {
+			}), {
+				stdout: new Highland(),
 				$env: process.env,
 				writeFile(file) {
 					return fs.WriteStream(file);
 				},
 				map(cb) {
-					return (new Highland()).map(cb)
+					return (new Highland()).map(cb);
 				},
 				reduce(cb) {
-					return (new Highland()).reduce(cb)
+					return (new Highland()).reduce(cb);
 				},
 				filter(cb) {
-					return (new Highland()).filter(cb)
+					return (new Highland()).filter(cb);
 				},
 				'_' : Process
 			}
-		};
+		);
 
-		//TODO:240 System command outputs id:3
-		//TODO:140 Change system file to global context file id:4
-		(new Highland(
-				//TODO:150 Check windows support id:5
-				context.system.$env.PATH.split(':')
-			))
-			.map((path) => readdir(path)
-				.errors(() => {}) //TODO:170 Do something with these errors id:6
-			)
-			.flatten()
-			.uniq()
-			.filter((command) => !context.system[command])
+		//TODO:70 Check windows support id:5
+		ContextGenerator
+			.loadSystem(context.$env.PATH.split(':'))
 			.each((command) => {
-				context.system[command] = function(...args) {
-					let appProcess = new Process((push, emit, input) => {
-						//TODO:200 Fix error propagation to backend id:7
-						let systemProcess = spawn(command, (args)? args: []);
-
-						(new Highland(systemProcess.stdout))
-							.split()
-							.filter((data) => data !== '')
-							.map((data) => data + '\n')
-							.each(push);
-
-						systemProcess.stdin.on('end', () => {
-							appProcess.end();
-						});
-
-						systemProcess.stderr.on('readable',
-							() => push(systemProcess.stderr.read())
-						);
-
-						input.pipe(systemProcess.stdin);
-					}, {
-						defaultOutput: context.stdout,
-						$env: context.system.$env
+				context[command] = ContextGenerator
+					.generateSystemFunction(command, {
+						defaultOutput: context.stdout
 					});
-
-					return appProcess;
-				};
 			})
 			.errors((err) => console.error(err))
-			.done(() => context.status.go('loaded'));
+			.done(() => {
+				context.go('loaded');
+			});
 
-			return context;
+		return context;
 	}
 };
+
+module.exports = ContextGenerator;

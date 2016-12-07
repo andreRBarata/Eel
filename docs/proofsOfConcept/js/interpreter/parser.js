@@ -1,7 +1,7 @@
 
 let parser = {
 	argMatcher: /\[.*\]|<.*?>/g,
-	//TODO:180 Finish command matching method
+	//TODO:80 Finish command matching method
 	interpretArguments(command, argsline) {
 		let commandLiterals = command.format();
 

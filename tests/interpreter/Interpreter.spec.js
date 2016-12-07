@@ -2,14 +2,14 @@ const expect		= require('expect');
 
 const Interpreter	= require('../../src/interpreter/Interpreter');
 
-//TODO:270 Write more Interpreter tests id:17
+//#ForThisSprint:30 Write more Interpreter tests id:17
 describe('Interpreter', () => {
 	let interpreter;
 
 	beforeEach((done) => {
 		interpreter = new Interpreter();
 
-		interpreter.status
+		interpreter
 			.when('loaded', () => done());
 
 	});
@@ -24,8 +24,8 @@ describe('Interpreter', () => {
 		expect(result).toEqual(2);
 	});
 
-	//#TODO:160 Discover why echo function not defined id:18
 	it('should run echo command when it is sent', (done) => {
+		console.log(interpreter.context.echo);
 		interpreter.runCode(`echo('test')`);
 
 		interpreter.stdout.on('data', (data) => {

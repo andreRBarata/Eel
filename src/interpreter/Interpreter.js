@@ -1,21 +1,30 @@
-const vm		= require('vm');
-const sweet	= require('sweet.js');
+const vm			= require('vm');
+const sweet			= require('sweet.js');
+const StateMachine	= require('./shared/StateMachine');
 
-class Interpreter {
+class Interpreter extends StateMachine {
 	constructor() {
-		let context = require('./context')
-			.getInstance();
+		super({
+			initial: 'unloaded',
+			states: {
+				unloaded: ['loaded']
+			}
+		});
 
-		this.status = context.status;
-		this.stdout = context.stdout;
 		this.context = vm.createContext(
-			context.system
+			require('./context')
+				.getInstance()
 		);
+
+		this.context.when('loaded', () => {
+			this.go('loaded');
+		});
+		this.stdout = this.context.stdout;
+
 
 		sweet.loadMacro('./src/interpreter/sweetScripts/operators.sjs');
 	}
 
-	//#Done:100 Rewrite stdout connections id:11
 	/**
 	*	Runs Code in the current instance
 	*	@param {string} code - Code to be executed
