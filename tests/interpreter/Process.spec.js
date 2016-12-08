@@ -21,7 +21,7 @@ describe('Process', () => {
 	});
 
 	it('should be receive pipe from other process', (done) => {
-		let output = new Process((push, emit, input) => {
+		let output = new Process((push) => {
 				push('test');
 				push(null);
 			});
@@ -36,7 +36,7 @@ describe('Process', () => {
 	});
 
 	it('should create Process with elements if an function is sent', (done) => {
-		let testProcess = new Process((push, emit, input) => {
+		let testProcess = new Process((push) => {
 			push('test');
 			push(null);
 		});

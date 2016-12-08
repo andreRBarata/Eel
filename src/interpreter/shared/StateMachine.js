@@ -13,9 +13,12 @@ class StateMachine extends EventEmitter {
 	*	@param {string} state - State to change to
 	*/
 	go(state) {
-		if (!this.states[this.currentState]
-			.includes(state)) {
-				throw new Error('Invalid state change');
+		let possibleStates =
+			this.states[this.currentState] || [];
+
+
+		if (!possibleStates.includes(state)) {
+			throw new Error('Invalid state change');
 		}
 
 		this.emit(state);
@@ -33,9 +36,9 @@ class StateMachine extends EventEmitter {
 	when(evt, fn) {
 		//#Done:110 Fix event type checking id:26
 		let possibleStates =
-			this.states[this.currentState];
+			this.states[this.currentState] || [];
 
-		if (!possibleStates ||
+		if (this.currentState !== evt &&
 			!possibleStates.includes(evt)) {
 				throw new Error('Invalid state change');
 		}

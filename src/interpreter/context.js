@@ -3,12 +3,11 @@ const fs			= require('fs');
 const readdir		= Highland.wrapCallback(fs.readdir);
 const spawn			= require('child_process').spawn;
 
-const StateMachine	= require('./shared/StateMachine');
 const Process		= require('./Process');
 
 //TODO: Create tests for loadSystem and generateSystemFunction
 let ContextGenerator = {
-	loadSystem(path) {
+	loadSystem(path, options) {
 		//TODO:140 System command outputs id:3
 		//TODO:60 Change system file to global context file id:4
 		return new Highland(
@@ -18,7 +17,13 @@ let ContextGenerator = {
 			.errors(() => {}) //#ForThisSprint:20 Do something with these errors id:6
 		)
 		.flatten()
-		.uniq();
+		.uniq()
+		.map((command) => {
+			return {
+				[command]: ContextGenerator
+					.generateSystemFunction(command, options)
+			};
+		});
 	},
 	generateSystemFunction(command, options) {
 		return function(...args) {
@@ -46,46 +51,35 @@ let ContextGenerator = {
 		};
 	},
 	getInstance() {
-		let context = Object.assign(
-			new StateMachine({
-				initial: 'unloaded',
-				states: {
-					unloaded: ['loaded']
-				}
-			}), {
-				stdout: new Highland(),
-				$env: process.env,
-				writeFile(file) {
-					return fs.WriteStream(file);
-				},
-				map(cb) {
-					return (new Highland()).map(cb);
-				},
-				reduce(cb) {
-					return (new Highland()).reduce(cb);
-				},
-				filter(cb) {
-					return (new Highland()).filter(cb);
-				},
-				'_' : Process
-			}
-		);
+		let context = {
+			stdout: new Highland(),
+			$env: process.env,
+			writeFile(file) {
+				return fs.WriteStream(file);
+			},
+			map(cb) {
+				return (new Highland()).map(cb);
+			},
+			reduce(cb) {
+				return (new Highland()).reduce(cb);
+			},
+			filter(cb) {
+				return (new Highland()).filter(cb);
+			},
+			'_' : Process
+		};
 
-		//TODO:70 Check windows support id:5
-		ContextGenerator
-			.loadSystem(context.$env.PATH.split(':'))
-			.each((command) => {
-				context[command] = ContextGenerator
-					.generateSystemFunction(command, {
-						defaultOutput: context.stdout
-					});
-			})
-			.errors((err) => console.error(err))
-			.done(() => {
-				context.go('loaded');
-			});
-
-		return context;
+		return new Promise((resolve, reject) => {
+			//TODO:70 Check windows support id:5
+			ContextGenerator
+				.loadSystem(context.$env.PATH.split(':'), {
+					defaultOutput: context.stdout
+				})
+				.errors((err) => reject(err))
+				.toArray(
+					(array) => resolve(Object.assign(context, ...array))
+				);
+		});
 	}
 };
 

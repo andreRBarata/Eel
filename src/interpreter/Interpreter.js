@@ -10,19 +10,21 @@ class Interpreter extends StateMachine {
 				unloaded: ['loaded']
 			}
 		});
+		require('./context')
+			.getInstance().then((context) => {
+				this.context = vm.createContext(
+					context
+				);
 
-		this.context = vm.createContext(
-			require('./context')
-				.getInstance()
+				this.stdout = this.context.stdout;
+
+				this.go('loaded');
+			}
 		);
 
-		this.context.when('loaded', () => {
-			this.go('loaded');
-		});
-		this.stdout = this.context.stdout;
-
-
-		sweet.loadMacro('./src/interpreter/sweetScripts/operators.sjs');
+		sweet.loadMacro(
+			'./src/interpreter/sweetScripts/operators.sjs'
+		);
 	}
 
 	/**

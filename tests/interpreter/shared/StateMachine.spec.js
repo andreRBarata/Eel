@@ -38,7 +38,7 @@ describe('StateMachine', () => {
 			catch (err) {
 				expect(err).toBeAn(Error);
 			}
-
+		
 		});
 	});
 

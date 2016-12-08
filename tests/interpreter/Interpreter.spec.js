@@ -25,7 +25,6 @@ describe('Interpreter', () => {
 	});
 
 	it('should run echo command when it is sent', (done) => {
-		console.log(interpreter.context.echo);
 		interpreter.runCode(`echo('test')`);
 
 		interpreter.stdout.on('data', (data) => {

@@ -8,12 +8,11 @@ describe('context', () => {
 	let context;
 
 	beforeEach((done) => {
-		context = require('../../src/interpreter/context')
-			.getInstance();
-
-		context.when('loaded', () => {
-			done();
-		});
+		require('../../src/interpreter/context')
+			.getInstance().then((_context) => {
+				context = _context;
+				done();
+			});
 	});
 
 	it('should throw error if command does not exist', () => {
