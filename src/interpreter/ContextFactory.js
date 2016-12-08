@@ -6,7 +6,7 @@ const spawn			= require('child_process').spawn;
 const Process		= require('./Process');
 
 //TODO: Create tests for loadSystem and generateSystemFunction
-let ContextGenerator = {
+let ContextFactory = {
 	loadSystem(path, options) {
 		//TODO:140 System command outputs id:3
 		//TODO:60 Change system file to global context file id:4
@@ -20,7 +20,7 @@ let ContextGenerator = {
 		.uniq()
 		.map((command) => {
 			return {
-				[command]: ContextGenerator
+				[command]: ContextFactory
 					.generateSystemFunction(command, options)
 			};
 		});
@@ -71,7 +71,7 @@ let ContextGenerator = {
 
 		return new Promise((resolve, reject) => {
 			//TODO:70 Check windows support id:5
-			ContextGenerator
+			ContextFactory
 				.loadSystem(context.$env.PATH.split(':'), {
 					defaultOutput: context.stdout
 				})
@@ -83,4 +83,4 @@ let ContextGenerator = {
 	}
 };
 
-module.exports = ContextGenerator;
+module.exports = ContextFactory;

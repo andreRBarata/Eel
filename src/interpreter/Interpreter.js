@@ -10,7 +10,7 @@ class Interpreter extends StateMachine {
 				unloaded: ['loaded']
 			}
 		});
-		require('./context')
+		require('./ContextFactory')
 			.getInstance().then((context) => {
 				this.context = vm.createContext(
 					context
@@ -23,7 +23,7 @@ class Interpreter extends StateMachine {
 		);
 
 		sweet.loadMacro(
-			'./src/interpreter/sweetScripts/operators.sjs'
+			'./src/interpreter/shared/syntax.sjs'
 		);
 	}
 

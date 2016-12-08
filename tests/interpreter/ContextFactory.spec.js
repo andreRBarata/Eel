@@ -4,11 +4,11 @@ const Process	= require('../../src/interpreter/Process');
 
 
 
-describe('context', () => {
+describe('ContextFactory', () => {
 	let context;
 
 	beforeEach((done) => {
-		require('../../src/interpreter/context')
+		require('../../src/interpreter/ContextFactory')
 			.getInstance().then((_context) => {
 				context = _context;
 				done();
