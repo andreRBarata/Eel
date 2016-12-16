@@ -36,6 +36,11 @@ class Interpreter extends StateMachine {
 			return new Error('System not loaded');
 		}
 		console.log(sweet.compile(code).code);
+		/*console.log(code
+			.replace(
+				/&([a-zAZ]+)(?: ([^|*\\()]*))?/g,
+				'$1.apply(`$2`.split(" "))'
+			));*/
 		return vm.runInContext(
 			sweet.compile(code).code,
 			this.context
