@@ -41,7 +41,7 @@ class Process {
 
 	/**
 	*	Turns process output into promise
-	* 	@return {Promise}
+	* 	@returns {Promise}
 	*/
 	toPromise() {
 		if (this._defaultOutput) {
@@ -71,7 +71,7 @@ class Process {
 	*	Pipe Current processes output into
 	*	other processes input
 	*	@param {Process} process - The process to pipe into.
-	*	@return {Process}
+	*	@returns {Process}
 	*/
 	pipe(...args) {
 		if (this._defaultOutput) {
@@ -86,7 +86,7 @@ class Process {
 	*	Pipe processes together
 	* 	@static
 	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
-	*	@return {Process}
+	*	@returns {Process}
 	*/
 	static pipeline(...args) {
 		let first = false;

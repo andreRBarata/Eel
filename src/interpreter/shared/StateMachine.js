@@ -31,7 +31,7 @@ class StateMachine extends EventEmitter {
 	* 	run it right away
 	* 	@param {string} evt - The state to trigger to
 	* 	@param {Function} fn - Callback to trigger
-	* 	@return {StateMachine}
+	* 	@returns {StateMachine}
 	*/
 	when(evt, fn) {
 		//#Done:110 Fix event type checking id:26

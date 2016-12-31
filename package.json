@@ -10,11 +10,38 @@
   },
   "author": "André Barata",
   "license": "ISC",
+  "jshintConfig": {
+    "esversion": 6,
+    "browser": true,
+    "node": true,
+    "camelcase": true,
+    "eqeqeq": true,
+    "latedef": true,
+    "quotmark": "single",
+    "newcap": true,
+    "undef": true,
+    "unused": true,
+    "globals": {
+      "jasmine": true,
+      "angular": true,
+      "browser": true,
+      "element": true,
+      "it": true,
+      "describe": true,
+      "beforeEach": true,
+      "by": true,
+      "io": true,
+      "_": false,
+      "$": false
+    }
+  },
   "dependencies": {
     "angular": "^1.5.8",
     "angular-sanitize": "^1.5.8",
     "bootstrap": "^3.3.7",
+    "handlebars": "^4.0.6",
     "highland": "^2.10.0",
+    "parsimmon": "^1.2.0",
     "stream-to-promise": "^2.2.0",
     "sweet.js": "^0.7.8",
     "type-of-is": "^3.4.0"

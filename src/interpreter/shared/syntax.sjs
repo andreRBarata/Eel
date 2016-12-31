@@ -5,72 +5,72 @@ export (|)
 operator (|>) 5 right { $l, $r } => #{ $l | writeFile($r)}
 export (|>)
 
-macro flag {
-	case {_ /$arg:ident} => {
-		letstx $tok_str = [makeValue('/' + unwrapSyntax(#{$arg}), #{ here })];
-		return #{$tok_str}
+macro (-) {
+	case { --$arg:unwrap } => {
+		return #{'--' + $arg}
 	}
-	case {_ --$arg1-$arg2:ident } => {
-		letstx $tok_str = [makeValue(
-			'--' + unwrapSyntax(#{$arg1}) +
-			'-' + unwrapSyntax(#{$arg2}),
-			#{ here }
-		)];
-		return #{$tok_str}
+	case { -$arg:unwrap } => {
+		return #{'-' + $arg}
 	}
-	case {_ -$arg:ident } => {
-		letstx $tok_str = [makeValue('-' + unwrapSyntax(#{$arg}), #{ here })];
-		return #{$tok_str}
-	}
-	case {_ --$arg:ident } => {
-		letstx $tok_str = [makeValue('--' + unwrapSyntax(#{$arg}), #{ here })];
-		return #{$tok_str}
+	case infix { $arg1 | _ $arg2 } => {
+		return #{$arg1 + '-' + $arg2}
 	}
 }
 
-macro paramflag {
-	case {_ $flag:flag=$arg:lit} => {
-		letstx $tok_str = [makeValue(
-			unwrapSyntax(#{$flag}) +
-			'=' +
-			unwrapSyntax(#{$arg}), #{ here }
-		)];
-		return #{$tok_str}
+macro unwrap {
+	rule {_ . } => {
+		'.'
 	}
-}
-
-macro arg {
-	case {_ {{$arg:expr ...}} } => {
-		return #{($arg ...)}
-	}
-	case {_ $arg:paramflag } => {
-		return #{$arg}
-	}
-	case {_ $arg:ident } => {
-		letstx $tok_str = [makeValue(unwrapSyntax(#{$arg}), #{ here })];
-		return #{$tok_str}
+	rule {_ / } => {
+		'/'
 	}
 	case {_ $arg:lit } => {
-		letstx $tok_str = [makeValue(unwrapSyntax(#{$arg}), #{ here })];
-		return #{$tok_str}
-	}
-	case {_ $arg:flag } => {
-		return #{$arg}
+		return [makeValue(unwrapSyntax(#{$arg}), #{ here })];
 	}
 }
 
-/*macro strlist {
-	case { _ $toks ... } => {
-		return [makeValue(#{ $toks ... }.map(unwrapSyntax).join(','), #{ here })];
+/*
+macro word {
+	rule { .$rest:invoke(word) } => {
+		'.' + $rest
+	}
+	rule { -$rest:invoke(word) } => {
+		'-' + $rest
+	}
+	rule { --$rest:invoke(word) } => {
+		'--' + $rest
+	}
+	rule { =$rest:invoke(word) } => {
+		'=' + $rest
+	}
+	rule { $arg:invoke(unwrap)$rest:invoke(word) } => {
+		($arg) + $rest
+	}
+	rule { $arg:invoke(unwrap)} => {
+		$arg
 	}
 }*/
 
+macro word {
+	case {_ $args ... } => {
+		let val = #{$args ...}.map(unwrapSyntax).join('');
+		console.log(val);
+
+		return [makeValue(val, #{ here })];
+	}
+}
+
 macro (&) {
-	case {_ $func:ident $args:arg ...} => {
-		return #{
-			$func($args (,) ...)
-		}
+	case {_ $args:unwrap ... ...} => {
+		console.log(#{$args ... (,) ...});/*.map((e) => {
+			 e.map(unwrapSyntax)
+			})
+		);*/
+
+
+		return #{this['ls']($args (,) ...)};
 	}
 }
 
 export (&)
+export (-)

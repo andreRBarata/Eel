@@ -53,8 +53,19 @@ describe('Process', () => {
 
 	//#ForThisSprint:10 Add tests for pipeline id:0
 	describe('"pipeline" function', () => {
+		it('should create pipe between processes', (done) => {
+			let output = new Process();
 
-		it('');
+			Process.pipeline(output, workProcess);
+
+			workProcess.once('data', (data) => {
+				expect(data).toEqual('test');
+				done();
+			});
+
+			output.stdout.push('test');
+			output.stdout.push(null);
+		});
 	});
 
 	describe('"toPromise" function', () => {

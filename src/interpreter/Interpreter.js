@@ -22,6 +22,16 @@ class Interpreter extends StateMachine {
 			}
 		);
 
+		sweet.currentReadtable().extend({
+			':': function(ch, reader) {
+				var token = reader.readToken();
+				console.log('test', token);
+				return null;
+				// Continue parsing and return a single token or
+				// an array of tokens
+			}}
+		);
+
 		sweet.loadMacro(
 			'./src/interpreter/shared/syntax.sjs'
 		);
@@ -36,11 +46,7 @@ class Interpreter extends StateMachine {
 			return new Error('System not loaded');
 		}
 		console.log(sweet.compile(code).code);
-		/*console.log(code
-			.replace(
-				/&([a-zAZ]+)(?: ([^|*\\()]*))?/g,
-				'$1.apply(`$2`.split(" "))'
-			));*/
+
 		return vm.runInContext(
 			sweet.compile(code).code,
 			this.context

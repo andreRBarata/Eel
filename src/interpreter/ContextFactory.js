@@ -4,6 +4,7 @@ const readdir		= Highland.wrapCallback(fs.readdir);
 const spawn			= require('child_process').spawn;
 
 const Process		= require('./Process');
+const command		= require('./command');
 
 //TODO: Create tests for loadSystem and generateSystemFunction
 let ContextFactory = {
