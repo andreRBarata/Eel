@@ -1,4 +1,4 @@
-const expect	= require('expect');
+const expect		= require('expect');
 
 const StateMachine	= require('../../../src/interpreter/shared/StateMachine');
 
@@ -38,7 +38,7 @@ describe('StateMachine', () => {
 			catch (err) {
 				expect(err).toBeAn(Error);
 			}
-		
+
 		});
 	});
 
