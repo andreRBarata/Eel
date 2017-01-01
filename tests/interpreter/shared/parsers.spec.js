@@ -2,7 +2,7 @@ const expect	= require('expect');
 
 const parsers	= require('../../../src/interpreter/shared/parsers');
 
-describe('parsers', () => {
+describe.only('parsers', () => {
 	describe('command', () => {
 		let command = parsers.command;
 
@@ -13,9 +13,13 @@ describe('parsers', () => {
 				it('should parse a single word', () => {
 					expect(
 						variables.single.parse('test')
-					).toEqual(
-						{status: true, value: {name: 'test'}}
-					);
+					).toEqual({
+						status: true,
+						value: {
+							name: 'test',
+							multiple: false
+						}
+					});
 				});
 			});
 
@@ -41,6 +45,7 @@ describe('parsers', () => {
 						status: true,
 						value: {
 							name: 'test',
+							multiple: false,
 							required: true
 						}
 					});
@@ -67,7 +72,9 @@ describe('parsers', () => {
 					).toEqual({
 						status: true,
 						value: {
-							name: 'test'
+							name: 'test',
+							required: false,
+							multiple: false
 						}
 					});
 				});
@@ -79,6 +86,7 @@ describe('parsers', () => {
 						status: true,
 						value: {
 							name: 'test',
+							required: false,
 							multiple: true
 						}
 					});
@@ -92,7 +100,9 @@ describe('parsers', () => {
 					).toEqual({
 						status: true,
 						value: {
-							name: 'test'
+							name: 'test',
+							required: false,
+							multiple: false
 						}
 					});
 				});
@@ -104,6 +114,7 @@ describe('parsers', () => {
 						status: true,
 						value: {
 							name: 'test',
+							required: false,
 							multiple: true
 						}
 					});
@@ -116,7 +127,8 @@ describe('parsers', () => {
 						status: true,
 						value: {
 							name: 'test',
-							required: true
+							required: true,
+							multiple: false
 						}
 					});
 				});
@@ -133,6 +145,59 @@ describe('parsers', () => {
 						}
 					});
 				});
+			});
+		});
+
+		describe('args', () => {
+			it('should parse single variable', () => {
+				expect(
+					command.args.parse('<test>')
+				).toEqual({
+					status: true,
+					value: [
+						{
+							name: 'test',
+							required: true,
+							multiple: false
+						}
+					]
+				});
+			});
+
+			it('should parse multiple variables', () => {
+				expect(
+					command.args.parse('<test> [test2...] <test3>')
+				).toEqual({
+					status: true,
+					value: [
+						{
+							name: 'test',
+							required: true,
+							multiple: false
+						},
+						{
+							name: 'test2',
+							required: false,
+							multiple: true
+						},
+						{
+							name: 'test3',
+							required: true,
+							multiple: false
+						}
+					]
+				});
+			});
+		});
+
+		describe('word', () => {
+			it('should parse simple word', () => {
+				expect(
+					command.word.parse('./test')
+				).toEqual({
+					status: true,
+					value: './test'
+				})
 			});
 		});
 	});

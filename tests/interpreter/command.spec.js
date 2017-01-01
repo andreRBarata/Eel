@@ -28,6 +28,42 @@ describe('command', () => {
 			);
 		});
 
+		describe('"arguments" function', () => {
+			it('should return error is arguments are invalid', () => {
+				expect(
+					echo.arguments('<test.. [test2] <test3>')
+				).toBeAn(Error);
+			});
+
+			it('should add arguments list', (done) => {
+				echo
+					.arguments('<test...> [test2] <test3>')
+					.action(() => {
+						done();
+					});
+
+				expect(echo.arguments()).toEqual([
+					{
+						name: 'test',
+						multiple: true,
+						required: true
+					},
+					{
+						name: 'test2',
+						multiple: false,
+						required: false
+					},
+					{
+						name: 'test3',
+						multiple: false,
+						required: true
+					}
+				]);
+
+				echo.toFunction()();
+			});
+		});
+
 		describe('"display" function', () => {
 			it('should add display template', (done) => {
 				echo.display(['text', 'json'],

@@ -1,5 +1,6 @@
 const Process			= require('./Process');
 
+const parsers			= require('./shared/parsers');
 const {chainFunction} 	= require('./shared/common');
 
 /**
@@ -12,7 +13,16 @@ module.exports =
 		let Command = {
 			arguments:
 				chainFunction('arguments', (args = '') => {
-					// '',
+					let parse = parsers
+						.command
+						.args
+						.parse(args);
+
+					if (parse.status === false) {
+						return new Error('Invalid arguments provided');
+					}
+
+					return parse.value;
 				}),
 			description: chainFunction('description',
 				{default: description}

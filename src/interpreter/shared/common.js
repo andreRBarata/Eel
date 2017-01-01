@@ -45,6 +45,11 @@ module.exports = {
 		}
 
 		return function (...innerargs) {
+			let output = fn(...innerargs);
+
+			if (Type.is(output, Error)) {
+				return output;
+			}
 			if (!this[index]) {
 				this[index] = options.default;
 			}
@@ -53,15 +58,15 @@ module.exports = {
 			}
 
 			if (options.multiple) {
-				this[index].push(fn(...innerargs));
+				this[index].push(output);
 			}
 			else if (options.map) {
-				let [key, value] = fn(...innerargs);
+				let [key, value] = output;
 
 				this[index].set(key, value);
 			}
 			else {
-				this[index] = fn(...innerargs);
+				this[index] = output;
 			}
 
 			return this;

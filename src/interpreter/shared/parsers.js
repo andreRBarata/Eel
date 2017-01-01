@@ -1,43 +1,48 @@
-const p = require('parsimmon');
+const P = require('parsimmon');
 
 let variables = {
-	single: p.letters
+	single: P.regexp(/[a-zA-Z0-9]+/)
 		.map((name) => {
 			return {
-				name: name
+				name: name,
+				multiple: false
 			}
 		}),
-	multiple: p.lazy(
-		() => p.seq(
+	multiple: P.lazy(
+		() => P.seq(
 			variables.single,
-			p.string('...')
-		).map(([name]) =>
-			Object.assign({multiple: true}, name)
-		)
+			P.string('...')
+		).map(([single]) => {
+			single.multiple = true;
+			return single;
+		})
 	),
-	required: p.lazy(
-		() => p.seq(
-			p.string('<'),
-			p.alt(
+	required: P.lazy(
+		() => P.seq(
+			P.string('<'),
+			P.alt(
 				variables.multiple,
 				variables.single
 			),
-			p.string('>')
+			P.string('>')
 		).map(([,word,]) =>
 			Object.assign({required: true}, word)
 		)
 	),
-	optional: p.lazy(
-		() => p.seq(
-			p.string('['),
-			p.alt(
+	optional: P.lazy(
+		() => P.seq(
+			P.string('['),
+			P.alt(
 				variables.multiple,
 				variables.single
 			),
-			p.string(']')
-		).map(([,word,]) => word)),
-	variable: p.lazy(
-		() => p.alt(
+			P.string(']')
+		).map(([,word,]) =>
+			Object.assign({required: false}, word)
+		)
+	),
+	variable: P.lazy(
+		() => P.alt(
 			variables.optional,
 			variables.required
 		)
@@ -46,6 +51,15 @@ let variables = {
 
 module.exports = {
 	command: {
-		variables: variables
+		variables: variables,
+		args: P.sepBy(
+			variables.variable,
+			P.whitespace
+		),
+		word: P.regexp(/[\-A-Za-z0-9.\\/]+|".*"|'.*'/),
+		words: P.sepBy(
+			P.lazy(() => this.command.word),
+			P.whitespace
+		)
 	}
 };
