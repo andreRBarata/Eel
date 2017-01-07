@@ -1,5 +1,6 @@
-const Process			= require('./Process');
+const minimist			= require('minimist');
 
+const Process			= require('./Process');
 const parsers			= require('./shared/parsers');
 const {chainFunction} 	= require('./shared/common');
 
@@ -13,17 +14,17 @@ module.exports =
 		let Command = {
 			arguments:
 				chainFunction('arguments', (args = '') => {
-					let parse = parsers
+					let parsed = parsers
 						.command
 						.args
 						.parse(args);
 
-					if (parse.status === false) {
+					if (parsed.status === false) {
 						return new Error('Invalid arguments provided');
 					}
 
-					return parse.value;
-				}),
+					return parsed.value;
+				}, {default: []}),
 			description: chainFunction('description',
 				{default: description}
 			),
@@ -47,10 +48,29 @@ module.exports =
 					(mimetype = [], template = '') => [mimetype, template], {map: true}
 				),
 			action: chainFunction('action'),
-			toFunction() {
+			toFunction($env) {
 				let obj = {
 					[commandname]: (...args) => {
-						return new Process(Command.action(...args));
+						let parsedArgs = minimist(args);
+						let expectedArgs = Command.arguments();
+						//FIXME
+						for (let expectedArg of expectedArgs) {
+							if (expectedArg.multiple) {
+								parsedArgs[expectedArg.name] =
+									parsedArgs._.splice(0,
+										parsedArgs._.length - (expectedArgs.length - index)
+									);
+							}
+							else {
+								parsedArgs[expectedArg.name] =
+									parsedArgs._.splice(0, 1)[0];
+							}
+						}
+
+						parsedArgs._ = args;
+
+						return new Process((push, emit, input) =>
+							Command.action()(push, parsedArgs, input));
 					}
 				}
 

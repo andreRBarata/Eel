@@ -189,15 +189,30 @@ describe.only('parsers', () => {
 				});
 			});
 		});
+	});
 
-		describe('word', () => {
-			it('should parse simple word', () => {
-				expect(
-					command.word.parse('./test')
-				).toEqual({
-					status: true,
-					value: './test'
-				})
+	describe('vm', () => {
+		let vm = parsers.vm;
+
+		describe('shell', () => {
+			let shell = vm.shell;
+
+			describe('command', () => {
+
+				it('should parse simple command', () => {
+					expect(shell.command.parse('&ls'))
+						.toEqual({status: true, value: 'system[\'ls\']()'})
+				});
+
+				it('should parse command with arguments', () => {
+					expect(shell.command.parse('&ls src'))
+						.toEqual({status: true, value: `system['ls']('src')`})
+				});
+
+				it('should parse command with a variable', () => {
+					expect(shell.command.parse('&ls ${src}'))
+						.toEqual({status: true, value: `system['ls'](src)`})
+				});
 			});
 		});
 	});

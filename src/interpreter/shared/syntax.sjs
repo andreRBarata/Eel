@@ -60,17 +60,15 @@ macro word {
 	}
 }
 
+/*
 macro (&) {
 	case {_ $args:unwrap ... ...} => {
 		console.log(#{$args ... (,) ...});/*.map((e) => {
 			 e.map(unwrapSyntax)
 			})
-		);*/
+		);
 
 
-		return #{this['ls']($args (,) ...)};
+		return #{system['ls']($args (,) ...)};
 	}
-}
-
-export (&)
-export (-)
+}*/

@@ -1,6 +1,6 @@
 angular.module('termApp', ['ngSanitize'])
-	.factory('interpreter', function() {
-		const Interpreter = require('./interpreter/Interpreter');
+	.factory('vm', function() {
+		const vm = require('./interpreter/vm');
 
-		return new Interpreter();
+		return vm.getInstance();
 	});

@@ -26,6 +26,20 @@ describe('command', () => {
 					echo.toFunction()();
 				}
 			);
+
+			it('should create function which executes action with converted arguments when ran',
+				(done) => {
+					echo
+					.arguments('<path>')
+					.action((push, args, input) => {
+						console.log(args);
+						expect(args.path).toEqual('./test');
+						done();
+					});
+
+					echo.toFunction()('./test');
+				}
+			);
 		});
 
 		describe('"arguments" function', () => {
