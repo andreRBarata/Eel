@@ -1,8 +1,8 @@
-const {VM}			= require('vm2');
+const {NodeVM}		= require('vm2');
 const Highland		= require('highland');
 const fs			= require('fs');
 const spawn			= require('child_process').spawn;
-const Type = require('type-of-is');
+const Type			= require('type-of-is');
 
 const Process		= require('./Process');
 const command		= require('./command');
@@ -39,16 +39,16 @@ function generateSystemFunction(commandname, options) {
 }
 
 module.exports = {
-	system: {},
 	getInstance() {
 		let sandbox = {
 			$env: process.env,
 			stdout: new Highland(),
-			system: new Proxy(this.system, {
+			$sys: new Proxy({}, {
 				get: (obj, prop) => (obj[prop])? obj[prop]:
 					generateSystemFunction(prop, {
 						defaultOutput: sandbox.stdout
-					})
+					}),
+				set: (obj, prop, value) => {console.log(value);return obj[prop] = value; }
 			}),
 			'_' : Process,
 			writeFile(file) {
@@ -56,25 +56,38 @@ module.exports = {
 			},
 			//FIXME
 			map(cb) {
-				return (new Highland()).map(cb);
+				return new Process((push, emit, input) => {
+					input.map(cb).errors((err) => emit('error', err))
+						.each(push);
+				});
 			},
 			reduce(cb) {
-				return (new Highland()).reduce(cb);
+				return new Process((push, emit, input) => {
+					input.reduce(cb).errors((err) => emit('error', err))
+						.each(push);
+				});
 			},
 			filter(cb) {
-				return (new Highland()).filter(cb);
+				return new Process((push, emit, input) => {
+					input.filter(cb).errors((err) => emit('error', err))
+						.each(push);
+				});
 			}
 		};
 
-		return new VM({
+		let vm = new NodeVM({
 			timeout: 1000,
 			console: 'off',
 	    	sandbox: sandbox,
 			require: {
-				import: ['./commands/cd.command']
+				external: true,
+				context: []
 			},
 			compiler: parsers.vm.parse
 		});
 
+		vm.run(`$sys.cd = require('${__dirname}/commands/cd.command').toFunction()`, __dirname + '/commands/cd.command');
+
+		return vm;
 	}
 };

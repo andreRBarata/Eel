@@ -54,62 +54,98 @@ let variables = {
 	)
 };
 
+//TODO: Refactor
+//TODO: Add escaping and fix template strings
 let vm = {
-	string: P.alt(
-		P.regex(/".*"/),
-		P.regex(/'.*'/)
-	),
 	shell: {
-		word: P.regex(
-			/[\-A-Za-z0-9.\\/]+/
+		arg: P.alt(
+			P.regex(/[\-A-Za-z0-9.\\=/]+/)
+				.map((word) => `'${word}'`),
+			P.regex(/".*[^\\]"|'.*[^\\]'/)
 		),
-		argument: P.lazy(() => vm.shell.word
-			.map((word) => `'${word}'`)),
-		variable: P.seq(
-			P.string('${'),
-			P.lazy(() => vm.shell.word),
-			P.string('}')
-		).map(([,word,]) => word),
-		args: P.sepBy(
+		args: P.sepBy1(
 			P.alt(
-				P.lazy(() => vm.shell.variable),
-				P.lazy(() => vm.shell.argument),
-				P.lazy(() => vm.string)
+				P.lazy(() => vm.templateVariable)
+					.map(([,expressions,]) => expressions),
+				P.lazy(() => vm.shell.arg)
 			),
 			P.whitespace
 		),
 		command: P.alt(
 			P.seq(
-				P.string('&'),
-				P.lazy(() => vm.shell.argument),
+				P.string('#'),
+				P.lazy(() => vm.shell.arg),
 				P.whitespace,
 				P.lazy(() => vm.shell.args)
 			),
 			P.seq(
-				P.string('&'),
-				P.lazy(() => vm.shell.argument)
+				P.string('#'),
+				P.lazy(() => vm.shell.arg)
 			)
-		).map(([,word,,args = []]) =>
-			`system[${word}](${
+		).map(([,func,,args = []]) =>
+			`$sys[${func}](${
 				args.join(',')
 			})`
 		)
 	},
+	templateVariable: P.seq(
+		P.string('${'),
+		P.lazy(() => vm.expressions),
+		P.string('}')
+	),
+	string: P.alt(
+		P.regex(/".*[^\\]"/),
+		P.regex(/'.*[^\\]'/),
+		P.seq(
+			P.string('`'),
+			P.alt(
+				P.lazy(() => vm.templateVariable),
+				P.noneOf('`')
+			).many(),
+			P.string('`')
+		)
+	),
 	expression: P.alt(
+		P.lazy(() => vm.string),
 		P.lazy(() => vm.shell.command),
-		P.regex(/.*/)
+		P.seq(
+			P.string('{'),
+			P.lazy(() => vm.expressions),
+			P.string('}')
+		),
+		P.seq(
+			P.string('('),
+			P.lazy(() => vm.expressions),
+			P.string(')')
+		),
+		P.seq(
+			P.string('['),
+			P.lazy(() => vm.expressions),
+			P.string(']')
+		),
+		P.oneOf('><=+-$?|&%/\\.*,:;'),
+		P.regex(/[a-zA-Z0-9_]+/),
+		P.whitespace
 	),
-	expressions: P.sepBy(
-		P.lazy(() => vm.expression),
-		P.optWhitespace
-	),
-	parse(code) {
-		let regex = /&([\-A-Za-z0-9.\\/]+|".*"|'.*')(?: ([\-A-Za-z0-9.\\/${}]+|".*"|'.*')*)?/g;
-		let step1 = code.replace(regex,
-			(line) => vm.shell.command.parse(line).value
-		);
+	expressions: P.lazy(() => vm.expression).many()
+		.map((...args) => {
+			function flatten(arr) {
+				const flat = [].concat(...arr);
+				return flat.some(Array.isArray) ? flatten(flat) : flat;
+			}
 
-		console.log('test', step1);
+			return flatten(args).join('')
+		}),
+	parse(code) {
+		console.log('preparse', code);
+		let step1 = vm.expressions
+				.parse(code).value;
+
+		console.log('parse 1',step1);
+
+		console.log('parse 2', sweet.compile(
+			step1
+		).code);
 
 		return sweet.compile(
 			step1

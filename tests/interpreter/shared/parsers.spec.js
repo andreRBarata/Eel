@@ -197,22 +197,58 @@ describe.only('parsers', () => {
 		describe('shell', () => {
 			let shell = vm.shell;
 
+			describe('args', () => {
+				it('should parse text', () => {
+					expect(shell.args.parse('test'))
+						.toEqual({status: true, value: ['\'test\'']})
+				});
+
+				it('should parse a string', () => {
+					expect(shell.args.parse('"test test"'))
+						.toEqual({status: true, value: ['\"test test\"']})
+				});
+
+				it('should parse a template variable', () => {
+					expect(shell.args.parse('${test}'))
+						.toEqual({status: true, value: ['test']})
+				});
+			});
+
 			describe('command', () => {
 
 				it('should parse simple command', () => {
-					expect(shell.command.parse('&ls'))
-						.toEqual({status: true, value: 'system[\'ls\']()'})
+					expect(shell.command.parse('#ls'))
+						.toEqual({status: true, value: '$sys[\'ls\']()'})
 				});
 
 				it('should parse command with arguments', () => {
-					expect(shell.command.parse('&ls src'))
-						.toEqual({status: true, value: `system['ls']('src')`})
+					expect(shell.command.parse('#ls src'))
+						.toEqual({status: true, value: `$sys['ls']('src')`})
 				});
 
 				it('should parse command with a variable', () => {
-					expect(shell.command.parse('&ls ${src}'))
-						.toEqual({status: true, value: `system['ls'](src)`})
+					expect(shell.command.parse('#ls ${src}'))
+						.toEqual({status: true, value: `$sys['ls'](src)`})
 				});
+			});
+		});
+
+		describe('templateVariable', () => {
+			it('should parse a variable', () => {
+				expect(vm.templateVariable.parse('${test}'))
+					.toEqual({status: true, value: ['${', 'test', '}']})
+			});
+		});
+
+		describe('expression', () => {
+			it('should parse a simple variable', () => {
+				expect(vm.expressions.parse('test'))
+					.toEqual({status: true, value: 'test'})
+			});
+
+			it('', () => {
+				expect(vm.expressions.parse('let test = #ls;'))
+					.toEqual({status: true, value: `let test = $sys['ls']();`})
 			});
 		});
 	});
