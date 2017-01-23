@@ -1,92 +1,100 @@
-const {NodeVM}		= require('vm2');
-const Highland		= require('highland');
-const fs			= require('fs');
-const spawn			= require('child_process').spawn;
-const Type			= require('type-of-is');
+const {NodeVM}			= require('vm2');
+const Highland			= require('highland');
+const fs				= require('fs');
+const spawn				= require('child_process').spawn;
+const Type				= require('type-of-is');
+const streamToPromise	= require('stream-to-promise');
 
 const Process		= require('./Process');
 const command		= require('./command');
-const parsers		= require('./shared/parsers');
-
-function generateSystemFunction(commandname, options) {
-	return function(...args) {
-		let appProcess = new Process((push, emit, input) => {
-			//TODO:100 Fix error propagation to backend id:7
-			let systemProcess = spawn(commandname,
-				(args || []).map(
-					(arg) => (!Type.is(arg, String)? JSON.stringify(arg): arg)
-				)
-			);
-
-			(new Highland(systemProcess.stdout))
-				.splitBy(/([^\n]+\n)/)
-				.filter((line) => line !== '')
-				.each(push);
-
-			systemProcess.stdin.on('end', () => {
-				appProcess.end();
-			});
-
-			systemProcess.stderr.on('readable',
-				() => push(systemProcess.stderr.read())
-			);
-
-			input.pipe(systemProcess.stdin);
-		}, options);
-
-		return appProcess;
-	};
-}
+const eelscript		= require('./shared/eelscript.parser');
 
 module.exports = {
 	getInstance() {
+		let vm;
 		let sandbox = {
-			$env: process.env,
+			fs: require('fs'),
 			stdout: new Highland(),
+			$env: process.env,
 			$sys: new Proxy({}, {
 				get: (obj, prop) => (obj[prop])? obj[prop]:
-					generateSystemFunction(prop, {
-						defaultOutput: sandbox.stdout
-					}),
-				set: (obj, prop, value) => {console.log(value);return obj[prop] = value; }
+					(...args) => obj['exec'](prop, ...args),
+				set: (obj, prop, value) => obj[prop] = value
 			}),
-			'_' : Process,
-			writeFile(file) {
-				return fs.WriteStream(file);
+			$cwd: __dirname,
+			//TODO: Write tests for this
+			requireCommand(path) {
+				streamToPromise(
+					fs.createReadStream(path)
+				).then((file) => {
+					vm.run(`
+						let self = (function () {
+							${file}
+
+							return module.exports;
+						})();
+
+						let commfunc = self.toFunction(this.stdout) || self;
+
+						$sys[commfunc.name] = commfunc;
+					`,__dirname);
+				});
 			},
+			load(path) {
+				streamToPromise(
+					fs.createReadStream(path)
+				).then((file) => {
+					return vm.run(file);
+				});
+			},
+			'_' : Process,
 			//FIXME
 			map(cb) {
 				return new Process((push, emit, input) => {
 					input.map(cb).errors((err) => emit('error', err))
 						.each(push);
+				}).config({
+					defaultOutput: sandbox.stdout
 				});
 			},
 			reduce(cb) {
 				return new Process((push, emit, input) => {
 					input.reduce(cb).errors((err) => emit('error', err))
 						.each(push);
+				}).config({
+					defaultOutput: sandbox.stdout
 				});
 			},
 			filter(cb) {
 				return new Process((push, emit, input) => {
 					input.filter(cb).errors((err) => emit('error', err))
 						.each(push);
+				}).config({
+					defaultOutput: sandbox.stdout
 				});
 			}
 		};
 
-		let vm = new NodeVM({
+		vm = new NodeVM({
 			timeout: 1000,
 			console: 'off',
 	    	sandbox: sandbox,
 			require: {
 				external: true,
-				context: []
+				builtin: ['fs', 'path', 'os', 'child_process'],
+				context: ['highland', 'type-of-is'],
+				mock: {
+					command: command
+				},
+				import: ['fs']
 			},
-			compiler: parsers.vm.parse
+			compiler: eelscript.parse
 		});
 
-		vm.run(`$sys.cd = require('${__dirname}/commands/cd.command').toFunction()`, __dirname + '/commands/cd.command');
+		sandbox.requireCommand(`${__dirname}/commands/echo.command.eel`);
+		sandbox.requireCommand(`${__dirname}/commands/exec.command.eel`);
+		sandbox.requireCommand(`${__dirname}/commands/realpath.command.eel`);
+		sandbox.requireCommand(`${__dirname}/commands/cd.command.eel`);
 
 		return vm;
 	}

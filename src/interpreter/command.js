@@ -1,7 +1,7 @@
 const minimist			= require('minimist');
 
 const Process			= require('./Process');
-const parsers			= require('./shared/parsers');
+const commandAPI		= require('./shared/commandAPI.parser');
 const {chainFunction} 	= require('./shared/common');
 
 /**
@@ -14,8 +14,7 @@ module.exports =
 		let Command = {
 			arguments:
 				chainFunction('arguments', (args = '') => {
-					let parsed = parsers
-						.command
+					let parsed = commandAPI
 						.args
 						.parse(args);
 
@@ -48,29 +47,19 @@ module.exports =
 					(mimetype = [], template = '') => [mimetype, template], {map: true}
 				),
 			action: chainFunction('action'),
-			toFunction($env) {
+			toFunction(stdout) {
 				let obj = {
 					[commandname]: (...args) => {
 						let parsedArgs = minimist(args);
 						let expectedArgs = Command.arguments();
-						//FIXME
-						for (let expectedArg of expectedArgs) {
-							if (expectedArg.multiple) {
-								parsedArgs[expectedArg.name] =
-									parsedArgs._.splice(0,
-										parsedArgs._.length - (expectedArgs.length - index)
-									);
-							}
-							else {
-								parsedArgs[expectedArg.name] =
-									parsedArgs._.splice(0, 1)[0];
-							}
-						}
 
-						parsedArgs._ = args;
-
-						return new Process((push, emit, input) =>
-							Command.action()(push, parsedArgs, input));
+						return new Process((push, emit, stdin) =>
+							Command.action()(Object.assign({
+								$stdin: stdin,
+								$arguments: args
+							}, parsedArgs), push), {
+									defaultOutput: stdout
+							});
 					}
 				}
 

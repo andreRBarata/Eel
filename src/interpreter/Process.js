@@ -7,7 +7,7 @@ const Type				= require('type-of-is');
 *	@callback ProcessGenerator
 *	@param {Function} push - Push item into process, null to end it
 *	@param {Function} emit - emit event in process
-*	@param {Highland} input - Stream that in inputed into process
+*	@param {Highland} stdin - Stream that in inputed into process
 */
 
 class Process {

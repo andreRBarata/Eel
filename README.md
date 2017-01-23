@@ -2,18 +2,18 @@
 
 <!-- toc orderedList:0 -->
 
-- [Eel Terminal](#eel-terminal)
-	- [Summary](#summary)
-	- [Background and References](#background-and-references)
-		- [Websites](#websites)
-		- [Books](#books)
-	- [Design](#design)
-		- [Syntax](#syntax)
-			- [Basic Example](#basic-example)
-			- [Example with variables](#example-with-variables)
-			- [Examples with pipes](#examples-with-pipes)
-				- [Simple Pipe](#simple-pipe)
-		- [Structure](#structure)
+* [Eel Terminal](#eel-terminal)
+	* [Summary](#summary)
+	* [Background and References](#background-and-references)
+		* [Websites](#websites)
+		* [Books](#books)
+	* [Design](#design)
+		* [Syntax](#syntax)
+			* [Basic Example](#basic-example)
+			* [Example with variables](#example-with-variables)
+			* [Examples with pipes](#examples-with-pipes)
+				* [Simple Pipe](#simple-pipe)
+		* [Structure](#structure)
 
 <!-- tocstop -->
 

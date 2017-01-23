@@ -1,0 +1,28 @@
+const command	= require('command');
+const spawn		= require('child_process').spawn;
+const Highland	= require('highland');
+
+module.exports = command('exec')
+	.arguments('<command> <args...>')
+	.action(({$arguments, $stdin}, push) => {
+		let commandname = $arguments.slice(0,1)[0];
+		let args = $arguments.slice(1);
+		let systemProcess = spawn(
+			commandname,
+			args, {
+				env: $env,
+				cwd: $cwd
+			}
+		);
+
+		(new Highland(systemProcess.stdout))
+			.splitBy(/([^\n]+\n)/)
+			.filter((line) => line !== '')
+			.each(push);
+
+		systemProcess.stderr.on('readable',
+			() => push(systemProcess.stderr.read())
+		);
+
+		$stdin.pipe(systemProcess.stdin);
+	});

@@ -1,0 +1,15 @@
+const command	= require('command');
+const Type		= require('type-of-is');
+
+module.exports = command('echo')
+	.arguments('<text...>')
+	.action(({$arguments}, push) => {
+		push(
+			$arguments.map(
+				(arg) => (!Type.is(arg, String)?
+					JSON.stringify(arg): arg
+				)
+			).join(' ')
+		);
+		push(null);
+	});

@@ -1,18 +1,16 @@
 const repl			= require('repl');
 const Writable		= require('stream').Writable;
 
-const Interpreter	= require('./Interpreter');
+const vm	= require('./vm');
 
-
-let interpreter = new Interpreter();
 
 repl.start({
 	prompt: '> ',
 	eval: (cmd, context, filename, callback) => {
 		callback(null,
-			interpreter.runCode(cmd)
+			vm.run(cmd)
 		);
 	}
 });
 
-interpreter.stdout.on('data', (text) => process.stdout.write(`${text}\n`));
+//vm.stdout.on('data', (text) => process.stdout.write(`${text}\n`));
