@@ -24,11 +24,12 @@ class Process {
 		this.stdin = new Highland();
 
 		if (Type.is(args[0], Function)) {
-			args[0](
-				(data) => this.stdout.push(data),
-				(event) => this.stdout.emit(event),
-				this.stdin
-			);
+			args[0]({
+				push: (data) => this.stdout.push(data),
+				emit: (event) => this.stdout.emit(event),
+				stdin: this.stdin,
+				stdout: this.stdout	
+			});
 
 			if (Type.is(args[1], Object)) {
 				this.config(args[1]);

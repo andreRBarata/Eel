@@ -3,8 +3,7 @@ const command = require('command');
 module.exports = command('cd')
 	.arguments('<path>')
 	.action(({_: [path]}, push) => {
-		#realpath(path).toPromise()
-			.then(function ([abspath]) {
+		#realpath(path) |> #then(function ([abspath]) {
 				$cwd = abspath;
 			});
 

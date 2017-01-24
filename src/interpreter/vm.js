@@ -50,7 +50,7 @@ module.exports = {
 			'_' : Process,
 			//FIXME
 			map(cb) {
-				return new Process((push, emit, input) => {
+				return new Process(({push, emit, input}) => {
 					input.map(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
@@ -58,7 +58,7 @@ module.exports = {
 				});
 			},
 			reduce(cb) {
-				return new Process((push, emit, input) => {
+				return new Process(({push, emit, input}) => {
 					input.reduce(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
@@ -66,7 +66,7 @@ module.exports = {
 				});
 			},
 			filter(cb) {
-				return new Process((push, emit, input) => {
+				return new Process(({push, emit, input}) => {
 					input.filter(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
@@ -77,7 +77,7 @@ module.exports = {
 
 		vm = new NodeVM({
 			timeout: 1000,
-			console: 'off',
+			console: 'inherit',
 	    	sandbox: sandbox,
 			require: {
 				external: true,
@@ -91,6 +91,8 @@ module.exports = {
 			compiler: eelscript.parse
 		});
 
+		sandbox.requireCommand(`${__dirname}/commands/then.command.eel`);
+		sandbox.requireCommand(`${__dirname}/commands/pwd.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/echo.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/exec.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/realpath.command.eel`);

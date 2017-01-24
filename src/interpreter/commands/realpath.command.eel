@@ -1,6 +1,6 @@
-const command = require('command');
-const path = require('path');
-const os = require('os');
+const command	= require('command');
+const path		= require('path');
+const os		= require('os');
 
 module.exports = command('realpath')
 	.arguments('<location>')

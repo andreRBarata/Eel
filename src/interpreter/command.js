@@ -47,18 +47,23 @@ module.exports =
 					(mimetype = [], template = '') => [mimetype, template], {map: true}
 				),
 			action: chainFunction('action'),
-			toFunction(stdout) {
+			toFunction(sysout) {
 				let obj = {
 					[commandname]: (...args) => {
-						let parsedArgs = minimist(args);
 						let expectedArgs = Command.arguments();
+						let parsedArgs = {};
 
-						return new Process((push, emit, stdin) =>
+						if (expectedArgs) {
+							parsedArgs = minimist(args);
+						}
+						
+						return new Process(({push, emit, stdin, stdout}) =>
 							Command.action()(Object.assign({
 								$stdin: stdin,
+								$stdout: stdout,
 								$arguments: args
 							}, parsedArgs), push), {
-									defaultOutput: stdout
+									defaultOutput: sysout
 							});
 					}
 				}
