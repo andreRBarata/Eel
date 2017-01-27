@@ -29,13 +29,13 @@ describe('command', () => {
 
 			it('should create function which executes action with converted arguments when ran',
 				(done) => {
+					console.log(echo);
 					echo
-					.arguments('<path>')
-					.action((push, args, input) => {
-						console.log(args);
-						expect(args.path).toEqual('./test');
-						done();
-					});
+						.arguments('<path>')
+						.action(({_:[path]}) => {
+							expect(path).toEqual('./test');
+							done();
+						});
 
 					echo.toFunction()('./test');
 				}
@@ -80,16 +80,14 @@ describe('command', () => {
 
 		describe('"display" function', () => {
 			it('should add display template', (done) => {
-				echo.display(['text', 'json'],
+				echo.display('text/json',
 					`{{variable}}`
 				).action(() => {
 					done();
 				});
 
-				expect(echo.display()).toEqual(
-					new Map([
-						[['text', 'json'], `{{variable}}`]
-					])
+				expect(echo.display('text/json')).toEqual(
+					`{{variable}}`
 				);
 
 				echo.toFunction()();

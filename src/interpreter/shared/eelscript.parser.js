@@ -52,12 +52,13 @@ const eelscript = {
 			})`
 		)
 	},
-	//TODO: Test this
+	excapedCharacter: P.regex(/\\./),
+	//TODO:0 Test this id:6
 	comment: P.alt(
 		P.regex(/\/\/.*\n/),
 		P.regex(/\/\*(.|\n)*\*\//)
 	),
-	//TODO: Fix escaping
+	//TODO:0 Fix escaping id:7
 	templateVariable: P.seq(
 		P.string('${'),
 		P.lazy(() => eelscript.expressions),
@@ -66,6 +67,7 @@ const eelscript = {
 	templateString: P.seq(
 		P.string('`'),
 		P.alt(
+			P.lazy(() => eelscript.excapedCharacter),
 			P.lazy(() => eelscript.templateVariable)
 				.map(([,template,]) =>
 					['"', '+', ['(', template, ')'], '+', '"']),
@@ -115,7 +117,7 @@ const eelscript = {
 	),
 	expressions: P.lazy(() => eelscript.expression).many()
 		.map((...args) => flatten(args).join('')),
-	//TODO: Write tests for this
+	//TODO:0 Write tests for this id:8
 	parse(code) {
 		console.log('preparse', code);
 		let step1 = eelscript.expressions

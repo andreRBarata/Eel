@@ -4,8 +4,8 @@ module.exports = command('cd')
 	.arguments('<path>')
 	.action(({_: [path]}, push) => {
 		#realpath(path) |> #then(function ([abspath]) {
-				$cwd = abspath;
-			});
+			$cwd = abspath;
+		});
 
 		push(null);
 	});

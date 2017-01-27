@@ -2,17 +2,23 @@ angular.module('termApp')
 	.controller('mainController', function($scope, vm) {
 
 		$scope.command = '';
-		//TODO:90 Fix all output to the same command error
+		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
-		console.log(vm);
-		//TODO:130 See about treatment of nulls
-		vm.options.sandbox.stdout.each((result) => {
-			if (result !== null) {
-				$scope.output.push(result);
-				$scope.$apply();
-				window.scrollTo(0,document.body.scrollHeight);
-			}
-		});
+
+		//TODO:130 See about treatment of nulls id:5
+		vm.options.sandbox
+			.stdout
+			.batchWithTimeOrCount(10, 300)
+			.each((result) => {
+				if (result !== null) {
+					for (let line of result) {
+						$scope.output.push(line);
+					}
+
+					window.scrollTo(0,document.body.scrollHeight);
+					$scope.$apply();
+				}
+			});
 
 		$scope.execute = (keyEvent) => {
 			if (keyEvent.which === 13) {

@@ -5,46 +5,44 @@ const Highland	= require('highland');
 const Process 	= require('../../src/interpreter/Process');
 
 describe('Process', () => {
-	let workProcess;
 
-	beforeEach(() => {
-		workProcess = new Process();
-	});
 
 	it('should be receive pipe from Highland Stream', (done) => {
-		Highland.of('test').pipe(workProcess);
-
-		workProcess.stdin.once('data', (data) => {
-			expect(data).toEqual('test');
-			done();
+		let workProcess = new Process(({stdin}) => {
+			stdin.once('data', (data) => {
+				expect(data).toEqual('test');
+				done();
+			});
 		});
+		Highland.of('test').pipe(workProcess);
 	});
 
 	it('should be receive pipe from other process', (done) => {
-		let output = new Process((push) => {
+		let workProcess = new Process(({stdin}) => {
+			stdin.once('data', (data) => {
+				expect(data).toEqual('test');
+				done();
+			});
+		});
+		let output = new Process(({push}) => {
 				push('test');
 				push(null);
 			});
 
 		output.pipe(workProcess);
 
-		workProcess.stdin.once('data', (data) => {
-			expect(data).toEqual('test');
-			done();
-		});
-
 	});
 
 	it('should create Process with elements if an function is sent', (done) => {
-		let testProcess = new Process((push) => {
+		let testProcess = new Process(({push}) => {
 			push('test');
 			push(null);
 		});
 
 		expect(testProcess).toNotEqual(null);
 
-		testProcess.toPromise().then((array) => {
-			expect(array).toEqual(['test']);
+		testProcess.toPromise().then((data) => {
+			expect(data).toEqual('test');
 			done();
 		}).catch((err) => {
 			console.log('Error:', err);
@@ -54,34 +52,41 @@ describe('Process', () => {
 	//#ForThisSprint:10 Add tests for pipeline id:0
 	describe('"pipeline" function', () => {
 		it('should create pipe between processes', (done) => {
-			let output = new Process();
-
-			Process.pipeline(output, workProcess);
-
-			workProcess.once('data', (data) => {
-				expect(data).toEqual('test');
-				done();
+			let workProcess = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toEqual('test');
+					done();
+				});
+			});
+			let output = new Process(({push}) => {
+				push('test');
+				push(null);
 			});
 
-			output.stdout.push('test');
-			output.stdout.push(null);
+			Process.pipeline(output, workProcess);
 		});
 	});
 
 	describe('"toPromise" function', () => {
 
 		it('should call then when written on and ended', (done) => {
+			let workProcess = new Process(({push}) => {
+				push('test');
+				push(null);
+			});
 			workProcess.toPromise().then((data) => {
 				expect(data[0]).toEqual('test');
 				done();
 			});
-
-			workProcess.stdout.push('test');
-			workProcess.stdout.push(null);
-
 		});
 
 		it('should call catch when error emitted', (done) => {
+			let workProcess = new Process(({push, emit}) => {
+				push('test');
+				emit('error', 'Test');
+				push(null);
+			});
+
 			workProcess.toPromise().then((data) => {
 				expect(data[0]).toNotEqual('test');
 
@@ -89,15 +94,16 @@ describe('Process', () => {
 				expect(err).toBeAn(Error);
 				done();
 			});
-
-			workProcess.stdout.push('test');
-			workProcess.stdout.emit('error', new Error('error'));
-
 		});
 	});
 
-	describe('"out" stream', () => {
+	/*describe('"out" stream', () => {
 		it('should call callback when written on', (done) => {
+			let workProcess = new Process(({push, emit}) => {
+				push('test');
+				emit('error', 'test')
+				push(null);
+			});
 			workProcess.stdout.once('data', (data) => {
 				expect(data).toEqual('test');
 				done();
@@ -151,5 +157,5 @@ describe('Process', () => {
 
 			workProcess.stdout.push('test');
 		});
-	});
+	});*/
 });

@@ -49,11 +49,16 @@ describe('Eelscript parser', () => {
 		});
 	});
 
-	//TODO: Fix tests
+	//TODO: Fix tests id:15
 	describe('templateString', () => {
 		it('should parse a template string', () => {
 			expect(eelscript.templateString.parse('`test`'))
 				.toEqual({status: true, value: `"test"`});
+		});
+
+		it('should parse a string and escape the template command', () => {
+			expect(eelscript.templateString.parse('`\\${test}`'))
+				.toEqual({status: true, value: `"\\\${test}"`});
 		});
 
 		it('should parse a template variable', () => {

@@ -1,4 +1,4 @@
-const P		= require('parsimmon');
+const P	= require('parsimmon');
 
 const commandAPI = {
 	variables: {

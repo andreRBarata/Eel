@@ -4,7 +4,24 @@ const Type		= require('type-of-is');
 
 module.exports = command('echo')
 	.arguments('<text...>')
+	.display('text/html', (data) => {
+		switch (Type.string(data)) {
+			case 'String':
+				return data;
+				break;
+			default:
+				return JSON.stringify(data);
+		}
+	})
 	.action(({$arguments}, push) => {
+		//An easter egg, dont tell anyone
+		if ($arguments.length === 1 &&
+			$arguments[0] === 'marco') {
+				push('polo');
+		}
+		else {
+			$arguments.forEach(push);
+		}
 
-		$arguments.forEach(push);
+		push(null);
 	});

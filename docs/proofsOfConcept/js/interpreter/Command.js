@@ -26,7 +26,7 @@ class Command {
 		this.command.args = args || {};
 	}
 
-	//TODO:190 Make usage of streams
+	//TODO:190 Make usage of streams id:0
 	exec(args, environment, callback) {
 		let decontructedArgs;
 
@@ -34,13 +34,13 @@ class Command {
 			decontructedArgs = args.match(/(".*"|\'.*\'|\S+)/g);
 		}
 		else {
-			//TODO:180 Use minimist and parse module for parameter parse
+			//TODO:180 Use minimist and parse module for parameter parse id:1
 		}
 
 		this.action()(decontructedArgs, environment, callback);
 	}
 
-	//TODO:200 Finish option function
+	//TODO: Finish option function id:12
 	option() {
 		let optionName, description, autocomplete;
 

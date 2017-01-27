@@ -1,8 +1,9 @@
 const minimist			= require('minimist');
+const Highland			= require('highland');
 
 const Process			= require('./Process');
 const commandAPI		= require('./shared/commandAPI.parser');
-const {chainFunction} 	= require('./shared/common');
+const {chainingObject} 	= require('./shared/common');
 
 /**
 *	Create a command that takes in variables and flags
@@ -11,9 +12,9 @@ const {chainFunction} 	= require('./shared/common');
 */
 module.exports =
 	function command(commandname = '', description = '') {
-		let Command = {
+		let Command = chainingObject({
 			arguments:
-				chainFunction('arguments', (args = '') => {
+				['arguments', (args = '') => {
 					let parsed = commandAPI
 						.args
 						.parse(args);
@@ -23,54 +24,71 @@ module.exports =
 					}
 
 					return parsed.value;
-				}, {default: []}),
-			description: chainFunction('description',
+				}, {default: []}],
+			description: ['description',
 				{default: description}
-			),
-			receives: chainFunction('receives',
+			],
+			receives: ['receives',
 				{multiple: true}
-			),
-			version: chainFunction('version'),
-			help: chainFunction('help'),
+			],
+			version: ['version'],
+			help: ['help'],
 			validation:
-				chainFunction('validation', () => {
+				['validation', () => {
 					// function
-				}),
+				}],
 			option:
-				chainFunction('options',
+				['options',
 					(flags, description, option) => {
 
 					}, {map: true}
-				),
+				],
 			display:
-				chainFunction('display',
-					(mimetype = [], template = '') => [mimetype, template], {map: true}
-				),
-			action: chainFunction('action'),
+				['display',
+					(mimetype = '', template = '') => [mimetype, template], {map: true, default: new Map([
+						['text/x-ansi', (args) => args]//TODO: Add ansi encoding id:13
+					])}
+				],
+			action: ['action'],
 			toFunction(sysout) {
 				let obj = {
 					[commandname]: (...args) => {
-						let expectedArgs = Command.arguments();
+						let expectedArgs = this.arguments();
 						let parsedArgs = {};
 
 						if (expectedArgs) {
-							parsedArgs = minimist(args);
+							parsedArgs = minimist(args);//TODO: Complete parameter parsing id:14
 						}
-						
+
 						return new Process(({push, emit, stdin, stdout}) =>
-							Command.action()(Object.assign({
-								$stdin: stdin,
-								$stdout: stdout,
-								$arguments: args
-							}, parsedArgs), push), {
-									defaultOutput: sysout
+							this.action()(Object.assign({
+									$stdin: stdin,
+									$stdout: stdout,
+									$arguments: args
+								}, parsedArgs),
+								push
+							), {
+								defaultOutput: sysout,
+								preprocessor: (destination) => {
+									let receives = destination.receives ||
+										'text/x-ansi';
+
+									let fn = this.display(receives);
+
+									if (fn) {
+										return Highland.pipeline(
+											Highland.map(fn)
+										);
+									}
+								},
+								receives: this.receives()
 							});
 					}
-				}
+				};
 
 				return obj[commandname];
 			}
-		};
+		});
 
 		return Command;
 	};

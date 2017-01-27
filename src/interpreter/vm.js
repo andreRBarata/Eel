@@ -22,7 +22,7 @@ module.exports = {
 				set: (obj, prop, value) => obj[prop] = value
 			}),
 			$cwd: __dirname,
-			//TODO: Write tests for this
+			//TODO:0 Write tests for this id:9
 			requireCommand(path) {
 				streamToPromise(
 					fs.createReadStream(path)
@@ -50,24 +50,24 @@ module.exports = {
 			'_' : Process,
 			//FIXME
 			map(cb) {
-				return new Process(({push, emit, input}) => {
-					input.map(cb).errors((err) => emit('error', err))
+				return new Process(({push, emit, stdin}) => {
+					stdin.map(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
 					defaultOutput: sandbox.stdout
 				});
 			},
 			reduce(cb) {
-				return new Process(({push, emit, input}) => {
-					input.reduce(cb).errors((err) => emit('error', err))
+				return new Process(({push, emit, stdin}) => {
+					stdin.reduce(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
 					defaultOutput: sandbox.stdout
 				});
 			},
 			filter(cb) {
-				return new Process(({push, emit, input}) => {
-					input.filter(cb).errors((err) => emit('error', err))
+				return new Process(({push, emit, stdin}) => {
+					stdin.filter(cb).errors((err) => emit('error', err))
 						.each(push);
 				}).config({
 					defaultOutput: sandbox.stdout
@@ -75,6 +75,7 @@ module.exports = {
 			}
 		};
 
+		sandbox.stdout.receives = 'text/html';
 		vm = new NodeVM({
 			timeout: 1000,
 			console: 'inherit',

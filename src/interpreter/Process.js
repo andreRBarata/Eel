@@ -5,38 +5,45 @@ const Type				= require('type-of-is');
 
 /**
 *	@callback ProcessGenerator
-*	@param {Function} push - Push item into process, null to end it
-*	@param {Function} emit - emit event in process
-*	@param {Highland} stdin - Stream that in inputed into process
+*	@param {{
+*		push: Function,
+*		emit: Function,
+*		stdin: Highland,
+*		stdout: Stream
+*	}}
 */
 
-class Process {
-	//TODO:120 Pass system variable to generator function id:28
+class Process extends stream.Duplex {
 	/**
 	*	@param {ProcessGenerator} [source]
-	* 	@param {{defaultOutput: Stream}} config
+	* 	@param {{defaultOutput, preprocessor}} config
 	*/
-	constructor(...args) {
-		this.stdout = new stream.Readable({
-			read() {},
+	constructor(source, config) {
+		let stdin = new Highland();
+		super({
+			read(){},
+			write(chunk, encoding, callback) {
+				stdin.write(chunk);
+				callback();
+			},
+			writev(){},
 			objectMode: true
 		});
-		this.stdin = new Highland();
 
-		if (Type.is(args[0], Function)) {
-			args[0]({
-				push: (data) => this.stdout.push(data),
-				emit: (event) => this.stdout.emit(event),
-				stdin: this.stdin,
-				stdout: this.stdout	
+		if (Type.is(arguments[0], Function)) {
+			arguments[0]({
+				push: (data) => this.push(data),
+				emit: (event) => this.emit(event),
+				stdin: stdin,
+				stdout: this//TODO:Replace this
 			});
 
-			if (Type.is(args[1], Object)) {
-				this.config(args[1]);
+			if (Type.is(arguments[1], Object)) {
+				this.config(arguments[1]);
 			}
 		}
-		else if (Type.is(args[0], Object)) {
-			this.config(args[0]);
+		else if (Type.is(arguments[0], Object)) {
+			this.config(arguments[0]);
 		}
 	}
 
@@ -46,23 +53,37 @@ class Process {
 	*/
 	toPromise() {
 		if (this._defaultOutput) {
-			this.stdout.unpipe(this._defaultOutput);
+			super.unpipe(this._defaultOutput);
 		}
 
-		return streamToPromise(this.stdout);
+		return streamToPromise(this);
 	}
 
 	/**
 	*	Sets configurations for the process
-	* 	@param {{defaultOutput: Stream}} config - Config object
+	* 	@param {{defaultOutput, preprocessor}} config - Config object
 	* 	@returns {Process}
 	*/
-	config(config = {}) {
-		if (config.defaultOutput) {
-			this._defaultOutput =
-				config.defaultOutput;
+	config(configs) {
+		let {defaultOutput, preprocessor} = configs;
 
-			this.pipe(config.defaultOutput, { end: false });
+		if (preprocessor) {
+			this._preprocessor =
+			preprocessor;
+		}
+		if (defaultOutput) {
+			this.pipe(defaultOutput, { end: false });
+
+			this._defaultOutput =
+			defaultOutput;
+		}
+
+		for (let attr in Object.keys(configs)) {
+			if (configs.hasOwnProperty(attr)) {
+				if (!(attr in ['defaultOutput', 'preprocessor'])) {
+					this[attr] = rest[attr];
+				}
+			}
 		}
 
 		return this;
@@ -74,12 +95,21 @@ class Process {
 	*	@param {Process} process - The process to pipe into.
 	*	@returns {Process}
 	*/
-	pipe(...args) {
+	pipe(destination, options) {
+		let mapper = (this._preprocessor)?
+			this._preprocessor(destination): null;
+
 		if (this._defaultOutput) {
-			this.stdout.unpipe(this._defaultOutput);
+			super.unpipe(this._defaultOutput);
 		}
 
-		return this.stdout.pipe(...args);
+		if (mapper) {
+			return super
+				.pipe(mapper)
+				.pipe(destination, options);
+		}
+
+		return super.pipe(destination, options);
 	}
 
 	//TODO:150 Warning for readonly processes id:2
@@ -89,66 +119,22 @@ class Process {
 	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
 	*	@returns {Process}
 	*/
-	static pipeline(...args) {
-		let first = false;
-		let previous;
-		let toReturn = new Process();
-		let processes = args
-			.map((e) => {
-				if (e.pipe) {
-					return e;
-				}
-				else if (Type.is(e, String)) {
-					return Highland.of(e);
+	static pipeline(input, output) {
+		function asStream(stream) {
+			if (!input.pipe) {
+				if (Type.is(input, String)) {
+					return Highland.of(input);
 				}
 				else {
-					return new Highland(e);
+					return new Highland(input);
 				}
-			});
-
-		for (let obj of processes) {
-			if (!first) {
-				first = obj;
 			}
-
-			if (previous) {
-				previous.pipe(obj);
+			else {
+				return stream;
 			}
-
-			previous = obj;
 		}
 
-		//TODO:170 Write this better
-		toReturn.stdout = previous;
-		toReturn.stdin = first;
-
-		return toReturn;
-	}
-
-	//TODO:160 Write description
-	// Stream Compatibility
-	on(...args) {
-		return this.stdout.on(...args);
-	}
-
-	once(...args) {
-		return this.stdout.once(...args);
-	}
-
-	removeListener(...args) {
-		return this.stdout.removeListener(...args);
-	}
-
-	end() {
-		this.stdin.end();
-	}
-
-	emit(...args) {
-		return this.stdout.emit(...args);
-	}
-
-	write(chunk, encoding, callback) {
-		return this.stdin.write(chunk, encoding, callback);
+		return asStream(input).pipe(asStream(output));
 	}
 }
 

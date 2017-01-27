@@ -12,9 +12,9 @@
 	</head>
 	<body ng-app="termApp">
 		<div ng-controller="mainController">
-			<p ng-repeat="line in output track by $index">
+			<div ng-repeat="line in output track by $index">
 				{{line.toString()}}
-			</p>
+			</div>
 			<div class="commandPane">
 				<input type="text" ng-model="command" ng-keyup="execute($event)" autofocus/>
 			</div>

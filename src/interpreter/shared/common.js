@@ -1,6 +1,7 @@
 const Type = require('type-of-is');
 
-module.exports = {
+//TODO:Test common module
+const common = {
 	/**
 	*	Creates an objects which is a extended version
 	*	of a given prototype with the methods and methods provided
@@ -21,6 +22,42 @@ module.exports = {
 		return new Output();
 	},
 	/**
+	*	Creates an object of chain with functions
+	*	@param {Object} object - Object with the structure to use
+	*/
+	chainingObject(object) {
+		let output = {};
+
+		for (let field in object) {
+			if (Type.is(object[field], Array)) {
+				let [name, fn, options = {}] = object[field];
+				let index = `_${name}`;
+
+				if (Type.is(fn, Object)) {
+					options = fn;
+					fn = null;
+				}
+
+				if (!options.default) {
+					if (options.multiple) {
+						options.default = [];
+					}
+					else if (options.map) {
+						options.default = new Map();
+					}
+				}
+
+				output[index] = options.default;
+				output[field] = common.chainFunction([name, fn, options])
+			}
+			else {
+				output[field] = object[field];
+			}
+		}
+
+		return output;
+	},
+	/**
 	*	Creates a function that can be used for chaining
 	*	to get and set variables
 	*	@param {string} name - name of the location to store data in
@@ -28,37 +65,32 @@ module.exports = {
 	*	@param [{multiple: boolean, map: boolean, default: any}] options
 	*	@returns {function}
 	*/
-	chainFunction(name, fn = (arg) => arg, options = {}) {
+	chainFunction([name, fn, options = {}]) {
 		let index = `_${name}`;
-		if (Type.is(fn, Object)) {
-			options = fn;
-			fn = (arg) => arg;
-		}
-
-		if (!options.default) {
-			if (options.multiple) {
-				options.default = [];
-			}
-			else if (options.map) {
-				options.default = new Map();
-			}
-		}
 
 		return function (...innerargs) {
-			let output = fn(...innerargs);
-
-			if (Type.is(output, Error)) {
-				return output;
-			}
-			if (!this[index]) {
-				this[index] = options.default;
-			}
 			if (!innerargs.length) {
 				return this[index];
 			}
 
+			if (innerargs.length === 1 && options.map) {
+				return this[index].get(innerargs[0])
+			}
+
+			let output = (!fn)?
+				innerargs: fn(...innerargs);
+
+			if (output.length === 1) {
+				output = output[0];
+			}
+
+			if (Type.is(output, Error)) {
+				return output;
+			}
+
 			if (options.multiple) {
-				this[index].push(output);
+				this[index]
+					.push(output);
 			}
 			else if (options.map) {
 				let [key, value] = output;
@@ -73,3 +105,5 @@ module.exports = {
 		}
 	}
 };
+
+module.exports = common;
