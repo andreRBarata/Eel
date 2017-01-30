@@ -81,7 +81,8 @@ module.exports =
 
 									if (fn) {
 										return stream.Transform({
-											transform(chunk, cb) {
+											objectMode: true,
+											transform(chunk, encoding, cb) {
 												cb(null, fn(chunk));
 											}
 										});
