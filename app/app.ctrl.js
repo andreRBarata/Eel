@@ -1,12 +1,13 @@
 angular.module('termApp')
 	.controller('mainController', ($scope, vm) => {
+		$scope.appscope = vm.options.sandbox;
 
 		$scope.command = '';
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
 
 		//TODO:130 See about treatment of nulls id:5
-		vm.options.sandbox
+		$scope.appscope
 			.stdout
 			.batchWithTimeOrCount(10, 300)
 			.each((result) => {

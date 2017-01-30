@@ -1,5 +1,5 @@
 const expect = require('expect');
-const common = require('../../../src/interpreter/shared/common');
+const common = require('../../../app/interpreter/shared/common');
 
 describe('common', () => {
 	describe('chainingObject', () => {

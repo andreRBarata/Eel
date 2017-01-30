@@ -3,6 +3,7 @@
 // All of the Node.js APIs are available in this process.
 require('angular');
 require('angular-sanitize');
+require('angular-ui-bootstrap');
 require('jsonformatter');
 require('./app.js');
 require('./app.ctrl.js');

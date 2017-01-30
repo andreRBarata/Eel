@@ -1,6 +1,6 @@
 const expect	= require('expect');
 const Highland	= require('highland');
-const command	= require('../../src/interpreter/command');
+const command	= require('../../app/interpreter/command');
 
 describe('command', () => {
 	let echo;

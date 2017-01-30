@@ -37,6 +37,7 @@
   "dependencies": {
     "angular": "^1.6.1",
     "angular-sanitize": "^1.6.1",
+    "angular-ui-bootstrap": "^2.5.0",
     "ansi-to-html": "^0.5.0",
     "bootstrap": "^3.3.7",
     "event-stream": "^3.3.4",

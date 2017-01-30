@@ -3,17 +3,20 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Eel Terminal</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css"
 			href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css"
 			href="../node_modules/jsonformatter/dist/json-formatter.min.css">
+			<link rel="stylesheet" type="text/css" href="assets/css/styles.css">
 		<script>
 			// You can also require other files to run in this process
 			require('./renderer.js');
 		</script>
 	</head>
-	<body ng-app="termApp">
-		<div ng-controller="mainController">
+	<body ng-app="termApp" ng-controller="mainController">
+		<div class="container-fluid">
 			<div ng-repeat="line in output track by $index">
 				<result-display template="line.html" src="line.scope"></result-display>
 			</div>
@@ -21,5 +24,11 @@
 				<input type="text" ng-model="command" ng-keyup="execute($event)" autofocus/>
 			</div>
 		</div>
+
+		<footer class="footer navbar-fixed-bottom">
+			<div class="container">
+				<p class="text">{{appscope.$cwd}}</p>
+			</div>
+		</footer>
 	</body>
 </html>
