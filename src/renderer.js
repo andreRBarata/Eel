@@ -3,7 +3,7 @@
 // All of the Node.js APIs are available in this process.
 require('angular');
 require('angular-sanitize');
-require('angular-json-tree');
+require('jsonformatter');
 require('./app.js');
 require('./app.ctrl.js');
 require('./resultDisplay.dir.js');

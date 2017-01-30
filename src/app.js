@@ -1,4 +1,4 @@
-angular.module('termApp', ['ngSanitize', 'angular-json-tree'])
+angular.module('termApp', ['ngSanitize', 'jsonFormatter'])
 	.factory('vm', () => {
 		const vm = require('./interpreter/vm');
 

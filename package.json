@@ -35,14 +35,13 @@
     }
   },
   "dependencies": {
-    "angular": "^1.5.8",
-    "angular-json-tree": "^1.0.1",
-    "angular-sanitize": "^1.5.8",
+    "angular": "^1.6.1",
+    "angular-sanitize": "^1.6.1",
     "ansi-to-html": "^0.5.0",
     "bootstrap": "^3.3.7",
-    "duplexer3": "^0.1.4",
     "event-stream": "^3.3.4",
     "highland": "^2.10.0",
+    "jsonformatter": "^0.6.0",
     "minimist": "^1.2.0",
     "parsimmon": "^1.2.0",
     "stream-to-promise": "^2.2.0",
