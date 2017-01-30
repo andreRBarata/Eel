@@ -1,7 +1,6 @@
 const minimist			= require('minimist');
 const Highland			= require('highland');
 const stream			= require('stream');
-const es				= require('event-stream');
 
 const Process			= require('./Process');
 const commandAPI		= require('./shared/commandAPI.parser');
@@ -30,9 +29,7 @@ module.exports =
 			description: ['description',
 				{default: description}
 			],
-			receives: ['receives',
-				{multiple: true}
-			],
+			receives: ['receives'],
 			version: ['version'],
 			help: ['help'],
 			validation:
@@ -55,7 +52,7 @@ module.exports =
 							}
 						}],
 						['text/html', (data) => '{{src}}'],
-						['text/x-ansi', (data) => data]//TODO: Add ansi encoding id:13
+						['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
 					])}
 				],
 			action: ['action'],
@@ -83,9 +80,11 @@ module.exports =
 									let fn = this.display(receives);
 
 									if (fn) {
-										return es.map(
-											(data, cb) => cb(null, fn(data))
-										);
+										return stream.Transform({
+											transform(chunk, cb) {
+												cb(null, fn(data));
+											}
+										});
 									}
 								},
 								receives: this.receives(),

@@ -94,13 +94,11 @@ class Process extends stream.Duplex {
 			this.pipe(defaultOutput, { end: false });
 		}
 
-		for (let attr in Object.keys(configs)) {
-			if (configs.hasOwnProperty(attr)) {
-				if (!(attr in ['defaultOutput', 'preprocessor'])) {
-					this[attr] = rest[attr];
-				}
+		Object.keys(configs).forEach((attr) => {
+			if (!(attr in ['defaultOutput', 'preprocessor'])) {
+				this[attr] = configs[attr];
 			}
-		}
+		});
 
 		return this;
 	}

@@ -5,6 +5,7 @@ const AnsiToHtml	= require('ansi-to-html');
 
 module.exports = command('exec')
 	.arguments('<command> <args...>')
+	.receives('text/x-ansi')
 	.display('text/html', (data) => {
 		return new AnsiToHtml().toHtml(data);
 	})

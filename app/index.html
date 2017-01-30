@@ -16,7 +16,7 @@
 		</script>
 	</head>
 	<body ng-app="termApp" ng-controller="mainController">
-		<div class="container-fluid">
+		<div class="container-fluid" id="container">
 			<div ng-repeat="line in output track by $index">
 				<result-display template="line.html" src="line.scope"></result-display>
 			</div>
@@ -25,9 +25,9 @@
 			</div>
 		</div>
 
-		<footer class="footer navbar-fixed-bottom">
+		<footer class="navbar navbar-inverse navbar-fixed-bottom">
 			<div class="container">
-				<p class="text">{{appscope.$cwd}}</p>
+				<p class="navbar-text">{{vmscope.$cwd}}</p>
 			</div>
 		</footer>
 	</body>
