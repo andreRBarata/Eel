@@ -2,7 +2,6 @@ const Highland			= require('highland');
 const stream			= require('stream');
 const streamToPromise	= require('stream-to-promise');
 const Type				= require('type-of-is');
-const {DuplexWrapper}	= require('duplexer3');
 
 /**
 *	@callback ProcessGenerator
