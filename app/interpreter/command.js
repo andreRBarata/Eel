@@ -82,7 +82,7 @@ module.exports =
 									if (fn) {
 										return stream.Transform({
 											transform(chunk, cb) {
-												cb(null, fn(data));
+												cb(null, fn(chunk));
 											}
 										});
 									}
