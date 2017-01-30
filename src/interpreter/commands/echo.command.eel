@@ -10,7 +10,7 @@ module.exports = command('echo')
 				return data;
 				break;
 			default:
-				return JSON.stringify(data);
+				return `<json-tree object="src"></json-tree>`;
 		}
 	})
 	.action(({$arguments}, push) => {

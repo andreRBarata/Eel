@@ -75,7 +75,7 @@ module.exports = {
 			}
 		};
 
-		sandbox.stdout.receives = 'text/html';
+		sandbox.stdout.receives = 'object/scoped-html';
 		vm = new NodeVM({
 			timeout: 1000,
 			console: 'inherit',
@@ -83,7 +83,7 @@ module.exports = {
 			require: {
 				external: true,
 				builtin: ['fs', 'path', 'os', 'child_process'],
-				context: ['highland', 'type-of-is'],
+				context: ['highland', 'type-of-is', 'ansi-to-html'],
 				mock: {
 					command: command
 				},

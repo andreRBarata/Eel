@@ -2,18 +2,18 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Hello World!</title>
+		<title>Eel Terminal</title>
 		<link rel="stylesheet" type="text/css"
-			href="node_modules/bootstrap/dist/css/bootstrap.css">
+			href="../node_modules/bootstrap/dist/css/bootstrap.css">
 		<script>
 			// You can also require other files to run in this process
-			require('./src/renderer.js');
+			require('./renderer.js');
 		</script>
 	</head>
 	<body ng-app="termApp">
 		<div ng-controller="mainController">
 			<div ng-repeat="line in output track by $index">
-				{{line.toString()}}
+				<result-display template="line.html" src="line.scope"></result-display>
 			</div>
 			<div class="commandPane">
 				<input type="text" ng-model="command" ng-keyup="execute($event)" autofocus/>

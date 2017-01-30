@@ -1,9 +1,13 @@
-const command	= require('command');
-const spawn		= require('child_process').spawn;
-const Highland	= require('highland');
+const command		= require('command');
+const spawn			= require('child_process').spawn;
+const Highland		= require('highland');
+const AnsiToHtml	= require('ansi-to-html');
 
 module.exports = command('exec')
 	.arguments('<command> <args...>')
+	.display('text/html', (data) => {
+		return new AnsiToHtml().toHtml(data);
+	})
 	.action(({$arguments, $stdin}, push) => {
 		let commandname = $arguments.slice(0,1)[0];
 		let args = $arguments.slice(1);

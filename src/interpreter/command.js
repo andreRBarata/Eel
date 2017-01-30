@@ -1,5 +1,7 @@
 const minimist			= require('minimist');
 const Highland			= require('highland');
+const stream			= require('stream');
+const es				= require('event-stream');
 
 const Process			= require('./Process');
 const commandAPI		= require('./shared/commandAPI.parser');
@@ -46,7 +48,14 @@ module.exports =
 			display:
 				['display',
 					(mimetype = '', template = '') => [mimetype, template], {map: true, default: new Map([
-						['text/x-ansi', (args) => args]//TODO: Add ansi encoding id:13
+						['object/scoped-html', (data) => {
+							return {
+								scope: data,
+								html: Command.display('text/html')(data)
+							}
+						}],
+						['text/html', (data) => '{{src}}'],
+						['text/x-ansi', (data) => data]//TODO: Add ansi encoding id:13
 					])}
 				],
 			action: ['action'],
@@ -70,18 +79,16 @@ module.exports =
 							), {
 								defaultOutput: sysout,
 								preprocessor: (destination) => {
-									let receives = destination.receives ||
-										'text/x-ansi';
-
+									let receives = destination.receives;
 									let fn = this.display(receives);
 
 									if (fn) {
-										return Highland.pipeline(
-											Highland.map(fn)
+										return es.map(
+											(data, cb) => cb(null, fn(data))
 										);
 									}
 								},
-								receives: this.receives()
+								receives: this.receives(),
 							});
 					}
 				};

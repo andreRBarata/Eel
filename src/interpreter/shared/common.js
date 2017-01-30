@@ -57,6 +57,7 @@ const common = {
 
 		return output;
 	},
+	//TODO: Check and clean this
 	/**
 	*	Creates a function that can be used for chaining
 	*	to get and set variables

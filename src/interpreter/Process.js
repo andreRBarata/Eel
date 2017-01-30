@@ -2,6 +2,7 @@ const Highland			= require('highland');
 const stream			= require('stream');
 const streamToPromise	= require('stream-to-promise');
 const Type				= require('type-of-is');
+const {DuplexWrapper}	= require('duplexer3');
 
 /**
 *	@callback ProcessGenerator
@@ -20,22 +21,33 @@ class Process extends stream.Duplex {
 	*/
 	constructor(source, config) {
 		let stdin = new Highland();
+		let stdout = new stream.Readable({
+			read() {},
+			objectMode: true
+		});
 		super({
-			read(){},
+			read(size) {
+				return stdout.read(size);
+			},
 			write(chunk, encoding, callback) {
 				stdin.write(chunk);
 				callback();
 			},
-			writev(){},
+			writev(chunks, callback) {
+				stdin.writev(chunks, callback);
+				callback();
+			},
 			objectMode: true
 		});
+		this.stdin = stdin;
+		this.stdout = stdout;
 
 		if (Type.is(arguments[0], Function)) {
 			arguments[0]({
 				push: (data) => this.push(data),
 				emit: (event) => this.emit(event),
 				stdin: stdin,
-				stdout: this//TODO:Replace this
+				stdout: stdout
 			});
 
 			if (Type.is(arguments[1], Object)) {
@@ -45,6 +57,10 @@ class Process extends stream.Duplex {
 		else if (Type.is(arguments[0], Object)) {
 			this.config(arguments[0]);
 		}
+	}
+
+	end() {
+		this.stdin.end();
 	}
 
 	/**
@@ -69,13 +85,13 @@ class Process extends stream.Duplex {
 
 		if (preprocessor) {
 			this._preprocessor =
-			preprocessor;
+				preprocessor;
 		}
 		if (defaultOutput) {
-			this.pipe(defaultOutput, { end: false });
-
 			this._defaultOutput =
-			defaultOutput;
+				defaultOutput;
+
+			this.pipe(defaultOutput, { end: false });
 		}
 
 		for (let attr in Object.keys(configs)) {
@@ -99,13 +115,17 @@ class Process extends stream.Duplex {
 		let mapper = (this._preprocessor)?
 			this._preprocessor(destination): null;
 
-		if (this._defaultOutput) {
-			super.unpipe(this._defaultOutput);
+		if (this._defaultOutput &&
+			this._defaultOutput !== destination) {
+				this.unpipe(this._defaultOutput);
 		}
 
 		if (mapper) {
-			return super
-				.pipe(mapper)
+			if (this._defaultOutput === destination) {
+				this._defaultOutput = mapper;
+			}
+
+			return super.pipe(mapper)
 				.pipe(destination, options);
 		}
 
@@ -119,7 +139,7 @@ class Process extends stream.Duplex {
 	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
 	*	@returns {Process}
 	*/
-	static pipeline(input, output) {
+	static pipe(input, output) {
 		function asStream(stream) {
 			if (!input.pipe) {
 				if (Type.is(input, String)) {

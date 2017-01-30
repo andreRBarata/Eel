@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "mocha $(find './tests' -type f -name '*.spec.js')",
-    "start": "electron .",
-    "repl": "node src/interpreter/REPL.js"
+    "start": "electron ."
   },
   "author": "André Barata",
   "license": "ISC",
@@ -37,9 +36,12 @@
   },
   "dependencies": {
     "angular": "^1.5.8",
+    "angular-json-tree": "^1.0.1",
     "angular-sanitize": "^1.5.8",
+    "ansi-to-html": "^0.5.0",
     "bootstrap": "^3.3.7",
-    "handlebars": "^4.0.6",
+    "duplexer3": "^0.1.4",
+    "event-stream": "^3.3.4",
     "highland": "^2.10.0",
     "minimist": "^1.2.0",
     "parsimmon": "^1.2.0",

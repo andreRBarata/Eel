@@ -50,7 +50,7 @@ describe('Process', () => {
 	});
 
 	//#ForThisSprint:10 Add tests for pipeline id:0
-	describe('"pipeline" function', () => {
+	describe('static "pipe" function', () => {
 		it('should create pipe between processes', (done) => {
 			let workProcess = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
@@ -63,7 +63,166 @@ describe('Process', () => {
 				push(null);
 			});
 
-			Process.pipeline(output, workProcess);
+			Process.pipe(output, workProcess);
+		});
+
+		it('should create pipe between processes with a preprocessor', (done) => {
+			let workProcess = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toEqual('testtest');
+					done();
+				});
+			});
+			let output = new Process(({push}) => {
+				push('test');
+				push(null);
+			}, {
+				preprocessor: (dest) => Highland.pipeline(
+					Highland.map((arg) => 'test' + arg)
+				)
+			});
+
+			Process.pipe(output, workProcess);
+		});
+
+		it('should create pipe between processes with a default output', (done) => {
+			let defaultOutput = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toNotEqual('test');
+				});
+			});
+
+			defaultOutput.defaultOutput = true;
+
+			let workProcess = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toEqual('test');
+					done();
+				});
+			});
+
+			let output = new Process(({push}) => {
+				push('test');
+				push(null);
+			}, {defaultOutput: defaultOutput});
+
+			Process.pipe(output, workProcess);
+
+			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+		});
+
+		it('should create pipe between processes with a default output and a preprocessor', (done) => {
+			let defaultOutput = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toNotEqual('testtest');
+				});
+			});
+			defaultOutput.defaultOutput = true;
+
+
+			let workProcess = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toEqual('testtest');
+					done();
+				});
+			});
+
+			let output = new Process({
+				defaultOutput: defaultOutput,
+				preprocessor: (dest) => Highland.pipeline(
+					Highland.map((arg) => 'test' + arg)
+				)
+			});
+
+			Process.pipe(output, workProcess);
+			expect(output._defaultOutput.defaultOutput).toBeFalsy();
+
+			output.push('test');
+		});
+
+		it('should create pipe between processes with a default output and an empty preprocessor', (done) => {
+			let defaultOutput = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toNotEqual('test');
+				});
+			});
+			defaultOutput.defaultOutput = true;
+
+			let workProcess = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toEqual('test');
+					done();
+				});
+			});
+
+			let output = new Process({
+				defaultOutput: defaultOutput,
+				preprocessor: (dest) => {}
+			});
+
+			Process.pipe(output, workProcess);
+
+			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+
+			output.push('test');
+		});
+
+		it('should create pipe between processes with a default output and an empty preprocessor that closes stream at the end', (done) => {
+			let defaultOutput = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toNotEqual('test');
+				});
+			});
+			defaultOutput.defaultOutput = true;
+
+			let workProcess = new Process(({stdin}) => {
+				stdin.toArray(([data]) => {
+					expect(data).toEqual('test');
+					done();
+				});
+			});
+
+			let output = new Process({
+				defaultOutput: defaultOutput,
+				preprocessor: (dest) => {}
+			});
+
+			Process.pipe(output, workProcess);
+
+			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+
+			output.push('test');
+			output.push(null);
+		});
+
+		it('should create pipe between processes with a default output and a preprocessor that closes stream at the end', (done) => {
+			let defaultOutput = new Process(({stdin}) => {
+				stdin.once('data', (data) => {
+					expect(data).toNotEqual('test');
+				});
+			});
+			defaultOutput.defaultOutput = true;
+
+			let workProcess = new Process(({stdin}) => {
+				stdin.toArray(([data]) => {
+					expect(data).toEqual('testtest');
+					done();
+				});
+			});
+
+			let output = new Process({
+				defaultOutput: defaultOutput,
+				preprocessor: (dest) => Highland.pipeline(
+					Highland.map((arg) => 'test' + arg)
+				)
+			});
+
+			Process.pipe(output, workProcess);
+
+			expect(output._defaultOutput.defaultOutput).toBeFalsy();
+
+			output.push('test');
+			output.push(null);
 		});
 	});
 
@@ -74,8 +233,8 @@ describe('Process', () => {
 				push('test');
 				push(null);
 			});
-			workProcess.toPromise().then((data) => {
-				expect(data[0]).toEqual('test');
+			workProcess.toPromise().then(([data]) => {
+				expect(data).toEqual('test');
 				done();
 			});
 		});
