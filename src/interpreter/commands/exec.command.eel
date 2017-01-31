@@ -6,10 +6,12 @@ const AnsiToHtml	= require('ansi-to-html');
 module.exports = command('exec')
 	.arguments('<command> <args...>')
 	.receives('text/x-ansi')
+	.display('text/x-ansi', (data) => data) //TODO: Test for empty mapping
 	.display('text/html', (data) => {
 		return new AnsiToHtml().toHtml(data);
 	})
 	.action(({$arguments, $stdin}, push) => {
+		//TODO: Handle spaces
 		let commandname = $arguments.slice(0,1)[0];
 		let args = $arguments.slice(1);
 		let systemProcess = spawn(
@@ -26,7 +28,17 @@ module.exports = command('exec')
 			.each(push);
 
 		systemProcess.stderr.on('readable',
-			() => push(systemProcess.stderr.read())
+			() => {
+				let chunk = systemProcess
+					.stderr
+					.read();
+
+				if (chunk !== null) {
+					push(
+						`${chunk}`
+					);
+				}
+			}
 		);
 
 		$stdin.pipe(systemProcess.stdin);

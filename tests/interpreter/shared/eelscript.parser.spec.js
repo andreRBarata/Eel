@@ -1,5 +1,5 @@
 const expect	= require('expect');
-const eelscript	= require('../../../app/interpreter/shared/eelscript.parser');
+const eelscript	= require('../../../src/interpreter/shared/eelscript.parser');
 
 describe('Eelscript parser', () => {
 

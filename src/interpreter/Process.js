@@ -115,6 +115,8 @@ class Process extends stream.Duplex {
 		if (this._defaultOutput &&
 			this._defaultOutput !== destination) {
 				this.unpipe(this._defaultOutput);
+
+				this._defaultOutput = null;
 		}
 
 		if (mapper) {
@@ -125,7 +127,7 @@ class Process extends stream.Duplex {
 			return super.pipe(mapper)
 				.pipe(destination, options);
 		}
-
+		console.log("test");
 		return super.pipe(destination, options);
 	}
 

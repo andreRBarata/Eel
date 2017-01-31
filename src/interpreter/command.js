@@ -78,7 +78,7 @@ module.exports =
 								preprocessor: (destination) => {
 									let receives = destination.receives;
 									let fn = this.display(receives);
-
+									console.log('test', commandname, fn, receives);
 									if (fn) {
 										return stream.Transform({
 											objectMode: true,

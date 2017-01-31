@@ -7,7 +7,7 @@ function flatten(arr) {
 }
 
 sweet.loadMacro(
-	'./app/interpreter/shared/syntax.sjs'
+	'./src/interpreter/shared/syntax.sjs'
 );
 
 const eelscript = {

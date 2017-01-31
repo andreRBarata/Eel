@@ -2,7 +2,7 @@ const expect	= require('expect');
 const forEach	= require('mocha-each');
 const Highland	= require('highland');
 
-const Process 	= require('../../app/interpreter/Process');
+const Process 	= require('../../src/interpreter/Process');
 
 describe('Process', () => {
 

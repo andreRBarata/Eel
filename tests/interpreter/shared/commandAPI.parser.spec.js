@@ -1,6 +1,6 @@
 const expect		= require('expect');
 
-const commandAPI	= require('../../../app/interpreter/shared/commandAPI.parser');
+const commandAPI	= require('../../../src/interpreter/shared/commandAPI.parser');
 
 describe('commandAPI parser', () => {
 

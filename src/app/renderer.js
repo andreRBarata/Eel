@@ -6,5 +6,5 @@ require('angular-sanitize');
 require('angular-ui-bootstrap');
 require('jsonformatter');
 require('./app.js');
-require('./app.ctrl.js');
-require('./resultDisplay.dir.js');
+require('./mainComponent/mainComponent.js');
+require('./resultDisplay/resultDisplay.dir.js');

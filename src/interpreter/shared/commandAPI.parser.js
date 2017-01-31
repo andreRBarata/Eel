@@ -1,15 +1,15 @@
 const P	= require('parsimmon');
 
-const commandAPI = {
-	variables: {
-		single: P.regexp(/[a-zA-Z0-9]+/)
+const commandAPI = (() => {
+	this.variables = (() => {
+		this.single = P.regexp(/[a-zA-Z0-9]+/)
 			.map((name) => {
 				return {
 					name: name,
 					multiple: false
 				}
-			}),
-		multiple: P.lazy(
+			});
+		this.multiple = P.lazy(
 			() => P.seq(
 				commandAPI
 					.variables.single,
@@ -18,8 +18,8 @@ const commandAPI = {
 				single.multiple = true;
 				return single;
 			})
-		),
-		required: P.lazy(
+		);
+		this.required = P.lazy(
 			() => P.seq(
 				P.string('<'),
 				P.alt(
@@ -32,8 +32,8 @@ const commandAPI = {
 			).map(([,word,]) =>
 				Object.assign({required: true}, word)
 			)
-		),
-		optional: P.lazy(
+		);
+		this.optional = P.lazy(
 			() => P.seq(
 				P.string('['),
 				P.alt(
@@ -46,21 +46,25 @@ const commandAPI = {
 			).map(([,word,]) =>
 				Object.assign({required: false}, word)
 			)
-		),
-		variable: P.lazy(
+		);
+		this.variable = P.lazy(
 			() => P.alt(
 				commandAPI
 					.variables.optional,
 				commandAPI
 					.variables.required
 			)
-		)
-	},
-	args: P.sepBy(
+		);
+
+		return this;
+	}).apply({});
+	this.args = P.sepBy(
 		P.lazy(() => commandAPI
 			.variables.variable),
 		P.whitespace
-	)
-};
+	);
+
+	return this;
+}).apply({});
 
 module.exports = commandAPI;
