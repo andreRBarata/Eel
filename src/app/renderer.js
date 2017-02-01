@@ -8,3 +8,4 @@ require('jsonformatter');
 require('./app.js');
 require('./mainComponent/mainComponent.js');
 require('./resultDisplay/resultDisplay.dir.js');
+require('./inputHighlight/inputHighlight.dir.js');

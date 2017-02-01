@@ -92,7 +92,6 @@ describe('Process', () => {
 				});
 			});
 
-			defaultOutput.defaultOutput = true;
 
 			let workProcess = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
@@ -108,7 +107,7 @@ describe('Process', () => {
 
 			Process.pipe(output, workProcess);
 
-			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+			expect(output._defaultOutput).toBeFalsy();
 		});
 
 		it('should create pipe between processes with a default output and a preprocessor', (done) => {
@@ -135,7 +134,7 @@ describe('Process', () => {
 			});
 
 			Process.pipe(output, workProcess);
-			expect(output._defaultOutput.defaultOutput).toBeFalsy();
+			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 		});
@@ -146,7 +145,6 @@ describe('Process', () => {
 					expect(data).toNotEqual('test');
 				});
 			});
-			defaultOutput.defaultOutput = true;
 
 			let workProcess = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
@@ -162,7 +160,7 @@ describe('Process', () => {
 
 			Process.pipe(output, workProcess);
 
-			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 		});
@@ -173,7 +171,6 @@ describe('Process', () => {
 					expect(data).toNotEqual('test');
 				});
 			});
-			defaultOutput.defaultOutput = true;
 
 			let workProcess = new Process(({stdin}) => {
 				stdin.toArray(([data]) => {
@@ -189,7 +186,7 @@ describe('Process', () => {
 
 			Process.pipe(output, workProcess);
 
-			expect(output._defaultOutput.defaultOutput).toBeTruthy();
+			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 			output.push(null);
@@ -219,7 +216,7 @@ describe('Process', () => {
 
 			Process.pipe(output, workProcess);
 
-			expect(output._defaultOutput.defaultOutput).toBeFalsy();
+			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 			output.push(null);

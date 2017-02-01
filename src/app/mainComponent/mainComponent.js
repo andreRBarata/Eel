@@ -20,14 +20,22 @@ angular.module('termApp')
 				}
 			});
 
-		$scope.execute = (keyEvent) => {
-			if (keyEvent.which === 13) {
+		$scope.execute = (command) => {
+			$scope.vmscope
+				.stdout.write({html: command});
+
+			try {
+				vm.run(command);
+			}
+			catch (err) {
 				$scope.vmscope
-					.stdout.write({html: $scope.command});
+					.stdout.write({
+					html: `
+						<div class="alert alert-danger" role="alert">{{src}}</div>
+					`,
+					scope: err.message
+				});
 
-				vm.run($scope.command);
-
-				$scope.command = '';
 			}
 		};
 	});
