@@ -1,42 +1,30 @@
+require('../assets/language/eelscript');
+
+
 angular.module('termApp')
 	.directive('inputHighlight', function () {
 		return {
 			scope: {
 				onexec: '='
 			},
-			templateUrl:  'inputHighlight/inputHighlight.tpl.html',
+			templateUrl: 'inputHighlight/inputHighlight.tpl.html',
 			controller: function InputHighlight($scope) {
-				function init() {
-					$scope.prev = [];
-					$scope.current = '';
-				}
+				$scope.command = '';
 
-				init();
+				$scope.cmOption = {
+					lineNumbers: false,
+					indentWithTabs: true,
+					mode: 'eelscript',
+					cursorHeight: 1,
+					extraKeys: {
+						Enter(cm) {
+							$scope.onexec(
+								$scope.command
+							);
 
-				$scope.onchange = (event) => {
-					if (event.code === 'Space') {
-						$scope.saveSegment();
-					}
-					else if (event.code === 'Backspace') {
-						if ($scope.current.length === 0) {
-							$scope.current = $scope.prev
-								.pop();
+							$scope.command = '';
 						}
 					}
-					else if (event.code === 'Enter') {
-						$scope.saveSegment();
-
-						$scope.onexec(
-							$scope.prev.join(' ')
-						);
-
-						init();
-					}
-				};
-
-				$scope.saveSegment = () => {
-					$scope.prev.push($scope.current);
-					$scope.current = '';
 				};
 			}
 		};

@@ -6,13 +6,29 @@
 	padding-top: 10px;
 }
 
-input-highlight * {
-	float: left;
+input-highlight .CodeMirror {
+	height: auto;
+	padding: 0;
+	margin: -3px;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+input-highlight .form-control {
+	height: auto;
+}
+
+input-highlight .form-control,
+input-highlight .CodeMirror {
+	background: #f5f2f0;
+}
+
+input-highlight .prev {
+	white-space: pre-wrap;
 }
 
 input-highlight input {
 	border: none;
-    outline: none;
+   outline: none;
 	padding: 0;
 	margin: 0;
 }

@@ -1,6 +1,11 @@
-angular.module('termApp', ['ngSanitize', 'jsonFormatter', 'ui.bootstrap'])
-	.factory('vm', () => {
-		const vm = require('../interpreter/vm');
+require('angular-ui-codemirror');
 
-		return vm.getInstance();
-	});
+angular.module('termApp', [
+	require('angular-ui-bootstrap'),
+	require('jsonformatter'),
+	'ui.codemirror'
+]).factory('vm', () => {
+	const vm = require('../interpreter/vm');
+
+	return vm.getInstance();
+});
