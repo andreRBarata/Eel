@@ -22,7 +22,10 @@ angular.module('termApp')
 
 		$scope.execute = (command) => {
 			$scope.vmscope
-				.stdout.write({html: command});
+				.stdout.write({
+					html: `<input-highlight command="src" readonly="true"></input-highlight>`,
+					scope: command
+				});
 
 			try {
 				vm.run(command);

@@ -2,9 +2,11 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 
+require('angular');
+
 window.CodeMirror =
 	require('codemirror/lib/codemirror');
-require('angular');
+require('./assets/language/eelscript');
 require('./app.js');
 require('./inputHighlight/inputHighlight.dir.js');
 require('./mainComponent/mainComponent.js');
