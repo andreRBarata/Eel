@@ -10,6 +10,10 @@ sweet.loadMacro(
 	'./src/interpreter/shared/syntax.sjs'
 );
 
+sweet.loadMacro(
+	'es6-macros'
+);
+
 const eelscript = {
 	shell: {
 		arg: P.alt(

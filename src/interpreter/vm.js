@@ -92,6 +92,7 @@ module.exports = {
 			compiler: eelscript.parse
 		});
 
+		sandbox.requireCommand(`${__dirname}/commands/writefile.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/then.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/pwd.command.eel`);
 		sandbox.requireCommand(`${__dirname}/commands/echo.command.eel`);

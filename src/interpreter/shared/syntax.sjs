@@ -2,8 +2,8 @@
 operator (|>) 13 left { $l, $r } => #{ _.pipe($l, $r) }
 export (|>)
 
-operator (>|) 5 right { $l, $r } => #{ $l |> fs.createWriteStream($r, {flags: 'w'})}
+operator (>|) 5 right { $l, $r } => #{ $l |> $sys['writefile']($r, 'w')}
 export (>|)
 
-operator (>>|) 5 right { $l, $r } => #{ $l |> fs.createWriteStream($r, {flags: 'a'})}
+operator (>>|) 5 right { $l, $r } => #{ $l |> $sys['writefile']($r, 'a')}
 export (>>|)

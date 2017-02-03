@@ -102,6 +102,7 @@ class Process extends stream.Duplex {
 		return this;
 	}
 
+	//TODO: Fix possible memmory leak
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
@@ -127,7 +128,7 @@ class Process extends stream.Duplex {
 			return super.pipe(mapper)
 				.pipe(destination, options);
 		}
-		console.log("test");
+
 		return super.pipe(destination, options);
 	}
 
