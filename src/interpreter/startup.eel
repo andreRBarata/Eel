@@ -1,0 +1,18 @@
+
+
+$sys.writefile = load(`${__dirname}/commands/writefile.command.eel`)
+	.toFunction(stdout);
+$sys.then = load(`${__dirname}/commands/then.command.eel`)
+	.toFunction(stdout);
+$sys.pwd = load(`${__dirname}/commands/pwd.command.eel`)
+	.toFunction(stdout);
+$sys.echo = load(`${__dirname}/commands/echo.command.eel`)
+	.toFunction(stdout);
+$sys.exec = load(`${__dirname}/commands/exec.command.eel`)
+	.toFunction(stdout);
+$sys.realpath = load(`${__dirname}/commands/realpath.command.eel`)
+	.toFunction(stdout);
+$sys.cd = load(`${__dirname}/commands/cd.command.eel`)
+	.toFunction(stdout);
+
+#cd ~

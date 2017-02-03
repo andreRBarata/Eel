@@ -104,7 +104,7 @@
 				if (ch == '"' || ch == "'") {
 					state.tokenize = tokenString(ch);
 					return state.tokenize(stream, state);
-				} else if (ch == "#" && stream.match(/[\-A-Za-z0-9.\\=~/]+/)) {
+				} else if (ch == "#" && stream.match(/[\-A-Za-z0-9.\\=~"'/]+/)) {
 					return ret("command", "command");
 				} else if (ch == "." && stream.match(/^\d+(?:[eE][+\-]?\d+)?/)) {
 					return ret("number", "number");

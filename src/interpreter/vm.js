@@ -1,13 +1,13 @@
-const {NodeVM}			= require('vm2');
-const Highland			= require('highland');
-const fs				= require('fs');
-const spawn				= require('child_process').spawn;
-const Type				= require('type-of-is');
+const {NodeVM}				= require('vm2');
+const Highland				= require('highland');
+const fs						= require('fs');
+const spawn					= require('child_process').spawn;
+const Type					= require('type-of-is');
 const streamToPromise	= require('stream-to-promise');
 
 const Process		= require('./Process');
 const command		= require('./command');
-const eelscript		= require('./shared/eelscript.parser');
+const eelscript	= require('./shared/eelscript.parser');
 
 module.exports = {
 	getInstance() {
@@ -22,30 +22,11 @@ module.exports = {
 				set: (obj, prop, value) => obj[prop] = value
 			}),
 			$cwd: __dirname,
-			//TODO:0 Write tests for this id:9
-			requireCommand(path) {
-				streamToPromise(
-					fs.createReadStream(path)
-				).then((file) => {
-					vm.run(`
-						let self = (function () {
-							${file}
-
-							return module.exports;
-						})();
-
-						let commfunc = self.toFunction(this.stdout) || self;
-
-						$sys[commfunc.name] = commfunc;
-					`,__dirname);
-				});
-			},
 			load(path) {
-				streamToPromise(
-					fs.createReadStream(path)
-				).then((file) => {
-					return vm.run(file);
-				});
+				return vm.run(
+					`${fs.readFileSync(path)}`,
+					path
+				);
 			},
 			'_' : Process,
 			//FIXME
@@ -78,7 +59,6 @@ module.exports = {
 		sandbox.stdout.receives = 'object/scoped-html';
 		vm = new NodeVM({
 			timeout: 1000,
-			console: 'inherit',
 	    	sandbox: sandbox,
 			require: {
 				external: true,
@@ -92,13 +72,7 @@ module.exports = {
 			compiler: eelscript.parse
 		});
 
-		sandbox.requireCommand(`${__dirname}/commands/writefile.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/then.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/pwd.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/echo.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/exec.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/realpath.command.eel`);
-		sandbox.requireCommand(`${__dirname}/commands/cd.command.eel`);
+		sandbox.load(`${__dirname}/startup.eel`);
 
 		return vm;
 	}

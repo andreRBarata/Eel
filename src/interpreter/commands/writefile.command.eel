@@ -2,10 +2,12 @@ const command = require('command');
 
 module.exports = command('writefile')
 	.arguments('<path> [mode]')
-	.action(function ({_: [path, mode], $stdin}) {
+	.action(function ({_: [path, mode], $stdin}, push) {
 		#realpath(path) |> #then(([realpath]) => {
 			$stdin.pipe(
 				fs.createWriteStream(realpath, {flags: mode || 'w'})
 			);
+
+			push(null);
 		});
 	});

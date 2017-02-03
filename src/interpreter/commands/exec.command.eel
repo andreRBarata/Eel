@@ -11,9 +11,8 @@ module.exports = command('exec')
 		return new AnsiToHtml().toHtml(data);
 	})
 	.action(({$arguments, $stdin}, push) => {
+		let [commandname, ...args] = $arguments;
 		//TODO: Handle spaces
-		let commandname = $arguments.slice(0,1)[0];
-		let args = $arguments.slice(1);
 		let systemProcess = spawn(
 			commandname,
 			args, {

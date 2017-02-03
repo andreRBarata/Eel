@@ -7,13 +7,10 @@ angular.module('termApp')
 				readonly: '='
 			},
 			compile(element, attrs) {
-				console.log(attrs);
 				if (!attrs.command) { attrs.command = ''; }
 			},
 			templateUrl: 'inputHighlight/inputHighlight.tpl.html',
 			controller: function InputHighlight($scope) {
-				console.log($scope);
-
 				$scope.cmOption = {
 					lineNumbers: false,
 					indentWithTabs: true,
