@@ -13,7 +13,6 @@ module.exports = {
 	getInstance() {
 		let vm;
 		let sandbox = {
-			fs: require('fs'),
 			stdout: new Highland(),
 			$env: process.env,
 			$sys: new Proxy({}, {
