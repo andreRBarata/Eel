@@ -66,8 +66,7 @@ module.exports = {
 				context: ['highland', 'type-of-is', 'ansi-to-html'],
 				mock: {
 					command: command
-				},
-				import: ['fs']
+				}
 			},
 			compiler: eelscript.parse
 		});

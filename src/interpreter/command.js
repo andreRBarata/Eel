@@ -1,9 +1,9 @@
-const minimist			= require('minimist');
-const Highland			= require('highland');
-const stream			= require('stream');
+const minimist				= require('minimist');
+const Highland				= require('highland');
+const stream				= require('stream');
 
-const Process			= require('./Process');
-const commandAPI		= require('./shared/commandAPI.parser');
+const Process				= require('./Process');
+const commandAPI			= require('./shared/commandAPI.parser');
 const {chainingObject} 	= require('./shared/common');
 
 /**

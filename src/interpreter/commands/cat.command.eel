@@ -1,0 +1,10 @@
+const command	= require('command');
+const fs			= require('fs');
+
+module.exports = command('cat')
+	.arguments('[path]')
+	.action(({_: [path], $stdin}) => {
+		#realpath(path) |> #then(([realpath]) => {
+			fs.fchmod
+		});
+	});
