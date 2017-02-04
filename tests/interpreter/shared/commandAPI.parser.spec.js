@@ -11,11 +11,11 @@ describe('commandAPI parser', () => {
 			it('should parse a single word', () => {
 				expect(
 					variables.single.parse('test')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						multiple: false
+						max: 1,
+						string: 'test'
 					}
 				});
 			});
@@ -25,11 +25,11 @@ describe('commandAPI parser', () => {
 			it('should parse a word with the spread indicator', () => {
 				expect(
 					variables.multiple.parse('test...')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						multiple: true
+						max: '*',
+						string: 'test...'
 					}
 				});
 			});
@@ -39,12 +39,12 @@ describe('commandAPI parser', () => {
 			it('should parse a required parameter', () => {
 				expect(
 					variables.required.parse('<test>')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						multiple: false,
-						required: true
+						max: 1,
+						min: 1,
+						string: '<test>'
 					}
 				});
 			});
@@ -52,12 +52,12 @@ describe('commandAPI parser', () => {
 			it('should parse a required parameter with the spread indicator', () => {
 				expect(
 					variables.required.parse('<test...>')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						multiple: true,
-						required: true
+						max: '*',
+						min: 1,
+						string: '<test...>'
 					}
 				});
 			});
@@ -67,12 +67,12 @@ describe('commandAPI parser', () => {
 			it('should parse a optional parameter', () => {
 				expect(
 					variables.optional.parse('[test]')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						required: false,
-						multiple: false
+						max: 1,
+						min: 0,
+						string: '[test]'
 					}
 				});
 			});
@@ -80,12 +80,12 @@ describe('commandAPI parser', () => {
 			it('should parse a optional parameter with the spread indicator', () => {
 				expect(
 					variables.optional.parse('[test...]')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						required: false,
-						multiple: true
+						max: '*',
+						min: 0,
+						string: '[test...]'
 					}
 				});
 			});
@@ -95,12 +95,12 @@ describe('commandAPI parser', () => {
 			it('should parse a optional parameter', () => {
 				expect(
 					variables.variable.parse('[test]')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						required: false,
-						multiple: false
+						max: 1,
+						min: 0,
+						string: '[test]'
 					}
 				});
 			});
@@ -111,9 +111,9 @@ describe('commandAPI parser', () => {
 				).toEqual({
 					status: true,
 					value: {
-						name: 'test',
-						required: false,
-						multiple: true
+						max: '*',
+						min: 0,
+						string: '[test...]'
 					}
 				});
 			});
@@ -124,9 +124,9 @@ describe('commandAPI parser', () => {
 				).toEqual({
 					status: true,
 					value: {
-						name: 'test',
-						required: true,
-						multiple: false
+						max: 1,
+						min: 1,
+						string: '<test>'
 					}
 				});
 			});
@@ -134,13 +134,51 @@ describe('commandAPI parser', () => {
 			it('should parse a required parameter with the spread indicator', () => {
 				expect(
 					variables.variable.parse('<test...>')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
-						name: 'test',
-						multiple: true,
-						required: true
+						max: '*',
+						min: 1,
+						string: '<test...>'
 					}
+				});
+			});
+		});
+	});
+
+	describe('options', () => {
+		describe('shortflag', () => {
+			it('should match shortflag', () => {
+				expect(
+					commandAPI.options
+						.shortflag.parse('-a')
+				).toInclude({
+					status: true,
+					value: ['-', 'a']
+				});
+			});
+		});
+
+		describe('longflag', () => {
+			it('should match longflag', () => {
+				expect(
+					commandAPI.options
+						.longflag.parse('--page')
+				).toInclude({
+					status: true,
+					value: ['--', 'page']
+				});
+			});
+		});
+
+		describe('flaglist', () => {
+			it('should match a list of flags', () => {
+				expect(
+					commandAPI.options
+						.flaglist.parse('--page, -p')
+				).toInclude({
+					status: true,
+					value: [['--', 'page'], ['-', 'p']]
 				});
 			});
 		});
@@ -150,40 +188,26 @@ describe('commandAPI parser', () => {
 		it('should parse single variable', () => {
 			expect(
 				commandAPI.args.parse('<test>')
-			).toEqual({
+			).toInclude({
 				status: true,
-				value: [
-					{
-						name: 'test',
-						required: true,
-						multiple: false
-					}
-				]
+				value: {
+					max: 1,
+					min: 1,
+					string: '<test>'
+				}
 			});
 		});
 
 		it('should parse multiple variables', () => {
 			expect(
 				commandAPI.args.parse('<test> [test2...] <test3>')
-			).toEqual({
+			).toInclude({
 				status: true,
-				value: [
-					{
-						name: 'test',
-						required: true,
-						multiple: false
-					},
-					{
-						name: 'test2',
-						required: false,
-						multiple: true
-					},
-					{
-						name: 'test3',
-						required: true,
-						multiple: false
-					}
-				]
+				value: {
+					max: '*',
+					min: 2,
+					string: '<test> [test2...] <test3>'
+				}
 			});
 		});
 	});

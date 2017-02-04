@@ -83,9 +83,12 @@ describe('command', () => {
 
 	describe('"arguments" function', () => {
 		it('should return error is arguments are invalid', () => {
-			expect(
-				echo.arguments('<test.. [test2] <test3>')
-			).toBeAn(Error);
+			try {
+				echo.arguments('<test.. [test2] <test3>');
+			}
+			catch (err) {
+				expect(err).toBeAn(Error);
+			}
 		});
 
 		it('should add arguments list', (done) => {
@@ -95,23 +98,11 @@ describe('command', () => {
 					done();
 				});
 
-			expect(echo.arguments()).toEqual([
-				{
-					name: 'test',
-					multiple: true,
-					required: true
-				},
-				{
-					name: 'test2',
-					multiple: false,
-					required: false
-				},
-				{
-					name: 'test3',
-					multiple: false,
-					required: true
-				}
-			]);
+			expect(echo.arguments()).toInclude({
+				min: 2,
+				max: '*',
+				string: '<test...> [test2] <test3>'
+			});
 
 			echo.toFunction()();
 		});
