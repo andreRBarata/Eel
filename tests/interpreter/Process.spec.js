@@ -33,6 +33,21 @@ describe('Process', () => {
 
 	});
 
+	it('should pipe into stdout', (done) => {
+		let workProcess = new Process(({stdin}) => {
+			stdin.once('data', (data) => {
+				expect(data).toEqual('test');
+				done();
+			});
+		});
+		let output = new Process(({stdout}) => {
+			Highland.of('test').pipe(stdout);
+		});
+
+		output.pipe(workProcess);
+
+	});
+
 	it('should create Process with elements if an function is sent', (done) => {
 		let testProcess = new Process(({push}) => {
 			push('test');

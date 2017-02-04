@@ -1,3 +1,24 @@
+const command = require('command');
+
+//TODO: Test these
+$sys.map = command('map')
+	.arguments('<callback>')
+	.action(({_: [callback], $stdin, $stdout}) => {
+		$stdin.map(callback) |> $stdout;
+	}).toFunction(stdout);
+
+$sys.reduce = command('reduce')
+	.arguments('<callback>')
+	.action(({_: [callback], $stdin, $stdout}) => {
+		$stdin.reduce(callback) |> $stdout;
+	}).toFunction(stdout);
+
+$sys.filter = command('filter')
+	.arguments('<callback>')
+	.action(({_: [callback], $stdin, $stdout}) => {
+		$stdin.filter(callback) |> $stdout;
+	}).toFunction(stdout);
+
 $sys.writefile = load(`${__dirname}/commands/writefile.command.eel`)
 	.toFunction(stdout);
 $sys.then = load(`${__dirname}/commands/then.command.eel`)

@@ -46,7 +46,11 @@ class Process extends stream.Duplex {
 				push: (data) => this.push(data),
 				emit: (event) => this.emit(event),
 				stdin: stdin,
-				stdout: stdout
+				stdout: Highland.pipeline(
+					Highland.each(
+						(data) => this.push(data)
+					)
+				)
 			});
 
 			if (Type.is(arguments[1], Object)) {

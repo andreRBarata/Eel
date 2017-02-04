@@ -28,32 +28,7 @@ module.exports = {
 					path
 				);
 			},
-			'_' : Process,
-			//FIXME
-			map(cb) {
-				return new Process(({push, emit, stdin}) => {
-					stdin.map(cb).errors((err) => emit('error', err))
-						.each(push);
-				}).config({
-					defaultOutput: sandbox.stdout
-				});
-			},
-			reduce(cb) {
-				return new Process(({push, emit, stdin}) => {
-					stdin.reduce(cb).errors((err) => emit('error', err))
-						.each(push);
-				}).config({
-					defaultOutput: sandbox.stdout
-				});
-			},
-			filter(cb) {
-				return new Process(({push, emit, stdin}) => {
-					stdin.filter(cb).errors((err) => emit('error', err))
-						.each(push);
-				}).config({
-					defaultOutput: sandbox.stdout
-				});
-			}
+			'_' : Process
 		};
 
 		sandbox.stdout.receives = 'object/scoped-html';
