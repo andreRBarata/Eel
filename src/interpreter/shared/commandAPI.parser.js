@@ -114,6 +114,10 @@ const commandAPI = (() => {
 				min: add(arg1.min, arg2.min),
 				max: add(arg1.max, arg2.max)
 			}
+		}, {
+			min: 0,
+			max: 0,
+			string: ''
 		});
 	});
 
