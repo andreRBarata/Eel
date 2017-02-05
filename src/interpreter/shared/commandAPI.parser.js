@@ -83,11 +83,9 @@ const commandAPI = (() => {
 				this.longflag,
 				this.shortflag
 			),
-			P.optWhitespace.then(
-				P.string(',')
-			).then(
-				P.optWhitespace
-			)
+			P.optWhitespace
+			.then(P.string(','))
+			.then(P.optWhitespace)
 		);
 
 
@@ -109,15 +107,15 @@ const commandAPI = (() => {
 			}
 
 			return {
-				string: arg1.string + ' '
-					+ arg2.string,
+				string: [arg1.string, arg2.string]
+					.filter((ele) => ele)
+					.join(' '),
 				min: add(arg1.min, arg2.min),
 				max: add(arg1.max, arg2.max)
 			}
 		}, {
 			min: 0,
-			max: 0,
-			string: ''
+			max: 0
 		});
 	});
 
