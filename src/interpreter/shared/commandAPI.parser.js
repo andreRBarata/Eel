@@ -98,7 +98,7 @@ const commandAPI = (() => {
 		P.whitespace
 	).map((args) => {
 		return args.reduce((arg1, arg2) => {
-			function add(val1, val2) {
+			function add(val1 = 0, val2 = 0) {
 				if (val1 === '*' || val2 === '*') {
 					return '*';
 				}
@@ -113,10 +113,7 @@ const commandAPI = (() => {
 				min: add(arg1.min, arg2.min),
 				max: add(arg1.max, arg2.max)
 			}
-		}, {
-			min: 0,
-			max: 0
-		});
+		}, {});
 	});
 
 	return this;

@@ -1,4 +1,4 @@
-const minimist				= require('minimist');
+const Type					= require('type-of-is');
 const Highland				= require('highland');
 const stream				= require('stream');
 
@@ -56,15 +56,29 @@ module.exports =
 					])}
 				],
 			action: ['action'],
+			//TODO: Complete parameter parsing id:14
+			parseArgs(rawargs) {
+				let counts = this.arguments();
+				let args = [];
+
+				for (let arg of rawargs) {
+					if (Type.is(arg, String) && false) {//TODO: Replace this
+
+					}
+					else {
+						args.push(arg);
+					}
+				}
+
+				return {
+					_: args
+				}
+			},
 			toFunction(sysout) {
 				let obj = {
 					[commandname]: (...args) => {
 						let expectedArgs = this.arguments();
-						let parsedArgs = {};
-
-						if (expectedArgs) {
-							parsedArgs = minimist(args);//TODO: Complete parameter parsing id:14
-						}
+						let parsedArgs = this.parseArgs(args);
 
 						return new Process(({push, emit, stdin, stdout}) =>
 							this.action()(Object.assign({
