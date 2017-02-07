@@ -1,4 +1,4 @@
-const command = require('command');
+const command	= require('command');
 
 //TODO: Test these
 $sys.map = command('map')

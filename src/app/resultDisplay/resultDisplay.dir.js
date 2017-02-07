@@ -6,6 +6,7 @@ angular.module('termApp')
 				template: '='
 			},
 			link: (scope, element, attrs) => {
+				console.log(scope);
 				element.html(scope.template);
 		        $compile(element.contents())(scope);
 			},

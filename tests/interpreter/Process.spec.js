@@ -6,6 +6,23 @@ const Process 	= require('../../src/interpreter/Process');
 
 describe('Process', () => {
 
+	it('should write nested object in Process object', () => {
+		let workProcess = new Process(({push}) => {
+			push({
+				test: {
+					test: {}
+				},
+				test2: []
+			});
+		}).on('data', (obj) => {
+			expect(obj).toEqual({
+				test: {
+					test: {}
+				},
+				test2: []
+			});
+		});
+	});
 
 	it('should be receive pipe from Highland Stream', (done) => {
 		let workProcess = new Process(({stdin}) => {

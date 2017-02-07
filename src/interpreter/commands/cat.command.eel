@@ -1,10 +1,46 @@
 const command	= require('command');
-const fs			= require('fs');
+const fs		= require('fs');
+const Highland	= require('highland');
+const mime		= require('mime');
 
 module.exports = command('cat')
 	.arguments('[path]')
-	.action(({_: [path], $stdin}) => {
-		#realpath(path) |> #then(([realpath]) => {
-			fs.fchmod
-		});
+	.display('text/html', (data) => {
+		let mimetype = data.mimetype;
+
+		if (mimetype) {
+			if (mimetype.match(/(text|application)\/.*/)) {
+
+			}
+		}
+
+		return `<textarea ui-codemirror="{
+				readOnly: 'nocursor',
+				mode: src.mimetype
+			}" ng-model="src.content"></textarea>`;
+
+	})
+	.action(({_: [path], $stdin, $stdout}, push) => {
+		if (path) {
+			#realpath(path) |>
+			#map((realpath) => {
+				fs.createReadStream(realpath) |>
+				#then((content) => {
+					push({
+						path: path,
+						mimetype: mime.lookup(path),
+						content: `${content}`
+					});
+
+					push(null);
+				});
+			});
+		}
+		else {
+			$stdin.toArray((data) => {
+				push(data);
+				push(null);
+			});
+		}
+
 	});

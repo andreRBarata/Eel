@@ -2,8 +2,13 @@ const command = require('command');
 
 module.exports = command('then')
 	.action(({_: [callback, mimetype],
-		$stdin}, push) => {
-			$stdin.toArray(callback);
+		$stdin, $stdout}, push) => {
+			$stdin.toArray((data) => {
+				let returned = callback(data);
 
-			push(null);
+				if (returned) {
+					returned |>
+						$stdout;
+				}
+			});
 	});

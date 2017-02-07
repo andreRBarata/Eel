@@ -768,7 +768,7 @@
 				fold: "brace",
 				closeBrackets: "()[]{}''\"\"``",
 
-				helperType: jsonMode ? "json" : "javascript",
+				helperType: jsonMode ? "json" : "eelscript",
 				jsonldMode: jsonldMode,
 				jsonMode: jsonMode,
 
@@ -780,17 +780,13 @@
 			};
 		});
 
-		CodeMirror.registerHelper("wordChars", "javascript", /[\w$]/);
+		CodeMirror.registerHelper("wordChars", "eelscript", /[\w$]/);
 
-		CodeMirror.defineMIME("text/javascript", "javascript");
-		CodeMirror.defineMIME("text/ecmascript", "javascript");
-		CodeMirror.defineMIME("application/javascript", "javascript");
-		CodeMirror.defineMIME("application/x-javascript", "javascript");
-		CodeMirror.defineMIME("application/ecmascript", "javascript");
-		CodeMirror.defineMIME("application/json", {name: "javascript", json: true});
-		CodeMirror.defineMIME("application/x-json", {name: "javascript", json: true});
-		CodeMirror.defineMIME("application/ld+json", {name: "javascript", jsonld: true});
-		CodeMirror.defineMIME("text/typescript", { name: "javascript", typescript: true });
-		CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript: true });
+		CodeMirror.defineMIME("text/eelscript", "eelscript");
+		CodeMirror.defineMIME("application/eelscript", "eelscript");
+		CodeMirror.defineMIME("application/x-eelscript", "eelscript");
+		CodeMirror.defineMIME("application/json", {name: "eelscript", json: true});
+		CodeMirror.defineMIME("application/x-json", {name: "eelscript", json: true});
+		CodeMirror.defineMIME("application/ld+json", {name: "eelscript", jsonld: true});
 
 	});

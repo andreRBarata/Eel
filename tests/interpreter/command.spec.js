@@ -54,6 +54,33 @@ describe('command', () => {
 				.toFunction(sysoutMock)();
 		});
 
+		it('should write into stream nested stream', (done) => {
+			let sysoutMock = Highland.pipeline(
+				Highland.each((data) => {
+					expect(data).toEqual({
+						test: {
+							test: []
+						},
+						test2: []
+					});
+					done();
+				}
+			));
+
+			let echofunc = echo
+				.action(({}, push) => {
+					push({
+						test: {
+							test: []
+						},
+						test2: []
+					});
+					push(null);
+				})
+				.toFunction(sysoutMock)();
+		});
+
+
 		it('should pipe into other generated function', (done) => {
 			let sysoutMock = Highland.pipeline(
 				Highland.each((data) => {
