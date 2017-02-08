@@ -21,7 +21,7 @@ Highland.wrapCallback(
 		require(`codemirror/mode/${name}/${name}`);
 	});
 
-require('./assets/language/eelscript');
+require('./assets/languages/eelscript');
 require('./app.js');
 require('./inputHighlight/inputHighlight.dir.js');
 require('./mainComponent/mainComponent.js');

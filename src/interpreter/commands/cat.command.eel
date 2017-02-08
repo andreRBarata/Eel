@@ -28,7 +28,8 @@ module.exports = command('cat')
 				#then((content) => {
 					push({
 						path: path,
-						mimetype: mime.lookup(path),
+						mimetype: mime.lookup(path)
+							.replace('application', 'text'), //TODO: Replace this
 						content: `${content}`
 					});
 

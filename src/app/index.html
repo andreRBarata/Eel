@@ -19,9 +19,10 @@
 	</head>
 	<body ng-app="termApp" ng-controller="mainController">
 		<div class="container-fluid" id="container">
-			<div ng-repeat="line in output track by $index">
-				<result-display template="line.html" src="line.scope"></result-display>
-			</div>
+			<result-display
+				ng-repeat="line in output track by $index"
+				template="line.html" src="line.scope">
+			</result-display>
 			<div class="command-pane">
 				<input-highlight onexec="execute">
 				</input-highlight>
