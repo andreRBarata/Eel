@@ -1,11 +1,20 @@
-const command = require('command');
+const command	= require('command');
+const fs		= require('fs');
 
 module.exports = command('cd')
 	.arguments('<path>')
 	.action(({_: [path]}, push) => {
 		#realpath(path) |> #then(([abspath]) => {
-			$cwd = abspath;
-		});
+			fs.access(abspath, (err) => {
+				if (!err) {
+					$cwd = abspath;
+				}
+				else {
+					push(new Error('Path does not exist'));
+				}
+				
+				push(null);
+			});
 
-		push(null);
+		});
 	});
