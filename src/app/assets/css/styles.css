@@ -2,6 +2,10 @@
 	margin-bottom: 60px;
 }
 
+.CodeMirror {
+	height: auto;
+}
+
 span.cm-command {
     border-style: solid;
     border-width: 2px;
@@ -22,7 +26,6 @@ input-highlight .form-control.readonly {
 }
 
 input-highlight .CodeMirror {
-	height: auto;
 	padding: 0;
 	margin: -3px;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
