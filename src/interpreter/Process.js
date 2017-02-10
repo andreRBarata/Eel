@@ -91,10 +91,20 @@ class Process extends stream.Duplex {
 				preprocessor;
 		}
 		if (defaultOutput) {
-			this._defaultOutput =
-				defaultOutput;
+			let mapper = (this._preprocessor)?
+				this._preprocessor(defaultOutput): null;
+			let link = (mapper)?
+				this.pipe(mapper): this;
 
-			this.pipe(defaultOutput, { end: false });
+			link.on('data', (data) => {
+				let hasOtherlisteners =
+					this.listeners('data')
+						.length === ((mapper)? 1: 0);
+
+				if (hasOtherlisteners) {
+					defaultOutput.write(data);
+				}
+			});
 		}
 
 		Object.keys(configs).forEach((attr) => {
@@ -117,18 +127,7 @@ class Process extends stream.Duplex {
 		let mapper = (this._preprocessor)?
 			this._preprocessor(destination): null;
 
-		if (this._defaultOutput &&
-			this._defaultOutput !== destination) {
-				this.unpipe(this._defaultOutput);
-
-				this._defaultOutput = null;
-		}
-
 		if (mapper) {
-			if (this._defaultOutput === destination) {
-				this._defaultOutput = mapper;
-			}
-
 			return super.pipe(mapper)
 				.pipe(destination, options);
 		}

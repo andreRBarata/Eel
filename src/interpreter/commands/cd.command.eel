@@ -12,7 +12,7 @@ module.exports = command('cd')
 				else {
 					push(new Error('Path does not exist'));
 				}
-				
+
 				push(null);
 			});
 
