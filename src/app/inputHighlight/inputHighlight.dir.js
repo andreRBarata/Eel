@@ -14,6 +14,7 @@ angular.module('termApp')
 				$scope.cmOption = {
 					lineNumbers: false,
 					indentWithTabs: true,
+					lineWrapping: true,
 					mode: 'eelscript',
 					cursorHeight: 1,
 					readOnly: ($scope.readonly)?
