@@ -4,7 +4,7 @@ const stream				= require('stream');
 
 const Process				= require('./Process');
 const commandAPI			= require('./shared/commandAPI.parser');
-const {chainingObject} 	= require('./shared/common');
+const {chainingObject}		= require('./shared/common');
 
 /**
 *	Create a command that takes in variables and flags

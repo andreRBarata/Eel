@@ -1,12 +1,12 @@
-const {NodeVM}				= require('vm2');
-const Highland				= require('highland');
-const fs						= require('fs');
-const spawn					= require('child_process').spawn;
-const Type					= require('type-of-is');
+const {NodeVM}			= require('vm2');
+const Highland			= require('highland');
+const fs				= require('fs');
+const spawn				= require('child_process').spawn;
+const Type				= require('type-of-is');
 const streamToPromise	= require('stream-to-promise');
 
-const Process		= require('./Process');
-const command		= require('./command');
+const Process	= require('./Process');
+const command	= require('./command');
 const eelscript	= require('./shared/eelscript.parser');
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
 		let vm;
 		let sandbox = {
 			stdout: new Highland(),
-			$env: process.env,
+			$env: Object.assign(process.env, {TERM: 'xterm-256color'}),
 			$sys: new Proxy({}, {
 				get: (obj, prop) => (obj[prop])? obj[prop]:
 					(...args) => obj['exec'](prop, ...args),

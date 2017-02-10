@@ -1,5 +1,5 @@
 const command	= require('command');
-const fs			= require('fs');
+const fs		= require('fs');
 
 module.exports = command('writefile')
 	.arguments('<path> [mode]')

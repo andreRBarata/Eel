@@ -38,9 +38,6 @@ class Process extends stream.Duplex {
 			},
 			objectMode: true
 		});
-		this.stdin = stdin;
-		this.stdout = stdout;
-
 		if (Type.is(arguments[0], Function)) {
 			arguments[0]({
 				push: (data) => this.push(data),
@@ -60,10 +57,8 @@ class Process extends stream.Duplex {
 		else if (Type.is(arguments[0], Object)) {
 			this.config(arguments[0]);
 		}
-	}
 
-	end() {
-		this.stdin.end();
+		this.end = () => stdin.end();
 	}
 
 	/**
@@ -97,11 +92,11 @@ class Process extends stream.Duplex {
 				this.pipe(mapper): this;
 
 			link.on('data', (data) => {
-				let hasOtherlisteners =
+				let hasNoOtherlisteners =
 					this.listeners('data')
 						.length === ((mapper)? 1: 0);
 
-				if (hasOtherlisteners) {
+				if (hasNoOtherlisteners) {
 					defaultOutput.write(data);
 				}
 			});
@@ -116,7 +111,6 @@ class Process extends stream.Duplex {
 		return this;
 	}
 
-	//TODO: Fix possible memmory leak
 	/**
 	*	Pipe Current processes output into
 	*	other processes input

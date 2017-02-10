@@ -39,7 +39,7 @@
 					"for": kw("for"), "switch": kw("switch"), "case": kw("case"), "default": kw("default"),
 					"in": operator, "typeof": operator, "instanceof": operator,
 					"true": atom, "false": atom, "null": atom, "undefined": atom, "NaN": atom, "Infinity": atom,
-					"this": kw("this"), "class": kw("class"), "super": kw("atom"),
+					"this": kw("this"), "class": kw("class"), "super": kw("atom"), "stdout": kw("stdout"),
 					"yield": C, "export": kw("export"), "import": kw("import"), "extends": C,
 					"await": C, "async": kw("async")
 				};
