@@ -138,8 +138,6 @@ describe('Process', () => {
 			}, {defaultOutput: defaultOutput});
 
 			Process.pipe(output, workProcess);
-
-			expect(output._defaultOutput).toBeFalsy();
 		});
 
 		it('should create pipe between processes with a default output and a preprocessor', (done) => {
@@ -166,7 +164,6 @@ describe('Process', () => {
 			});
 
 			Process.pipe(output, workProcess);
-			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 		});
@@ -192,8 +189,6 @@ describe('Process', () => {
 
 			Process.pipe(output, workProcess);
 
-			expect(output._defaultOutput).toBeFalsy();
-
 			output.push('test');
 		});
 
@@ -217,8 +212,6 @@ describe('Process', () => {
 			});
 
 			Process.pipe(output, workProcess);
-
-			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 			output.push(null);
@@ -247,8 +240,6 @@ describe('Process', () => {
 			});
 
 			Process.pipe(output, workProcess);
-
-			expect(output._defaultOutput).toBeFalsy();
 
 			output.push('test');
 			output.push(null);

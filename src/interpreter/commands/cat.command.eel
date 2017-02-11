@@ -6,12 +6,10 @@ const mime		= require('mime');
 module.exports = command('cat')
 	.arguments('[path]')
 	.display('text/html', (data) => {
-		let mimetype = data.mimetype;
+		let mimetype = data.mimetype || '';
 
-		if (mimetype) {
-			if (mimetype.match(/(text|application)\/.*/)) {
+		if (mimetype.match(/(text|application)\/.*/)) {
 
-			}
 		}
 
 		return `<textarea ui-codemirror="{

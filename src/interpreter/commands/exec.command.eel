@@ -8,9 +8,11 @@ module.exports = command('exec')
 	.receives('text/x-ansi')
 	.display('text/x-ansi', (data) => data) //TODO: Test for empty mapping
 	.display('text/html', (data) => {
-		return new AnsiToHtml({
-			newline: true
-		}).toHtml(data);
+		return `<span class="native-command">${
+				new AnsiToHtml({
+				newline: true
+			}).toHtml(data)
+		}</span>`;
 	})
 	.action(({$arguments, $stdin}, push) => {
 		let [commandname, ...args] = $arguments;

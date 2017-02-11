@@ -66,10 +66,6 @@ class Process extends stream.Duplex {
 	* 	@returns {Promise}
 	*/
 	toPromise() {
-		if (this._defaultOutput) {
-			super.unpipe(this._defaultOutput);
-		}
-
 		return streamToPromise(this);
 	}
 
@@ -91,15 +87,23 @@ class Process extends stream.Duplex {
 			let link = (mapper)?
 				this.pipe(mapper): this;
 
-			link.on('data', (data) => {
-				let hasNoOtherlisteners =
-					this.listeners('data')
-						.length === ((mapper)? 1: 0);
+			if (!this._defaultOutput) {
+				this._defaultOutput = defaultOutput;
 
-				if (hasNoOtherlisteners) {
-					defaultOutput.write(data);
-				}
-			});
+				link.on('data', (data) => {
+					let hasNoOtherlisteners =
+						this.listeners('data')
+							.length === ((mapper)? 1: 0);
+
+					if (hasNoOtherlisteners) {
+						this._defaultOutput.write(data);
+					}
+				});
+			}
+			else {
+				this._defaultOutput = defaultOutput;
+			}
+
 		}
 
 		Object.keys(configs).forEach((attr) => {

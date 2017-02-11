@@ -17,8 +17,7 @@ angular.module('termApp')
 					lineWrapping: true,
 					mode: 'eelscript',
 					cursorHeight: 1,
-					readOnly: ($scope.readonly)?
-						'nocursor': false,
+					readOnly: $scope.readonly,
 					extraKeys: {
 						Enter(cm) {
 							$scope.onexec(
