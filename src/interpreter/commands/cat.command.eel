@@ -8,14 +8,20 @@ module.exports = command('cat')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';
 
-		if (mimetype.match(/(text|application)\/.*/)) {
-
+		if (mimetype.match(/image\/.*/)) {
+			return `<img class="img-rounded img-responsive" ng-src="{{src.path}}"></img>`;
+		}
+		else if (mimetype.match(/video\/.*/)) {
+			return `<video class="img-rounded img-responsive" controls ng-src="{{src.path}}"></video>`;
+		}
+		else if (mimetype.match(/audio\/.*/)) {
+			return `<audio controls ng-src="{{src.path}}"></audio>`;
 		}
 
 		return `<textarea ui-codemirror="{
-				readOnly: 'nocursor',
-				mode: src.mimetype
-			}" ng-model="src.content"></textarea>`;
+			readOnly: 'nocursor',
+			mode: src.mimetype
+		}" ng-model="src.content"></textarea>`;
 
 	})
 	.action(({_: [path], $stdin, $stdout}, push) => {
@@ -25,10 +31,10 @@ module.exports = command('cat')
 				fs.createReadStream(realpath) |>
 				#then((content) => {
 					push({
-						path: path,
+						path: realpath,
 						mimetype: mime.lookup(path)
 							.replace('application', 'text'), //TODO: Replace this
-						content: `${content}`
+						content: content
 					});
 
 					push(null);
