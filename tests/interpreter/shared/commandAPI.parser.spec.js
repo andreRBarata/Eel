@@ -176,9 +176,68 @@ describe('commandAPI parser', () => {
 				expect(
 					commandAPI.options
 						.flaglist.parse('--page, -p')
-				).toInclude({
+				).toEqual({
 					status: true,
-					value: [['--', 'page'], ['-', 'p']]
+					value: {
+						name: 'page',
+						flags: [
+							{
+								id: 'page',
+								type: 'longflag'
+							}, {
+								id: 'p',
+								type: 'shortflag'
+							}
+						]
+					}
+				});
+			});
+
+			it('should match a list of flags with multiword flag', () => {
+				expect(
+					commandAPI.options
+						.flaglist.parse('-p, --page-numbers')
+				).toEqual({
+					status: true,
+					value: {
+						name: 'pageNumbers',
+						flags: [
+							{
+								id: 'p',
+								type: 'shortflag'
+							},
+							{
+								id: 'page-numbers',
+								type: 'longflag'
+							}
+						]
+					}
+				});
+			});
+
+			it('should match a list of flags with a multiword flag and a longflag', () => {
+				expect(
+					commandAPI.options
+						.flaglist.parse('-p, --page, --page-numbers')
+				).toEqual({
+					status: true,
+					value: {
+						name: 'pageNumbers',
+						flags: [
+							{
+								id: 'p',
+								type: 'shortflag'
+							},
+							{
+								id: 'page',
+								type: 'longflag'
+							},
+							{
+								id: 'page-numbers',
+								type: 'longflag'
+							}
+						]
+					}
 				});
 			});
 		});

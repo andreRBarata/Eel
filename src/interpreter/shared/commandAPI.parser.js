@@ -80,13 +80,35 @@ const commandAPI = (() => {
 
 		this.flaglist = P.sepBy(
 			P.alt(
-				this.longflag,
-				this.shortflag
+				this.longflag
+					.map((flag) => {
+						return {
+							type: 'longflag',
+							id: flag[1]
+						};
+					}),
+				this.shortflag.map((flag) => {
+					return {
+						type: 'shortflag',
+						id: flag[1]
+					};
+				})
 			),
 			P.optWhitespace
 			.then(P.string(','))
 			.then(P.optWhitespace)
-		);
+		).map((flags) => {
+			return {
+				name: [...flags]
+					.reverse()
+					.find((flag) => flag.type === 'longflag')
+					.id
+					.replace(/\-./g,
+						([,letter]) => letter.toUpperCase()
+					),
+				flags: flags
+			}
+		});
 
 
 		return this;

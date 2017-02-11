@@ -1,0 +1,6 @@
+const command = require('command');
+
+module.exports = command('help')
+	.action(({}, push) => {
+
+	});
