@@ -9,7 +9,7 @@ module.exports = command('exec')
 	.display('text/x-ansi', (data) => data) //TODO: Test for empty mapping
 	.display('text/html', (data) => {
 		return `<span class="native-command">${
-				new AnsiToHtml({
+			new AnsiToHtml({
 				newline: true
 			}).toHtml(data)
 		}</span>`;
@@ -37,9 +37,7 @@ module.exports = command('exec')
 					.read();
 
 				if (chunk !== null) {
-					push(
-						`${chunk}`
-					);
+					push(`${chunk}`);
 				}
 			}
 		);

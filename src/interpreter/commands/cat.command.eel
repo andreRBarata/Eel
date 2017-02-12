@@ -20,6 +20,7 @@ module.exports = command('cat')
 
 		return `<textarea ui-codemirror="{
 			readOnly: 'nocursor',
+			lineWrapping: true,
 			mode: src.mimetype
 		}" ng-model="src.content"></textarea>`;
 
@@ -34,7 +35,7 @@ module.exports = command('cat')
 						path: realpath,
 						mimetype: mime.lookup(path)
 							.replace('application', 'text'), //TODO: Replace this
-						content: content
+						content: content.join('')
 					});
 
 					push(null);

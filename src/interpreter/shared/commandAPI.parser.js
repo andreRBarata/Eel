@@ -84,13 +84,15 @@ const commandAPI = (() => {
 					.map((flag) => {
 						return {
 							type: 'longflag',
-							id: flag[1]
+							id: flag[1],
+							fullflag: flag.join('')
 						};
 					}),
 				this.shortflag.map((flag) => {
 					return {
 						type: 'shortflag',
-						id: flag[1]
+						id: flag[1],
+						fullflag: flag.join('')
 					};
 				})
 			),

@@ -183,10 +183,12 @@ describe('commandAPI parser', () => {
 						flags: [
 							{
 								id: 'page',
-								type: 'longflag'
+								type: 'longflag',
+								fullflag: '--page'
 							}, {
 								id: 'p',
-								type: 'shortflag'
+								type: 'shortflag',
+								fullflag: '-p'
 							}
 						]
 					}
@@ -204,11 +206,13 @@ describe('commandAPI parser', () => {
 						flags: [
 							{
 								id: 'p',
-								type: 'shortflag'
+								type: 'shortflag',
+								fullflag: '-p'
 							},
 							{
 								id: 'page-numbers',
-								type: 'longflag'
+								type: 'longflag',
+								fullflag: '--page-numbers'
 							}
 						]
 					}
@@ -226,15 +230,18 @@ describe('commandAPI parser', () => {
 						flags: [
 							{
 								id: 'p',
-								type: 'shortflag'
+								type: 'shortflag',
+								fullflag: '-p'
 							},
 							{
 								id: 'page',
-								type: 'longflag'
+								type: 'longflag',
+								fullflag: '--page'
 							},
 							{
 								id: 'page-numbers',
-								type: 'longflag'
+								type: 'longflag',
+								fullflag: '--page-numbers'
 							}
 						]
 					}

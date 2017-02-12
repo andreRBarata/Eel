@@ -1,10 +1,11 @@
-const Type					= require('type-of-is');
-const Highland				= require('highland');
-const stream				= require('stream');
+const Type			= require('type-of-is');
+const Highland		= require('highland');
+const stream		= require('stream');
+const AnsiToHtml	= require('ansi-to-html');
 
-const Process				= require('./Process');
-const commandAPI			= require('./shared/commandAPI.parser');
-const {chainingObject}		= require('./shared/common');
+const Process			= require('./Process');
+const commandAPI		= require('./shared/commandAPI.parser');
+const {chainingObject}	= require('./shared/common');
 
 /**
 *	Create a command that takes in variables and flags
@@ -38,8 +39,11 @@ module.exports =
 				}],
 			option:
 				['options',
-					(flags, description, option) => {
-
+					(flags, description) => {
+						return Object.assign(commandAPI.options
+								.flaglist.parse(flags),
+							{description: description}
+						);
 					}, {map: true}
 				],
 			display:
@@ -60,6 +64,7 @@ module.exports =
 			parseArgs(rawargs) {
 				let counts = this.arguments();
 				let args = [];
+				let flags = [];
 
 				for (let arg of rawargs) {
 					if (Type.is(arg, String) && false) {//TODO: Replace this
@@ -68,6 +73,14 @@ module.exports =
 					else {
 						args.push(arg);
 					}
+				}
+
+				if (counts.min > args.length) {
+					return Error('Not enough arguments');
+				}
+
+				if (counts.max !== '*' && counts.max < args.length) {
+					return Error('Too many arguments');
 				}
 
 				return {
