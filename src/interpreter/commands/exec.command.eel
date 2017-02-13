@@ -14,41 +14,42 @@ module.exports = command('exec')
 			}).toHtml(data)
 		}</span>`;
 	})
-	.action(({$arguments, $stdin}, push) => {
+	.action(({$arguments, $stdin, $stdout}, push) => {
 		let [commandname, ...args] = $arguments;
 		let systemProcess;
 
-		try {
-			systemProcess = spawn(
-				commandname,
-				args, {
-					env: $env,
-					cwd: $cwd
-				}
+		systemProcess = spawn(
+			commandname,
+			args, {
+				env: $env,
+				cwd: $cwd
+			}
+		);
+
+		systemProcess.stdout |>
+			Highland.pipeline(
+				Highland
+					.splitBy(/([^\n]+\n)/),
+				Highland
+					.filter((line) => line !== '')
+			) |> $stdout;
+
+		systemProcess
+			.on('error', (err) =>
+				push(new Error(err))
 			);
 
-			(new Highland(systemProcess.stdout))
-				.errors((err, push) => push(err))
-				.splitBy(/([^\n]+\n)/)
-				.filter((line) => line !== '')
-				.each(push);
-
-			systemProcess.stderr.on('readable',
-				() => {
-					let chunk = systemProcess
+		systemProcess.stderr.on('readable',
+			() => {
+				let chunk = systemProcess
 					.stderr
 					.read();
 
-					if (chunk !== null) {
-						push(new Error(chunk));
-					}
+				if (chunk !== null) {
+					push(new Error(chunk));
 				}
-			);
+			}
+		);
 
-			$stdin.pipe(systemProcess.stdin);
-		}
-		catch(err) {
-			push(err);
-			push(null);
-		}
+		$stdin.pipe(systemProcess.stdin);
 	});

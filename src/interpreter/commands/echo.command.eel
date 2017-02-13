@@ -7,8 +7,11 @@ module.exports = command('echo')
 	.display('text/html', (data) => {
 		switch (Type.string(data)) {
 			case 'String':
+				if (data === '\n') {
+					return '<br/>';
+				}
+
 				return data;
-				break;
 			default:
 				return `<json-formatter json="src" open="1"></json-formatter>`;
 		}
@@ -22,6 +25,6 @@ module.exports = command('echo')
 		else {
 			$arguments.forEach(push);
 		}
-
+		push('\n');
 		push(null);
 	});

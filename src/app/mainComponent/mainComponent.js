@@ -3,7 +3,7 @@ const Type = require('type-of-is');
 angular.module('termApp')
 	.controller('mainController', ($scope, vm) => {
 		$scope.vmscope = vm._context;
-		$scope.div = 'div';
+
 		$scope.command = '';
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
@@ -11,16 +11,13 @@ angular.module('termApp')
 		//TODO:130 See about treatment of nulls id:5
 		$scope.vmscope
 			.stdout
-			.map((data) => {
-				if (Type.string(data) === 'Error') {
-					return {
-						html: `
-							<div class="alert alert-danger" role="alert">{{src}}</div>`,
-						scope: data.message
-					}
-				}
-
-				return data;
+			.on('error', (err) => {
+			 	$scope.vmscope.stdout
+					.write({
+						html:
+							`<div class="alert alert-danger" role="alert">{{src}}</div>`,
+						scope: err.message
+					});
 			})
 			.batchWithTimeOrCount(10, 300)
 			.each((result) => {
@@ -29,7 +26,7 @@ angular.module('termApp')
 						$scope.output.push(line);
 					}
 					$scope.$apply();
-					window.scrollTo(0,document.body.scrollHeight);
+					window.scrollTo(0, document.body.scrollHeight);
 				}
 			});
 
@@ -45,7 +42,7 @@ angular.module('termApp')
 			}
 			catch (err) {
 				$scope.vmscope
-					.stdout.write(err);
+					.stdout.emit('error', err);
 
 			}
 		};

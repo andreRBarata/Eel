@@ -37,7 +37,6 @@ module.exports = {
 			require: {
 				external: true,
 				builtin: ['fs', 'path', 'os', 'child_process'],
-				context: ['highland', 'type-of-is', 'ansi-to-html'],
 				mock: {
 					command: command
 				}

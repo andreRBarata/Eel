@@ -76,11 +76,11 @@ module.exports =
 				}
 
 				if (counts.min > args.length) {
-					return Error('Not enough arguments');
+					return new Error('Not enough arguments');
 				}
 
 				if (counts.max !== '*' && counts.max < args.length) {
-					return Error('Too many arguments');
+					return new Error('Too many arguments');
 				}
 
 				return {
@@ -88,44 +88,42 @@ module.exports =
 				}
 			},
 			toFunction(sysout) {
-				let obj = {
-					[commandname]: (...args) => {
-						let expectedArgs = this.arguments();
-						let parsedArgs = this.parseArgs(args);
+				return (...args) => {
+					let expectedArgs = this.arguments();
+					let parsedArgs = this.parseArgs(args);
 
-						return new Process(({push, emit, stdin, stdout}) =>
-							this.action()(Object.assign({
-									$stdin: stdin,
-									$stdout: stdout,
-									$arguments: args
-								}, parsedArgs),
-								push
-							), {
-								defaultOutput: sysout,
-								preprocessor: (destination) => {
-									let receives = destination.receives;
-									let fn = this.display(receives); //TODO: Add regex
+					return new Process(({push, emit, stdin, stdout}) =>
+						this.action()(Object.assign({
+								$stdin: stdin,
+								$stdout: stdout,
+								$arguments: args
+							}, parsedArgs),
+							(data) => {
+								if (Type.is(data, Error)) {
+									emit('error', data);
+								}
+								else {
+									push(data);
+								}
+							}
+						), {
+							defaultOutput: sysout,
+							preprocessor: (destination) => {
+								let receives = destination.receives;
+								let fn = this.display(receives); //TODO: Add regex
 
-									if (fn) {
-										return stream.Transform({
-											objectMode: true,
-											transform(chunk, encoding, cb) {
-												if (Type.is(chunk, Error)) {
-													cb(null, chunk);
-												}
-												else {
-													cb(null, fn(chunk));
-												}
-											}
-										});
-									}
-								},
-								receives: this.receives(),
-							});
-					}
-				};
-
-				return obj[commandname];
+								if (fn) {
+									return stream.Transform({
+										objectMode: true,
+										transform(chunk, encoding, cb) {
+											cb(null, fn(chunk));
+										}
+									});
+								}
+							},
+							receives: this.receives(),
+						});
+				}
 			}
 		});
 

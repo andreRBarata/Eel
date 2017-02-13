@@ -18,12 +18,14 @@ class Process extends stream.Duplex {
 	*	@param {ProcessGenerator} [source]
 	* 	@param {{defaultOutput, preprocessor}} config
 	*/
-	constructor(source, config) {
+	constructor(...args) {
 		let stdin = new Highland();
 		let stdout = new stream.Readable({
 			read() {},
 			objectMode: true
 		});
+		let [config = {}, source] = [...args]
+			.reverse();
 		super({
 			read(size) {
 				return stdout.read(size);
@@ -41,11 +43,16 @@ class Process extends stream.Duplex {
 		if (Type.is(arguments[0], Function)) {
 			arguments[0]({
 				push: (data) => this.push(data),
-				emit: (event) => this.emit(event),
+				emit: (event, data) =>
+					this.emit(event, data),
 				stdin: stdin,
 				stdout: Highland.pipeline(
-					Highland.each(
-						(data) => this.push(data)
+					Highland.errors(
+						(err, push) =>
+							this.emit('error', err)
+					),
+					Highland.each((data) =>
+						this.push(data)
 					)
 				)
 			});
@@ -85,25 +92,30 @@ class Process extends stream.Duplex {
 			let mapper = (this._preprocessor)?
 				this._preprocessor(defaultOutput): null;
 			let link = (mapper)?
-				this.pipe(mapper): this;
+				Process.pipe(this, mapper): this;
 
 			if (!this._defaultOutput) {
-				this._defaultOutput = defaultOutput;
+				let hasNoOtherlisteners = () => {
+					return this.listeners('data')
+						.length <= ((mapper)? 1: 0);
+				}
 
 				link.on('data', (data) => {
-					let hasNoOtherlisteners =
-						this.listeners('data')
-							.length === ((mapper)? 1: 0);
+					if (hasNoOtherlisteners()) {
+						this._defaultOutput
+							.write(data);
+					}
+				});
 
-					if (hasNoOtherlisteners) {
-						this._defaultOutput.write(data);
+				link.on('error', (err) => {
+					if (hasNoOtherlisteners()) {
+						this._defaultOutput
+							.emit('error', err);
 					}
 				});
 			}
-			else {
-				this._defaultOutput = defaultOutput;
-			}
 
+			this._defaultOutput = defaultOutput;
 		}
 
 		Object.keys(configs).forEach((attr) => {
@@ -140,22 +152,28 @@ class Process extends stream.Duplex {
 	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
 	*	@returns {Process}
 	*/
-	static pipe(input, output) {
+	static pipe(_input, _output) {
 		function asStream(stream) {
-			if (!input.pipe) {
-				if (Type.is(input, String)) {
-					return Highland.of(input);
+			if (!stream.pipe) {
+				if (Type.is(stream, String)) {
+					return Highland.of(stream);
 				}
 				else {
-					return new Highland(input);
+					return new Highland(stream);
 				}
 			}
 			else {
 				return stream;
 			}
 		}
+		let input = asStream(_input);
+		let output = asStream(_output);
 
-		return asStream(input).pipe(asStream(output));
+		input.on('error', (err) =>
+			output.emit('error', err)
+		);
+
+		return input.pipe(output);
 	}
 }
 
