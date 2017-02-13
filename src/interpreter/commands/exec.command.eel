@@ -16,31 +16,39 @@ module.exports = command('exec')
 	})
 	.action(({$arguments, $stdin}, push) => {
 		let [commandname, ...args] = $arguments;
-		//TODO: Handle spaces
-		let systemProcess = spawn(
-			commandname,
-			args, {
-				env: $env,
-				cwd: $cwd
-			}
-		);
+		let systemProcess;
 
-		(new Highland(systemProcess.stdout))
-			.splitBy(/([^\n]+\n)/)
-			.filter((line) => line !== '')
-			.each(push);
+		try {
+			systemProcess = spawn(
+				commandname,
+				args, {
+					env: $env,
+					cwd: $cwd
+				}
+			);
 
-		systemProcess.stderr.on('readable',
-			() => {
-				let chunk = systemProcess
+			(new Highland(systemProcess.stdout))
+				.errors((err, push) => push(err))
+				.splitBy(/([^\n]+\n)/)
+				.filter((line) => line !== '')
+				.each(push);
+
+			systemProcess.stderr.on('readable',
+				() => {
+					let chunk = systemProcess
 					.stderr
 					.read();
 
-				if (chunk !== null) {
-					push(`${chunk}`);
+					if (chunk !== null) {
+						push(new Error(chunk));
+					}
 				}
-			}
-		);
+			);
 
-		$stdin.pipe(systemProcess.stdin);
+			$stdin.pipe(systemProcess.stdin);
+		}
+		catch(err) {
+			push(err);
+			push(null);
+		}
 	});

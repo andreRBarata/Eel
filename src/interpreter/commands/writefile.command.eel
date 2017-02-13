@@ -3,6 +3,7 @@ const fs		= require('fs');
 
 module.exports = command('writefile')
 	.arguments('<path> [mode]')
+	.receives('text/x-ansi')
 	.action(function ({_: [path, mode], $stdin}, push) {
 		#realpath(path) |> #then(([realpath]) => {
 			$stdin.pipe(

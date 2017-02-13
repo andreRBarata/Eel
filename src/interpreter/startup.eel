@@ -36,4 +36,7 @@ $sys.realpath = load(`${__dirname}/commands/realpath.command.eel`)
 $sys.cd = load(`${__dirname}/commands/cd.command.eel`)
 	.toFunction(stdout);
 
+$sys.help = load(`${__dirname}/commands/help.command.eel`)
+	.toFunction(stdout);
+
 #cd ~

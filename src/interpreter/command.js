@@ -104,13 +104,18 @@ module.exports =
 								defaultOutput: sysout,
 								preprocessor: (destination) => {
 									let receives = destination.receives;
-									let fn = this.display(receives);
+									let fn = this.display(receives); //TODO: Add regex
 
 									if (fn) {
 										return stream.Transform({
 											objectMode: true,
 											transform(chunk, encoding, cb) {
-												cb(null, fn(chunk));
+												if (Type.is(chunk, Error)) {
+													cb(null, chunk);
+												}
+												else {
+													cb(null, fn(chunk));
+												}
 											}
 										});
 									}

@@ -123,15 +123,15 @@ const eelscript = {
 		.map((...args) => flatten(args).join('')),
 	//TODO:0 Write tests for this id:8
 	parse(code) {
-		console.log('preparse', code);
+		//console.log('preparse', code);
 		let step1 = eelscript.expressions
 				.tryParse(code);
 
-		console.log('parse 1', step1);
+		//console.log('parse 1', step1);
 
-		console.log('parse 2', sweet.compile(
-			step1
-		).code);
+		// console.log('parse 2', sweet.compile(
+		// 	step1
+		// ).code);
 
 		return sweet.compile(
 			step1

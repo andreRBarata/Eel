@@ -1,7 +1,9 @@
+const Type = require('type-of-is');
+
 angular.module('termApp')
 	.controller('mainController', ($scope, vm) => {
 		$scope.vmscope = vm._context;
-
+		$scope.div = 'div';
 		$scope.command = '';
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
@@ -9,6 +11,17 @@ angular.module('termApp')
 		//TODO:130 See about treatment of nulls id:5
 		$scope.vmscope
 			.stdout
+			.map((data) => {
+				if (Type.string(data) === 'Error') {
+					return {
+						html: `
+							<div class="alert alert-danger" role="alert">{{src}}</div>`,
+						scope: data.message
+					}
+				}
+
+				return data;
+			})
 			.batchWithTimeOrCount(10, 300)
 			.each((result) => {
 				if (result !== null) {
@@ -32,12 +45,7 @@ angular.module('termApp')
 			}
 			catch (err) {
 				$scope.vmscope
-					.stdout.write({
-					html: `
-						<div class="alert alert-danger" role="alert">{{src}}</div>
-					`,
-					scope: err.message
-				});
+					.stdout.write(err);
 
 			}
 		};

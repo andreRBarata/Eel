@@ -1,6 +1,18 @@
-const command = require('command');
+const command	= require('command');
+const Highland	= require('highland');
 
 module.exports = command('help')
-	.action(({}, push) => {
+	.arguments('')
+	.display('text/html', (data) => {
+		return data.replace('\n', '<br/>');
+	})
+	.action(({$stdout}, push) => {
+		(Highland.of(`
+			Eelscript, the language used on this terminal, is a superset of Javascript.
 
+			It adds syntax to allow easy execution of commands native to the system and commands designed for this shell.
+
+			Commands are identified by the hash symbol (i.e #ls). Both native and Eelscript commands are called this way.
+		`)).splitBy(/([^\n]+\n)/)
+			.pipe($stdout);
 	});
