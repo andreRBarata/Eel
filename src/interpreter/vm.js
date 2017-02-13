@@ -34,6 +34,7 @@ module.exports = {
 		vm = new NodeVM({
 			timeout: 1000,
 	    	sandbox: sandbox,
+			console: 'off',
 			require: {
 				external: true,
 				builtin: ['fs', 'path', 'os', 'child_process'],

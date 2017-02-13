@@ -81,7 +81,7 @@ describe('Process', () => {
 		});
 	});
 
-	//#ForThisSprint:10 Add tests for pipeline id:0
+	//#Done: Add tests for pipeline id:0
 	describe('static "pipe" function', () => {
 		it('should create pipe between processes', (done) => {
 			let workProcess = new Process(({stdin}) => {

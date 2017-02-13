@@ -24,8 +24,7 @@ class Process extends stream.Duplex {
 			read() {},
 			objectMode: true
 		});
-		let [config = {}, source] = [...args]
-			.reverse();
+
 		super({
 			read(size) {
 				return stdout.read(size);

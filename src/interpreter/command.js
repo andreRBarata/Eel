@@ -67,7 +67,7 @@ module.exports =
 				let flags = [];
 
 				for (let arg of rawargs) {
-					if (Type.is(arg, String) && false) {//TODO: Replace this
+					if (Type.is(arg, String) && false) {//TODO: Replace this id:17
 
 					}
 					else {
@@ -91,6 +91,28 @@ module.exports =
 				return (...args) => {
 					let expectedArgs = this.arguments();
 					let parsedArgs = this.parseArgs(args);
+					let options = {
+						defaultOutput: sysout,
+						preprocessor: (destination) => {
+							let receives = destination.receives;
+							let fn = this.display(receives); //TODO: Add regex id:18
+
+							if (fn) {
+								return stream.Transform({
+									objectMode: true,
+									transform(chunk, encoding, cb) {
+										cb(null, fn(chunk));
+									}
+								});
+							}
+						},
+						receives: this.receives(),
+					};
+
+					if (Type.is(parsedArgs, Error)) {
+						return new Process()
+							.emit('error', parsedArgs);
+					}
 
 					return new Process(({push, emit, stdin, stdout}) =>
 						this.action()(Object.assign({
@@ -106,23 +128,7 @@ module.exports =
 									push(data);
 								}
 							}
-						), {
-							defaultOutput: sysout,
-							preprocessor: (destination) => {
-								let receives = destination.receives;
-								let fn = this.display(receives); //TODO: Add regex
-
-								if (fn) {
-									return stream.Transform({
-										objectMode: true,
-										transform(chunk, encoding, cb) {
-											cb(null, fn(chunk));
-										}
-									});
-								}
-							},
-							receives: this.receives(),
-						});
+						), options);
 				}
 			}
 		});

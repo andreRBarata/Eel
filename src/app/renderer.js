@@ -9,7 +9,7 @@ global.CodeMirror =
 
 const Highland = require('highland');
 
-//TODO: Replace this
+//TODO: Replace this id:16
 // Loading the syntaxes
 Highland.wrapCallback(
 	require('fs').readdir
