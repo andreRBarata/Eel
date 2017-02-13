@@ -22,7 +22,7 @@ module.exports = command('cat')
 			readOnly: 'nocursor',
 			lineWrapping: true,
 			mode: src.mimetype
-		}" ng-model="src.content.join('')"></textarea>`;
+		}" ng-model="src.content"></textarea>`;
 
 	})
 	.action(({_: [path], $stdin, $stdout}, push) => {
@@ -35,7 +35,7 @@ module.exports = command('cat')
 						path: realpath,
 						mimetype: mime.lookup(path)
 							.replace('application', 'text'), //TODO: Replace this
-						content: content
+						content: content.join('')
 					});
 
 					push(null);

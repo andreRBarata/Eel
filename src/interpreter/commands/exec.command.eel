@@ -4,7 +4,7 @@ const Highland		= require('highland');
 const AnsiToHtml	= require('ansi-to-html');
 
 module.exports = command('exec')
-	.arguments('<command> <args...>')
+	.arguments('<command> [args...]')
 	.receives('text/x-ansi')
 	.display('text/x-ansi', (data) => data) //TODO: Test for empty mapping
 	.display('text/html', (data) => {
