@@ -12,15 +12,37 @@ const eelscript	= require('./shared/eelscript.parser');
 module.exports = {
 	getInstance() {
 		let vm;
+		let cwd = process.cwd();
 		let sandbox = {
-			stdout: new Highland(),
-			$env: Object.assign(process.env, {TERM: 'xterm-256color'}),
-			$sys: new Proxy({}, {
-				get: (obj, prop) => (obj[prop])? obj[prop]:
-					(...args) => obj['exec'](prop, ...args),
-				set: (obj, prop, value) => obj[prop] = value
-			}),
-			$cwd: __dirname,
+			process: {
+				stdout: new Highland(),
+				title: 'Eelscript',
+				version: process.version,
+				env: Object.assign(process.env, {TERM: 'xterm-256color'}),
+				sys: new Proxy({}, {
+					get: (obj, prop) => (obj[prop])? obj[prop]:
+						(...args) => obj['exec'](prop, ...args),
+					set: (obj, prop, value) => obj[prop] = value
+				}),
+				cwd() {
+					return cwd;
+				},
+				chdir(_cwd) {
+					cwd = _cwd;
+					this.emit('cwdchange', cwd);
+				},
+				on(event, handler) {
+					return this.stdout.on(event, handler);
+				},
+				emit(event, data) {
+					return this.stdout.emit(event, data);
+				},
+				sys: new Proxy({}, {
+					get: (obj, prop) => (obj[prop])? obj[prop]:
+						(...args) => obj['exec'](prop, ...args),
+					set: (obj, prop, value) => obj[prop] = value
+				})
+			},
 			load(path) {
 				return vm.run(
 					`${fs.readFileSync(path)}`,
@@ -30,7 +52,7 @@ module.exports = {
 			'_' : Process
 		};
 
-		sandbox.stdout.receives = 'object/scoped-html';
+		sandbox.process.stdout.receives = 'object/scoped-html';
 		vm = new NodeVM({
 			timeout: 1000,
 	    	sandbox: sandbox,

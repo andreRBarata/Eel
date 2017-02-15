@@ -118,7 +118,7 @@ describe('command', () => {
 			}
 		});
 
-		it('should add arguments list', (done) => {
+		it('should add arguments list', () => {
 			echo
 				.arguments('<test...> [test2] <test3>')
 				.action(() => {
@@ -130,8 +130,23 @@ describe('command', () => {
 				max: '*',
 				string: '<test...> [test2] <test3>'
 			});
+		});
 
-			echo.toFunction()();
+		it('should fail to accept no parameters', (done) => {
+			echo
+				.arguments('<test...>')
+				.action(() => {
+					done();
+				});
+
+			echo.toFunction()().on('error', (err) => {
+				console.log(err);
+				expect(err)
+					.toBeAn(Error);
+
+				done();
+			});
+
 		});
 	});
 

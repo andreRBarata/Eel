@@ -51,7 +51,7 @@ const eelscript = {
 				P.lazy(() => eelscript.shell.arg)
 			)
 		).map(([, func, args = []]) =>
-			`$sys[${func}](${
+			`process.sys[${func}](${
 				args.join(',')
 			})`
 		)

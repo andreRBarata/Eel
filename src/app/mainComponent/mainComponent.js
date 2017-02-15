@@ -2,22 +2,28 @@ const Type = require('type-of-is');
 
 angular.module('termApp')
 	.controller('mainController', ($scope, vm) => {
-		$scope.vmscope = vm._context;
-
+		$scope.process = vm._context
+			.process;
+		$scope.cwd = process.cwd();
 		$scope.command = '';
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
 
 		//TODO:130 See about treatment of nulls id:5
-		$scope.vmscope
+		$scope.process
 			.stdout
 			.on('error', (err) => {
-			 	$scope.vmscope.stdout
+			 	$scope.process.stdout
 					.write({
 						html:
 							`<div class="alert alert-danger" role="alert">{{src}}</div>`,
 						scope: err.message
 					});
+			})
+			.on('cwdchange', (cwd) => {
+				console.log(cwd);
+				$scope.cwd = cwd;
+				$scope.$apply();
 			})
 			.batchWithTimeOrCount(10, 300)
 			.each((result) => {
@@ -31,7 +37,7 @@ angular.module('termApp')
 			});
 
 		$scope.execute = (command) => {
-			$scope.vmscope
+			$scope.process
 				.stdout.write({
 					html: `<input-highlight command="src" readonly="true"></input-highlight>`,
 					scope: command
@@ -41,7 +47,7 @@ angular.module('termApp')
 				vm.run(command);
 			}
 			catch (err) {
-				$scope.vmscope
+				$scope.process
 					.stdout.emit('error', err);
 
 			}

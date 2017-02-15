@@ -19,8 +19,8 @@ module.exports = command('exec')
 		let systemProcess = spawn(
 			commandname,
 			args, {
-				env: $env,
-				cwd: $cwd
+				env: process.env,
+				cwd: process.cwd()
 			}
 		);
 

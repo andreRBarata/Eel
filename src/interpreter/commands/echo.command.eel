@@ -11,19 +11,19 @@ module.exports = command('echo')
 					return '<br/>';
 				}
 
-				return data;
+				return data + '&nbsp;';
 			default:
 				return `<json-formatter json="src" open="1"></json-formatter>`;
 		}
 	})
-	.action(({$arguments}, push) => {
+	.action(({$arguments, $stdout}, push) => {
 		//An easter egg, dont tell anyone
 		if ($arguments.length === 1 &&
 			$arguments[0] === 'marco') {
 				push('polo');
 		}
 		else {
-			$arguments.forEach(push);
+			$arguments |> $stdout;
 		}
 		push('\n');
 		push(null);

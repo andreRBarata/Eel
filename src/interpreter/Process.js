@@ -100,14 +100,14 @@ class Process extends stream.Duplex {
 				}
 
 				link.on('data', (data) => {
-					if (hasNoOtherlisteners()) {
+					if (hasNoOtherlisteners() && this._defaultOutput) {
 						this._defaultOutput
 							.write(data);
 					}
 				});
 
 				link.on('error', (err) => {
-					if (hasNoOtherlisteners()) {
+					if (hasNoOtherlisteners() && this._defaultOutput) {
 						this._defaultOutput
 							.emit('error', err);
 					}

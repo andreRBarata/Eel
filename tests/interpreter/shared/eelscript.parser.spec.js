@@ -27,17 +27,17 @@ describe('Eelscript parser', () => {
 
 			it('should parse simple command', () => {
 				expect(shell.command.parse('#ls'))
-					.toEqual({status: true, value: '$sys[\'ls\']()'});
+					.toEqual({status: true, value: 'process.sys[\'ls\']()'});
 			});
 
 			it('should parse command with arguments', () => {
 				expect(shell.command.parse('#ls src'))
-					.toEqual({status: true, value: `$sys['ls']('src')`});
+					.toEqual({status: true, value: `process.sys['ls']('src')`});
 			});
 
 			it('should parse command with a variable', () => {
 				expect(shell.command.parse('#ls ${src}'))
-					.toEqual({status: true, value: `$sys['ls'](src)`});
+					.toEqual({status: true, value: `process.sys['ls'](src)`});
 			});
 		});
 	});
@@ -68,12 +68,12 @@ describe('Eelscript parser', () => {
 
 		it('should parse a template command', () => {
 			expect(eelscript.templateString.parse('`${#ls}`'))
-				.toEqual({status: true, value: '""+($sys[\'ls\']())+""'});
+				.toEqual({status: true, value: '""+(process.sys[\'ls\']())+""'});
 		});
 
 		it('should parse a string and a template command', () => {
 			expect(eelscript.templateString.parse('`test${#ls}`'))
-				.toEqual({status: true, value: '"test"+($sys[\'ls\']())+""'});
+				.toEqual({status: true, value: '"test"+(process.sys[\'ls\']())+""'});
 		});
 
 		it('should parse a template string with escaped backtick', () => {
@@ -109,7 +109,7 @@ describe('Eelscript parser', () => {
 
 		it('should parse a system command assignment', () => {
 			expect(eelscript.expressions.parse('let test = #ls;'))
-				.toEqual({status: true, value: `let test = $sys['ls']();`});
+				.toEqual({status: true, value: `let test = process.sys['ls']();`});
 		});
 
 		it('should parse an empty singlequote string', () => {

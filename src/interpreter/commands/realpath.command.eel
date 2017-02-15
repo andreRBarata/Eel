@@ -5,7 +5,7 @@ const os		= require('os');
 module.exports = command('realpath')
 	.arguments('<location>')
 	.action(({_: [location]}, push) => {
-		push(path.resolve($cwd, location.replace('~',
+		push(path.resolve(process.cwd(), location.replace('~',
 			os.homedir()
 		)));
 

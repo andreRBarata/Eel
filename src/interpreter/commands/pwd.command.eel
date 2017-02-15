@@ -3,6 +3,6 @@ const command = require('command');
 module.exports = command('pwd')
 	.arguments('')
 	.action(({}, push) => {
-		push($cwd);
+		push(process.cwd());
 		push(null);
 	});

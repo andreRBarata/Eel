@@ -7,7 +7,7 @@ module.exports = command('cd')
 		#realpath(path) |> #then(([abspath]) => {
 			fs.access(abspath, (err) => {
 				if (!err) {
-					$cwd = abspath;
+					process.chdir(abspath);
 				}
 				else {
 					push(new Error('Path does not exist'));
