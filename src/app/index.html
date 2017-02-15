@@ -24,6 +24,7 @@
 			<result-display
 				ng-repeat="line in output track by $index"
 				template="line.html" src="line.scope">
+				{{scrollDown()}}
 			</result-display>
 			<div class="command-pane">
 				<input-highlight onexec="execute">

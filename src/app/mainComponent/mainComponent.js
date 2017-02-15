@@ -9,6 +9,9 @@ angular.module('termApp')
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
 
+		$scope.scrollDown = () =>
+			window.scrollTo(0, document.body.scrollHeight);
+
 		//TODO:130 See about treatment of nulls id:5
 		$scope.process
 			.stdout
@@ -21,7 +24,6 @@ angular.module('termApp')
 					});
 			})
 			.on('cwdchange', (cwd) => {
-				console.log(cwd);
 				$scope.cwd = cwd;
 				$scope.$apply();
 			})
@@ -32,7 +34,6 @@ angular.module('termApp')
 						$scope.output.push(line);
 					}
 					$scope.$apply();
-					window.scrollTo(0, document.body.scrollHeight);
 				}
 			});
 

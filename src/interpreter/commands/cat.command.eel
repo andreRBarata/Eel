@@ -19,10 +19,12 @@ module.exports = command('cat')
 		}
 
 		return `<textarea ui-codemirror="{
+			viewportMargin: src.content.join()
+				.split('\\n').length,
 			readOnly: 'nocursor',
 			lineWrapping: true,
 			mode: src.mimetype
-		}" ng-model="src.content"></textarea>`;
+		}" ng-model="src.content.join()"></textarea>`;
 
 	})
 	.action(({_: [path], $stdin, $stdout}, push) => {
@@ -35,7 +37,7 @@ module.exports = command('cat')
 						path: realpath,
 						mimetype: mime.lookup(path)
 							.replace('application', 'text'), //TODO: Replace this
-						content: content.join('')
+						content: content
 					});
 
 					push(null);
