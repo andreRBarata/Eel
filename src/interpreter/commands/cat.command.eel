@@ -19,12 +19,12 @@ module.exports = command('cat')
 		}
 
 		return `<textarea ui-codemirror="{
-			viewportMargin: src.content.join()
+			viewportMargin: src.content
 				.split('\\n').length,
 			readOnly: 'nocursor',
 			lineWrapping: true,
 			mode: src.mimetype
-		}" ng-model="src.content.join()"></textarea>`;
+		}" ng-model="src.content"></textarea>`;
 
 	})
 	.action(({_: [path], $stdin, $stdout}, push) => {
@@ -33,11 +33,18 @@ module.exports = command('cat')
 			#map((realpath) => {
 				fs.createReadStream(realpath) |>
 				#then((content) => {
+					let mimetype = mime.lookup(path)
+						.replace('application', 'text');
+
 					push({
 						path: realpath,
-						mimetype: mime.lookup(path)
-							.replace('application', 'text'), //TODO: Replace this
-						content: content
+						mimetype: mimetype, //TODO: Replace this
+						get content() {
+							return content.join('');
+						},
+						set content(value) {
+
+						}
 					});
 
 					push(null);

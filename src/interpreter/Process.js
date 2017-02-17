@@ -24,7 +24,6 @@ class Process extends stream.Duplex {
 			read() {},
 			objectMode: true
 		});
-
 		super({
 			read(size) {
 				return stdout.read(size);
@@ -39,6 +38,7 @@ class Process extends stream.Duplex {
 			},
 			objectMode: true
 		});
+
 		if (Type.is(arguments[0], Function)) {
 			arguments[0]({
 				push: (data) => this.push(data),

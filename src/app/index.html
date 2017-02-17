@@ -21,11 +21,9 @@
 	</head>
 	<body ng-app="termApp" ng-controller="mainController">
 		<div class="container-fluid" id="container">
-			<result-display
-				ng-repeat="line in output track by $index"
-				template="line.html" src="line.scope">
+			<stream-display src="process.stdout">
 				{{scrollDown()}}
-			</result-display>
+			</stream-display>
 			<div class="command-pane">
 				<input-highlight onexec="execute">
 				</input-highlight>

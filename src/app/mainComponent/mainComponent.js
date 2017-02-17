@@ -8,33 +8,13 @@ angular.module('termApp')
 		$scope.command = '';
 		//TODO:90 Fix all output to the same command error id:4
 		$scope.output = [];
-
 		$scope.scrollDown = () =>
 			window.scrollTo(0, document.body.scrollHeight);
 
-		//TODO:130 See about treatment of nulls id:5
 		$scope.process
-			.stdout
-			.on('error', (err) => {
-			 	$scope.process.stdout
-					.write({
-						html:
-							`<div class="alert alert-danger" role="alert">{{src}}</div>`,
-						scope: err.message
-					});
-			})
-			.on('cwdchange', (cwd) => {
+			.stdout.on('cwdchange', (cwd) => {
 				$scope.cwd = cwd;
 				$scope.$apply();
-			})
-			.batchWithTimeOrCount(10, 300)
-			.each((result) => {
-				if (result !== null) {
-					for (let line of result) {
-						$scope.output.push(line);
-					}
-					$scope.$apply();
-				}
 			});
 
 		$scope.execute = (command) => {

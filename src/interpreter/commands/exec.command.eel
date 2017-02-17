@@ -16,6 +16,7 @@ module.exports = command('exec')
 	})
 	.action(({$arguments, $stdin, $stdout}, push) => {
 		let [commandname, ...args] = $arguments;
+
 		let systemProcess = spawn(
 			commandname,
 			args, {

@@ -1,7 +1,7 @@
 const P	= require('parsimmon');
 
-const commandAPI = (() => {
-	this.variables = (() => {
+const commandAPI = (function() {
+	this.variables = (function() {
 		this.single = P.regexp(/[a-zA-Z0-9]+/)
 			.map((name) => {
 				return {
@@ -56,7 +56,7 @@ const commandAPI = (() => {
 		return this;
 	}).apply({});
 
-	this.options = (() => {
+	this.options = (function() {
 		this.flagcharacters =
 			 P.regexp(/[a-zA-Z0-9]/);
 

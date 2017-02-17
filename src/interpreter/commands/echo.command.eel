@@ -11,20 +11,19 @@ module.exports = command('echo')
 					return '<br/>';
 				}
 
-				return data + '&nbsp;';
+				return `<span>{{src}}&nbsp;</span>`;
 			default:
 				return `<json-formatter json="src" open="1"></json-formatter>`;
 		}
 	})
-	.action(({$arguments, $stdout}, push) => {
+	.action(({$arguments, $stdout}) => {
 		//An easter egg, dont tell anyone
 		if ($arguments.length === 1 &&
 			$arguments[0] === 'marco') {
-				push('polo');
+				'polo' |> $stdout;
 		}
 		else {
 			$arguments |> $stdout;
 		}
-		push('\n');
-		push(null);
+
 	});

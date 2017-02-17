@@ -1,7 +1,7 @@
 const {NodeVM}			= require('vm2');
 const Highland			= require('highland');
 const fs				= require('fs');
-const spawn				= require('child_process').spawn;
+const childProcess		= require('child_process');
 const Type				= require('type-of-is');
 const streamToPromise	= require('stream-to-promise');
 
@@ -56,12 +56,14 @@ module.exports = {
 		vm = new NodeVM({
 			timeout: 1000,
 	    	sandbox: sandbox,
-			console: 'off',
+			console: 'inherit',
 			require: {
 				external: true,
-				builtin: ['fs', 'path', 'os', 'child_process'],
+				//context: 'sandbox',
+				builtin: ['fs', 'path', 'os', 'child_process',
+					'util', 'events', 'string_decoder', 'stream'],
 				mock: {
-					command: command
+					'./Process': Process
 				}
 			},
 			compiler: eelscript.parse
