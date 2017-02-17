@@ -55,7 +55,7 @@ module.exports =
 								html: Command.display('text/html')(data)
 							}
 						}],
-						['text/html', (data) => '<span>{{src}}</span>'],
+						['text/html', (data) => '{{src}}'],
 						['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
 					])}
 				],

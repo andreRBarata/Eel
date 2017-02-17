@@ -11,7 +11,7 @@ module.exports = command('echo')
 					return '<br/>';
 				}
 
-				return `<span>{{src}}&nbsp;</span>`;
+				return `{{src}}&nbsp;`;
 			default:
 				return `<json-formatter json="src" open="1"></json-formatter>`;
 		}

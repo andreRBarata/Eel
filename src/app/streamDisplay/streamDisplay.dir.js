@@ -21,7 +21,7 @@ angular.module('termApp')
 
 							try {
 								$element.append(
-									$compile(`<span>${ele.html}</span>`)(tmpscope)
+									$compile(`<section style="display: inline;">${ele.html}</section>`)(tmpscope)
 								);
 							}
 							catch(err) {
