@@ -45,15 +45,15 @@ class Process extends stream.Duplex {
 				emit: (event, data) =>
 					this.emit(event, data),
 				stdin: stdin,
-				stdout: Highland.pipeline(
-					Highland.errors(
-						(err, push) =>
-							this.emit('error', err)
-					),
-					Highland.each((data) =>
-						this.push(data)
+				stdout: Highland
+					.pipeline((s) =>
+						s.errors(
+							(err, push) =>
+								this.emit('error', err)
+						).each((data) =>
+							this.push(data)
+						)
 					)
-				)
 			});
 
 			if (Type.is(arguments[1], Object)) {

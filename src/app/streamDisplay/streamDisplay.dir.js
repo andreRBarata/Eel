@@ -1,5 +1,5 @@
 angular.module('termApp')
-	.directive('streamDisplay', function () {
+	.directive('streamDisplay', () => {
 		return {
 			scope: {
 				src: '='
@@ -15,18 +15,19 @@ angular.module('termApp')
 									scope: err.message
 								});
 						})
-						.each((ele) => {
-							let tmpscope = $scope.$new(true, $scope);
+						.map((ele) => {
+							let tmpscope = $scope.$new(true);
 							tmpscope.src = ele.scope;
 
-							try {
-								$element.append(
-									$compile(`<section style="display: inline;">${ele.html}</section>`)(tmpscope)
-								);
-							}
-							catch(err) {
-								throw new Error('HTML template must be wrapped in a tag');
-							}
+							$element.append(
+								$compile(`<section style="display: inline;">${ele.html}</section>`)(tmpscope)
+							);
+
+							return tmpscope;
+						})
+						.debounce(10)
+						.each((tmpscope) => {
+							tmpscope.$apply();
 						});
 				}
 		}

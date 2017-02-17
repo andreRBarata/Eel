@@ -22,7 +22,7 @@ module.exports =
 						.parse(args);
 
 					if (parsed.status === false) {
-						return new Error('Invalid arguments provided');
+						throw new Error('Invalid arguments provided');
 					}
 
 					return parsed.value;
@@ -76,11 +76,11 @@ module.exports =
 				}
 
 				if (counts.min > args.length) {
-					return new Error('Not enough arguments');
+					throw new Error('Not enough arguments');
 				}
 
 				if (counts.max !== '*' && counts.max < args.length) {
-					return new Error('Too many arguments');
+					throw new Error('Too many arguments');
 				}
 
 				return {
@@ -90,8 +90,6 @@ module.exports =
 			toFunction(sysout) {
 				return (...args) => {
 					let expectedArgs = this.arguments();
-					let parsedArgs = this.parseArgs(args);
-
 					let options = {
 						defaultOutput: sysout,
 						preprocessor: (destination) => {
@@ -109,10 +107,16 @@ module.exports =
 						},
 						receives: this.receives(),
 					};
+					let parsedArgs;
 
-					if (Type.is(parsedArgs, Error)) {
-						return new Process()
-							.emit('error', parsedArgs);
+					try {
+						parsedArgs = this.parseArgs(args);
+					}
+					catch (err) {
+						return new Process(({emit, push}) => {
+							emit('error', parsedArgs);
+							push(null);
+						});
 					}
 
 					return new Process(({push, emit, stdin, stdout}) =>

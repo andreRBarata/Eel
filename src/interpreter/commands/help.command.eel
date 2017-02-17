@@ -2,6 +2,7 @@ const command	= require('command');
 const Highland	= require('highland');
 
 module.exports = command('help')
+	.display('text/html', (data) => data)
 	.action(({$stdout}) => {
 		Highland.of(`
 			Eelscript, the language used on this terminal, is a superset of Javascript.

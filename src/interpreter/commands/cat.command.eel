@@ -1,5 +1,6 @@
 const command	= require('command');
 const fs		= require('fs');
+const util		= require('util');
 const Highland	= require('highland');
 const mime		= require('mime');
 
@@ -52,10 +53,8 @@ module.exports = command('cat')
 			});
 		}
 		else {
-			$stdin.toArray((data) => {
-				push(data);
-				push(null);
-			});
+			//TODO: Fix me
+			$stdin |> #map((data) => util.inspect(data));
 		}
 
 	});
