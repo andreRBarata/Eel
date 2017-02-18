@@ -10,13 +10,13 @@ module.exports = command('cat')
 		let mimetype = data.mimetype || '';
 
 		if (mimetype.match(/image\/.*/)) {
-			return `<img class="img-rounded img-responsive" ng-src="{{src.path}}"></img>`;
+			return `<img class="img-rounded img-responsive center" ng-src="{{src.path}}"></img>`;
 		}
 		else if (mimetype.match(/video\/.*/)) {
-			return `<video class="img-rounded img-responsive" controls ng-src="{{src.path}}"></video>`;
+			return `<video class="img-rounded img-responsive center" controls ng-src="{{src.path}}"></video>`;
 		}
 		else if (mimetype.match(/audio\/.*/)) {
-			return `<audio controls ng-src="{{src.path}}"></audio>`;
+			return `<audio class="center" controls ng-src="{{src.path}}"></audio>`;
 		}
 
 		return `<textarea ui-codemirror="{

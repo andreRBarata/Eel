@@ -1,21 +1,30 @@
-const Type = require('type-of-is');
+const storage = require('electron-storage');
 
 angular.module('termApp')
-	.controller('mainController', ($scope, vm) => {
+	.controller('mainController', ($scope, $window, vm) => {
 		$scope.process = vm._context
 			.process;
 		$scope.cwd = process.cwd();
 		$scope.command = '';
-		//TODO:90 Fix all output to the same command error id:4
-		$scope.output = [];
+		$scope.history = [];
+
 		$scope.scrollDown = () =>
 			window.scrollTo(0, document.body.scrollHeight);
 
 		$scope.process
 			.stdout.on('cwdchange', (cwd) => {
 				$scope.cwd = cwd;
-				$scope.$apply();
 			});
+
+		storage.get('history')
+			.then((data) => $scope.history = data)
+			.catch(() => {
+				storage.set('history', $scope.history);
+			});
+
+		$window.addEventListener('beforeunload', () => {
+			storage.set('history', $scope.history);
+		});
 
 		$scope.execute = (command) => {
 			$scope.process
@@ -26,6 +35,12 @@ angular.module('termApp')
 
 			try {
 				vm.run(command);
+
+				if (!$scope.history.includes(command)) {
+					console.log($scope.history)
+					$scope.history
+						.push(command);
+				}
 			}
 			catch (err) {
 				$scope.process

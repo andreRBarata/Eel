@@ -4,7 +4,7 @@ const Highland	= require('highland');
 module.exports = command('help')
 	.display('text/html', (data) => data)
 	.action(({$stdout}) => {
-		Highland.of(`
+		`
 			Eelscript, the language used on this terminal, is a superset of Javascript.
 			It adds syntax to allow easy execution of commands native to the system and commands designed for this shell. Commands are identified by the hash symbol (i.e #ls). Both native and Eelscript commands are called this way.
 
@@ -23,6 +23,10 @@ module.exports = command('help')
 					</dd>
 				</dl>
 			</p>
-			It is possible to pipe
-		`) |> $stdout;
+			<p>
+				It is possible to pipe two commands using the operator "|>".
+			</p>
+			Example: #ls |> #cat
+
+		` |> $stdout;
 	});

@@ -10,6 +10,10 @@ result-display {
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
+.center {
+	margin: 0 auto;
+}
+
 .native-command {
 	white-space: pre-wrap;
 }

@@ -24,9 +24,12 @@
 			<stream-display src="process.stdout">
 				{{scrollDown()}}
 			</stream-display>
-			<div class="command-pane">
-				<input-highlight onexec="execute">
-				</input-highlight>
+			<div class="command-pane"
+				popover-enable="!history.length"
+				popover-placement="bottom-left"
+				uib-popover="Type #help for intructions on the syntax and a list of commands">
+					<input-highlight onexec="execute">
+					</input-highlight>
 			</div>
 		</div>
 
