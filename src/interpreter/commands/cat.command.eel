@@ -54,7 +54,7 @@ module.exports = command('cat')
 		}
 		else {
 			//TODO: Fix me
-			$stdin |> #map((data) => util.inspect(data));
+			$stdin |> #map((data) => util.inspect(data)) |> $stdout;
 		}
 
 	});

@@ -6,16 +6,33 @@
 	height: auto;
 }
 
-result-display {
-	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-}
-
 .center {
 	margin: 0 auto;
 }
 
 .native-command {
 	white-space: pre-wrap;
+	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+
+h1 {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 13px;
+	font-style: italic;
+}
+
+h4 {
+	font-size: 12px;
+	font-style: italic;
 }
 
 span.cm-command {
@@ -58,7 +75,7 @@ input-highlight .prev {
 
 input-highlight input {
 	border: none;
-   outline: none;
+	outline: none;
 	padding: 0;
 	margin: 0;
 }

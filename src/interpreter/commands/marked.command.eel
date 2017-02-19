@@ -1,0 +1,8 @@
+const marked	= require('marked');
+const command	= require('command');
+
+module.exports = command('marked')
+	.arguments('<markdown> [options]')
+	.action(({$stdout, $arguments: [markdown, options]}) => {
+		marked(markdown, options) |> $stdout;
+	});

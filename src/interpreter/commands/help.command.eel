@@ -4,29 +4,22 @@ const Highland	= require('highland');
 module.exports = command('help')
 	.display('text/html', (data) => data)
 	.action(({$stdout}) => {
-		`
-			Eelscript, the language used on this terminal, is a superset of Javascript.
-			It adds syntax to allow easy execution of commands native to the system and commands designed for this shell. Commands are identified by the hash symbol (i.e #ls). Both native and Eelscript commands are called this way.
+		#marked `
+Eelscript, the language used on this terminal, is a superset of Javascript.
+It adds syntax to allow easy execution of commands native to the system and commands designed for this shell. Commands are identified by the hash symbol (i.e \`#ls\`). Both native and Eelscript commands are called this way.
 
-			<p>
-				Commands can be called using two methods:
-				<dl>
-					<dt>Stringy call (e.g #ls src)</dt>
-					<dd>
-						All parameters in front of the call are presumed to be a string and split using spaces. To include a space seperated string in a parameters quotes use single ('), double (") or template (\`) quotes.
+Commands can be called using two methods:
 
-						It is possible to use a variable in this type of call using template simbol \${code}. (e.g #ls \${variable})
-					</dd>
-					<dt>Standard call (e.g #ls("src"))</dt>
-					<dd>
-						In this form of call works like the standard functions in Javascript.
-					</dd>
-				</dl>
-			</p>
-			<p>
-				It is possible to pipe two commands using the operator "|>".
-			</p>
-			Example: #ls |> #cat
+# Stringy call (e.g \`#ls src\`)
+All parameters in front of the call are presumed to be a string and split using spaces. To include a space seperated string in a parameters quotes use single ('), double (") or template (\`) quotes.
+
+It is possible to use a variable in this type of call using template simbol \${code}. (e.g \`#ls\` \${variable})
+# Standard call (e.g \`#ls("src")\`)
+In this form of call works like the standard functions in Javascript.
+
+It is possible to pipe two commands using the operator "|>".
+
+**Example:** \`#ls |> #cat\`
 
 		` |> $stdout;
 	});
