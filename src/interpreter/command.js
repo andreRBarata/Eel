@@ -108,10 +108,9 @@ module.exports =
 					throw new Error('Too many arguments');
 				}
 
-				return {
-					_: args,
-					options: flags
-				}
+				return Object.assign(flags, {
+					_: args
+				});
 			},
 			toFunction(sysout) {
 				return (...args) => {
@@ -149,8 +148,7 @@ module.exports =
 						this.action()(Object.assign({
 								$stdin: stdin,
 								$stdout: stdout,
-								_: parsedArgs._
-							}, parsedArgs.options),
+							}, parsedArgs),
 							(data) => {
 								if (Type.is(data, Error)) {
 									emit('error', data);

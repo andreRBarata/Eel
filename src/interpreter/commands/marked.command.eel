@@ -3,6 +3,6 @@ const command	= require('command');
 
 module.exports = command('marked')
 	.arguments('<markdown> [options]')
-	.action(({$stdout, $arguments: [markdown, options]}) => {
+	.action(({$stdout, _: [markdown, options]}) => {
 		marked(markdown, options) |> $stdout;
 	});
