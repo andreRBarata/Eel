@@ -108,6 +108,16 @@ describe('command', () => {
 		});
 	});
 
+	describe('"option" function', () => {
+		it('it should return a parser that parses an option', (done) => {
+			echo.option('--help, -h', 'test')
+				.action((args) => {
+					console.log(args)
+					done();
+				}).toFunction()('--help');
+		});
+	});
+
 	describe('"arguments" function', () => {
 		it('should return error is arguments are invalid', () => {
 			try {

@@ -2,6 +2,8 @@ const Type			= require('type-of-is');
 const Highland		= require('highland');
 const stream		= require('stream');
 const AnsiToHtml	= require('ansi-to-html');
+const P				= require('parsimmon');
+
 
 const Process			= require('./Process');
 const commandAPI		= require('./shared/commandAPI.parser');
@@ -38,13 +40,21 @@ module.exports =
 					// function
 				}],
 			option:
-				['options',
+				['option',
 					(flags, description) => {
-						return Object.assign(commandAPI.options
-								.flaglist.parse(flags),
+						let parsedFlags = commandAPI
+							.options
+							.flaglist
+							.parse(flags);
+
+						if (parsedFlags.status === false) {
+							throw new Error('Invalid flags provided');
+						}
+
+						return Object.assign(parsedFlags.value,
 							{description: description}
 						);
-					}, {map: true}
+					}, {multiple: true}
 				],
 			display:
 				['display',
@@ -61,14 +71,29 @@ module.exports =
 				],
 			action: ['action'],
 			//TODO: Complete parameter parsing id:14
-			parseArgs(rawargs) {
+			parseArgs(rawargs = []) {
 				let counts = this.arguments();
 				let args = [];
-				let flags = [];
+				let flags = {};
+				let possibleFlags = false;
+
+				if (this.option().length) {
+					possibleFlags = P.alt(...(this.option()
+						.map((option) => option.parser))
+					);
+				}
 
 				for (let arg of rawargs) {
-					if (Type.is(arg, String) && false) {//TODO: Replace this id:17
-
+					if (Type.is(arg, String) && possibleFlags) {//TODO: Add flag variables
+						let parsedArg =
+							possibleFlags.parse(arg);
+						if (parsedArg.status) {
+							flags[parsedArg.value.name]
+								= parsedArg.value.value;
+						}
+						else {
+							args.push(arg);
+						}
 					}
 					else {
 						args.push(arg);
@@ -84,7 +109,8 @@ module.exports =
 				}
 
 				return {
-					_: args
+					_: args,
+					options: flags
 				}
 			},
 			toFunction(sysout) {
@@ -123,8 +149,8 @@ module.exports =
 						this.action()(Object.assign({
 								$stdin: stdin,
 								$stdout: stdout,
-								$arguments: args
-							}, parsedArgs),
+								_: parsedArgs._
+							}, parsedArgs.options),
 							(data) => {
 								if (Type.is(data, Error)) {
 									emit('error', data);

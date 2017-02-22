@@ -26,4 +26,3 @@ require('./app.js');
 require('./inputHighlight/inputHighlight.dir.js');
 require('./streamDisplay/streamDisplay.dir.js');
 require('./mainComponent/mainComponent.js');
-require('./resultDisplay/resultDisplay.dir.js');

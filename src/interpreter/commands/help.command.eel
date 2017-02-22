@@ -13,7 +13,7 @@ Commands can be called using two methods:
 # Stringy call (e.g \`#ls src\`)
 All parameters in front of the call are presumed to be a string and split using spaces. To include a space seperated string in a parameters quotes use single ('), double (") or template (\`) quotes.
 
-It is possible to use a variable in this type of call using template simbol \${code}. (e.g \`#ls\` \${variable})
+It is possible to use a variable in this type of call using template simbol \${code}. (e.g \`#ls \${variable}\`)
 # Standard call (e.g \`#ls("src")\`)
 In this form of call works like the standard functions in Javascript.
 

@@ -14,9 +14,9 @@ module.exports = command('exec')
 			}).toHtml(data)
 		}</span>`;
 	})
-	.action(({$arguments, $stdin, $stdout}, push) => {
-		let [commandname, ...args] = $arguments;
-
+	.action(({_: $arguments, $stdin, $stdout}, push) => {
+		let [commandname, ...args] =
+			$arguments;
 		let systemProcess = spawn(
 			commandname,
 			args, {

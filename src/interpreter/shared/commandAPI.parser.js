@@ -97,10 +97,10 @@ const commandAPI = (function() {
 				})
 			),
 			P.optWhitespace
-			.then(P.string(','))
-			.then(P.optWhitespace)
+				.then(P.string(','))
+				.then(P.optWhitespace)
 		).map((flags) => {
-			return {
+			let toReturn = {
 				name: [...flags]
 					.reverse()
 					.find((flag) => flag.type === 'longflag')
@@ -108,8 +108,19 @@ const commandAPI = (function() {
 					.replace(/\-./g,
 						([,letter]) => letter.toUpperCase()
 					),
-				flags: flags
+				flags: flags,
+				parser: P.alt(
+					...(flags
+						.map((flag) => P.string(flag.fullflag)))
+				).map((flag) => {
+					return {
+						name: toReturn.name,
+						value: true
+					};
+				})
 			}
+
+			return toReturn;
 		});
 
 

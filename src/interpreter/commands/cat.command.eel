@@ -6,6 +6,7 @@ const mime		= require('mime');
 
 module.exports = command('cat')
 	.arguments('[path]')
+	.option('-n, --number')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';
 
@@ -24,11 +25,13 @@ module.exports = command('cat')
 				.split('\\n').length,
 			readOnly: 'nocursor',
 			lineWrapping: true,
+			lineNumbers: src.options
+				.lineNumbers,
 			mode: src.mimetype
 		}" ng-model="src.content"></textarea>`;
 
 	})
-	.action(({_: [path], $stdin, $stdout}, push) => {
+	.action(({_: [path], $stdin, $stdout, number}, push) => {
 		if (path) {
 			#realpath(path) |>
 			#map((realpath) => {
@@ -45,6 +48,9 @@ module.exports = command('cat')
 						},
 						set content(value) {
 
+						},
+						options: {
+							lineNumbers: number
 						}
 					});
 
@@ -54,7 +60,8 @@ module.exports = command('cat')
 		}
 		else {
 			//TODO: Fix me
-			$stdin |> #map((data) => util.inspect(data)) |> $stdout;
+			$stdin |> #map((data) => util.inspect(data)) |>
+				$stdout;
 		}
 
 	});

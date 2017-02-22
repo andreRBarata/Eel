@@ -176,7 +176,7 @@ describe('commandAPI parser', () => {
 				expect(
 					commandAPI.options
 						.flaglist.parse('--page, -p')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
 						name: 'page',
@@ -199,7 +199,7 @@ describe('commandAPI parser', () => {
 				expect(
 					commandAPI.options
 						.flaglist.parse('-p, --page-numbers')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
 						name: 'pageNumbers',
@@ -223,7 +223,7 @@ describe('commandAPI parser', () => {
 				expect(
 					commandAPI.options
 						.flaglist.parse('-p, --page, --page-numbers')
-				).toEqual({
+				).toInclude({
 					status: true,
 					value: {
 						name: 'pageNumbers',

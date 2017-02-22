@@ -14,6 +14,7 @@ angular.module('termApp')
 		$scope.process
 			.stdout.on('cwdchange', (cwd) => {
 				$scope.cwd = cwd;
+				$scope.$apply();
 			});
 
 		storage.get('history')
