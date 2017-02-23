@@ -85,11 +85,9 @@ module.exports =
 
 				for (let arg of rawargs) {
 					if (Type.is(arg, String) && possibleFlags) {//TODO: Add flag variables
-						let parsedArg =
-							possibleFlags.parse(arg);
+						let parsedArg = possibleFlags.parse(arg);
 						if (parsedArg.status) {
-							flags[parsedArg.value.name]
-								= parsedArg.value.value;
+							flags[parsedArg.value.name] = parsedArg.value.value;
 						}
 						else {
 							args.push(arg);
@@ -113,8 +111,10 @@ module.exports =
 				});
 			},
 			toFunction(sysout) {
-				return (...args) => {
+				return (...commandargs) => {
+					console.log('commandargs', commandargs);
 					let expectedArgs = this.arguments();
+
 					let options = {
 						defaultOutput: sysout,
 						preprocessor: (destination) => {
@@ -135,7 +135,7 @@ module.exports =
 					let parsedArgs;
 
 					try {
-						parsedArgs = this.parseArgs(args);
+						parsedArgs = this.parseArgs(commandargs);
 					}
 					catch (err) {
 						return new Process(({emit, push}) => {

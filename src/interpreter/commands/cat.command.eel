@@ -50,7 +50,7 @@ module.exports = command('cat')
 
 						},
 						options: {
-							lineNumbers: number
+							lineNumbers: number || false
 						}
 					});
 
@@ -60,8 +60,15 @@ module.exports = command('cat')
 		}
 		else {
 			//TODO: Fix me
-			$stdin |> #map((data) => util.inspect(data)) |>
-				$stdout;
+			$stdin |> #map((data) => {
+				return {
+					mimetype: 'text/object-description',
+					content: util.inspect(data),
+					options: {
+						lineNumbers: number || false
+					}
+				}
+			}) |> $stdout;
 		}
 
 	});

@@ -51,5 +51,5 @@ module.exports = command('exec')
 			}
 		);
 
-		$stdin.pipe(systemProcess.stdin);
+		$stdin |> systemProcess.stdin;
 	});
