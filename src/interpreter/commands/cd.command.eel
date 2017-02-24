@@ -5,9 +5,12 @@ module.exports = command('cd')
 	.arguments('<path>')
 	.action(({_: [path]}, push) => {
 		#realpath(path) |> #then(([abspath]) => {
-			fs.access(abspath, (err) => {
-				if (!err) {
+			fs.stat(abspath, (err, stats) => {
+				if (!err && stats.isDirectory()) {
 					process.chdir(abspath);
+				}
+				else if (!stats.isDirectory()) {
+					push(new Error('Path is not a directory'));
 				}
 				else {
 					push(new Error('Path does not exist'));

@@ -3,6 +3,25 @@ const command	= require('command');
 
 module.exports = command('marked')
 	.arguments('<markdown> [options]')
-	.action(({$stdout, _: [markdown, options]}) => {
-		marked(markdown, options) |> $stdout;
+	.display(/.*/, ({markdown, options}) =>
+		marked(markdown, options)
+	)
+	.display('text/x-ansi', ({markdown}) =>
+		markdown
+	)
+	.action(({$stdout, $stdin, _: [markdown, options]}) => {
+		if (markdown) {
+			#echo({
+				markdown: markdown,
+				options: options
+			}) |> $stdout;
+		}
+		else {
+			$stdin |> #map((_markdown) => {
+				return {
+					markdown: _markdown,
+					options: options
+				};
+			}) |> $stdout;
+		}
 	});

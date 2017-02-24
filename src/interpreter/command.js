@@ -112,14 +112,13 @@ module.exports =
 			},
 			toFunction(sysout) {
 				return (...commandargs) => {
-					console.log('commandargs', commandargs);
 					let expectedArgs = this.arguments();
 
 					let options = {
 						defaultOutput: sysout,
 						preprocessor: (destination) => {
-							let receives = destination.receives;
-							let fn = this.display(receives); //TODO: Add regex id:18
+							let receives = destination.receives || '';
+							let fn = this.display(receives);
 
 							if (fn) {
 								return stream.Transform({

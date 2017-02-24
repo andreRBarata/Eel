@@ -74,7 +74,20 @@ const common = {
 			}
 
 			if (innerargs.length === 1 && options.map) {
-				return this[index].get(innerargs[0])
+				let element = innerargs[0];
+				//TODO: Add order priorities
+				for (let [key, value] of this[index]) {
+					if (Type.is(key, RegExp) &&
+						Type.is(element, String) &&
+						key.test(element)) {
+							return value;
+					}
+					else if (key === element) {
+						return value;
+					}
+				}
+
+				return null;
 			}
 
 			let output = (!fn)?

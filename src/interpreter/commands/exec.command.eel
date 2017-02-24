@@ -33,6 +33,10 @@ module.exports = command('exec')
 					.filter((line) => line !== '')
 			) |> $stdout;
 
+		systemProcess.on('close', () => {
+			push(null);
+		});
+
 		//TODO: Add readable error messages
 		systemProcess
 			.on('error', (err) =>

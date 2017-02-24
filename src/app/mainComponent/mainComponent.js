@@ -38,7 +38,6 @@ angular.module('termApp')
 				vm.run(command);
 
 				if (!$scope.history.includes(command)) {
-					console.log($scope.history)
 					$scope.history
 						.push(command);
 				}
