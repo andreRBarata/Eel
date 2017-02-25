@@ -55,5 +55,8 @@ module.exports = command('exec')
 			}
 		);
 
-		$stdin |> systemProcess.stdin;
+		$stdin |> #then((data) => {
+			console.log(data);
+			return data
+		});
 	});

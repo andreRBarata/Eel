@@ -24,6 +24,12 @@ class Process extends stream.Duplex {
 			read() {},
 			objectMode: true
 		});
+
+		if (Type.is(args[0], Function) && args.length < 2) {
+			args.push({});
+		}
+		let [config, source] = args.reverse();
+
 		super({
 			read(size) {
 				return stdout.read(size);
@@ -39,8 +45,8 @@ class Process extends stream.Duplex {
 			objectMode: true
 		});
 
-		if (Type.is(arguments[0], Function)) {
-			arguments[0]({
+		if (source) {
+			source({
 				push: (data) => this.push(data),
 				emit: (event, data) =>
 					this.emit(event, data),
@@ -49,20 +55,15 @@ class Process extends stream.Duplex {
 					.pipeline((s) =>
 						s.errors(
 							(err, push) =>
-								this.emit('error', err)
-						).each((data) =>
-							this.push(data)
-						)
+								super.emit('error', err))
+						.each((data) =>
+							super.push(data))
+						.done(() => super.end())
 					)
 			});
+		}
 
-			if (Type.is(arguments[1], Object)) {
-				this.config(arguments[1]);
-			}
-		}
-		else if (Type.is(arguments[0], Object)) {
-			this.config(arguments[0]);
-		}
+		this.config(config);
 
 		this.end = () => stdin.end();
 	}

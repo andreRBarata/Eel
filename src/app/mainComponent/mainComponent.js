@@ -37,9 +37,15 @@ angular.module('termApp')
 			try {
 				vm.run(command);
 
-				if (!$scope.history.includes(command)) {
-					$scope.history
-						.push(command);
+				if (command && command !== '') {
+					let lastCommand = $scope
+						.history[$scope.history.length - 1];
+
+					if (lastCommand !== command) {
+						$scope.history
+							.push(command);
+						$scope.$apply();
+					}
 				}
 			}
 			catch (err) {
