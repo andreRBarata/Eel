@@ -63,7 +63,7 @@ module.exports =
 							return {
 								scope: data,
 								html: Command.display('text/html')(data)
-							}
+							};
 						}],
 						['text/html', (data) => '{{src}}'],
 						['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
@@ -111,7 +111,7 @@ module.exports =
 				});
 			},
 			toFunction(sysout) {
-				return (...commandargs) => {
+				return (...commandArgs) => {
 					let expectedArgs = this.arguments();
 
 					let options = {
@@ -134,11 +134,12 @@ module.exports =
 					let parsedArgs;
 
 					try {
-						parsedArgs = this.parseArgs(commandargs);
+						parsedArgs = this.parseArgs(commandArgs);
 					}
 					catch (err) {
+						console.log(err);
 						return new Process(({emit, push}) => {
-							emit('error', parsedArgs);
+							emit('error', err);
 							push(null);
 						});
 					}

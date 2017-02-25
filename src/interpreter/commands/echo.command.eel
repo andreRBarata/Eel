@@ -3,7 +3,7 @@ const Type		= require('type-of-is');
 
 
 module.exports = command('echo')
-	.arguments('<text...>')
+	.arguments('[text...]')
 	.display('text/html', (data) => {
 		switch (Type.string(data)) {
 			case 'String':
@@ -25,5 +25,4 @@ module.exports = command('echo')
 		else {
 			$arguments |> $stdout;
 		}
-
 	});
