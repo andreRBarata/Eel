@@ -47,9 +47,9 @@ class Process extends stream.Duplex {
 
 		if (source) {
 			source({
-				push: (data) => this.push(data),
+				push: (data) => super.push(data),
 				emit: (event, data) =>
-					this.emit(event, data),
+					super.emit(event, data),
 				stdin: stdin,
 				stdout: Highland
 					.pipeline((s) =>

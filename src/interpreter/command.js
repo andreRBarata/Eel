@@ -131,20 +131,17 @@ module.exports =
 						},
 						receives: this.receives(),
 					};
-					let parsedArgs;
 
-					try {
-						parsedArgs = this.parseArgs(commandArgs);
-					}
-					catch (err) {
-						console.log(err);
-						return new Process(({emit, push}) => {
+					return new Process(({push, emit, stdin, stdout}) => {
+						let parsedArgs;
+
+						try {
+							parsedArgs = this.parseArgs(commandArgs);
+						}
+						catch (err) {
 							emit('error', err);
-							push(null);
-						});
-					}
+						}
 
-					return new Process(({push, emit, stdin, stdout}) =>
 						this.action()(Object.assign({
 								$stdin: stdin,
 								$stdout: stdout,
@@ -157,7 +154,8 @@ module.exports =
 									push(data);
 								}
 							}
-						), options);
+						);
+					}, options);
 				}
 			}
 		});

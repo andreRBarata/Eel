@@ -34,9 +34,13 @@ angular.module('termApp')
 									.history[$scope.curLocation];
 								$scope.$apply();
 							}
+							else {
+								CodeMirror.commands
+									.goLineUp(cm);
+							}
 						},
 						Down(cm) {
-							if (cm.getCursor().line === cm.firstLine()) {
+							if (cm.getCursor().line === cm.lastLine()) {
 								$scope.curLocation++;
 
 								if ($scope.curLocation < 0) {
@@ -47,6 +51,10 @@ angular.module('termApp')
 								$scope.command = $scope
 									.history[$scope.curLocation];
 								$scope.$apply();
+							}
+							else {
+								CodeMirror.commands
+									.goLineDown(cm);
 							}
 						},
 						Enter(cm) {

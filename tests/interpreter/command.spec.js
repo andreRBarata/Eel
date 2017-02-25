@@ -112,7 +112,6 @@ describe('command', () => {
 		it('it should return a parser that parses an option', (done) => {
 			echo.option('--help, -h', 'test')
 				.action((args) => {
-					console.log(args)
 					done();
 				}).toFunction()('--help');
 		});
@@ -150,7 +149,6 @@ describe('command', () => {
 				});
 
 			echo.toFunction()().on('error', (err) => {
-				console.log(err);
 				expect(err)
 					.toBeAn(Error);
 
