@@ -1,8 +1,7 @@
 const command	= require('command');
 const fs		= require('fs');
 
-module.exports = command('cd')
-	.arguments('<path>')
+module.exports = command('cd <path>')
 	.action(({_: [path]}, push) => {
 		#realpath(path) |> #then(([abspath]) => {
 			fs.stat(abspath, (err, stats) => {

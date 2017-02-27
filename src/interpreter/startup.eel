@@ -1,45 +1,43 @@
 const command	= require('command');
 
 //TODO: Test these
-process.sys.map = command('map')
-	.arguments('<callback>')
+process.sys.map = command('map <callback>')
 	.action(({_: [callback], $stdin, $stdout}) => {
 		$stdin.map(callback) |> $stdout;
-	}).toFunction(process.stdout);
+	});
 
-process.sys.reduce = command('reduce')
-	.arguments('<callback>')
+process.sys.reduce = command('reduce <callback>')
 	.action(({_: [callback], $stdin, $stdout}) => {
 		$stdin.reduce(callback) |> $stdout;
-	}).toFunction(process.stdout);
+	});
 
-process.sys.filter = command('filter')
-	.arguments('<callback>')
+process.sys.filter = command('filter <callback>')
 	.action(({_: [callback], $stdin, $stdout}) => {
 		$stdin.filter(callback) |> $stdout;
-	}).toFunction(process.stdout);
+	});
 
 
-process.sys.marked = load(`${__dirname}/commands/marked.command.eel`)
-	.toFunction(process.stdout);
-process.sys.writefile = load(`${__dirname}/commands/writefile.command.eel`)
-	.toFunction(process.stdout);
-process.sys.then = load(`${__dirname}/commands/then.command.eel`)
-	.toFunction(process.stdout);
-process.sys.cat = load(`${__dirname}/commands/cat.command.eel`)
-	.toFunction(process.stdout);
-process.sys.pwd = load(`${__dirname}/commands/pwd.command.eel`)
-	.toFunction(process.stdout);
-process.sys.echo = load(`${__dirname}/commands/echo.command.eel`)
-	.toFunction(process.stdout);
-process.sys.exec = load(`${__dirname}/commands/exec.command.eel`)
-	.toFunction(process.stdout);
-process.sys.realpath = load(`${__dirname}/commands/realpath.command.eel`)
-	.toFunction(process.stdout);
-process.sys.cd = load(`${__dirname}/commands/cd.command.eel`)
-	.toFunction(process.stdout);
+process.sys.marked = load(`${__dirname}/commands/marked.command.eel`);
 
-process.sys.help = load(`${__dirname}/commands/help.command.eel`)
-	.toFunction(process.stdout);
+process.sys.writefile = load(`${__dirname}/commands/writefile.command.eel`);
+
+process.sys.then = load(`${__dirname}/commands/then.command.eel`);
+
+process.sys.cat = load(`${__dirname}/commands/cat.command.eel`);
+
+process.sys.pwd = load(`${__dirname}/commands/pwd.command.eel`);
+
+process.sys.echo = load(`${__dirname}/commands/echo.command.eel`);
+
+process.sys.exec = load(`${__dirname}/commands/exec.command.eel`);
+
+process.sys.realpath = load(`${__dirname}/commands/realpath.command.eel`);
+
+process.sys.cd = load(`${__dirname}/commands/cd.command.eel`);
+
+process.sys.handlebars = load(`${__dirname}/commands/handlebars.command.eel`);
+
+process.sys.help = load(`${__dirname}/commands/help.command.eel`);
+
 
 #cd ~

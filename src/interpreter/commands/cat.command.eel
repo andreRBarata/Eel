@@ -4,8 +4,7 @@ const util		= require('util');
 const Highland	= require('highland');
 const mime		= require('mime');
 
-module.exports = command('cat')
-	.arguments('[path]')
+module.exports = command('cat [path]')
 	.option('-n, --number')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';

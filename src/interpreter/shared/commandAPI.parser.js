@@ -151,6 +151,18 @@ const commandAPI = (function() {
 		}, {});
 	});
 
+	this.header = P.alt(
+		P.seq(
+			P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
+				.then(P.whitespace),
+			this.args
+		),
+		P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
+			.map((name) => {
+				return [name];
+			})
+	);
+
 	return this;
 }).apply({});
 

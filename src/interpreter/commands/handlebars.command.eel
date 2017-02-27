@@ -1,0 +1,33 @@
+const command		= require('command');
+const Handlebars	= require('handlebars');
+const Type			= require('type-of-is');
+
+module.exports = command('handlebars <text> [context] [options]')
+	.action(({_: $arguments, $stdin}, push) => {
+		let text, context, options;
+
+		if ($arguments.length === 1) {
+			[text] = $arguments;
+			let template = Handlebars.compile(text);
+
+			$stdin.each((context) => {
+				push(template(context));
+			}).done(() => {
+				push(null);
+			});
+		}
+		else if ($arguments.length === 2) {
+			[text, context] = $arguments;
+			let template = Handlebars.compile(text);
+
+			push(template(context));
+			push(null);
+		}
+		else if ($arguments.length === 3) {
+			[text, context, options] = $arguments;
+			let template = Handlebars.compile(text, options);
+
+			push(template(context));
+			push(null);
+		}
+	});

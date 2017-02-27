@@ -1,7 +1,6 @@
 const command = require('command');
 
-module.exports = command('then')
-	.arguments('<callback>')
+module.exports = command('then <callback>')
 	.action(({_: [callback, mimetype],
 		$stdin, $stdout}) => {
 			$stdin.toArray((data) => {
