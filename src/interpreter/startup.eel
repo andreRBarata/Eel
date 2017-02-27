@@ -19,6 +19,7 @@ process.sys.filter = command('filter')
 		$stdin.filter(callback) |> $stdout;
 	}).toFunction(process.stdout);
 
+
 process.sys.marked = load(`${__dirname}/commands/marked.command.eel`)
 	.toFunction(process.stdout);
 process.sys.writefile = load(`${__dirname}/commands/writefile.command.eel`)

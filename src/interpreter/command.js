@@ -70,7 +70,7 @@ module.exports =
 					])}
 				],
 			action: ['action'],
-			//TODO: Complete parameter parsing id:14
+			//#Done: Complete parameter parsing id:14
 			parseArgs(rawargs = []) {
 				let counts = this.arguments();
 				let args = [];
@@ -84,7 +84,7 @@ module.exports =
 				}
 
 				for (let arg of rawargs) {
-					if (Type.is(arg, String) && possibleFlags) {//TODO: Add flag variables
+					if (Type.is(arg, String) && possibleFlags) {//TODO: Complete flag variables id:20
 						let parsedArg = possibleFlags.parse(arg);
 						if (parsedArg.status) {
 							flags[parsedArg.value.name] = parsedArg.value.value;

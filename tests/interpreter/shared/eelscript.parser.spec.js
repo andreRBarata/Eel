@@ -49,7 +49,6 @@ describe('Eelscript parser', () => {
 		});
 	});
 
-	//TODO: Fix tests id:15
 	describe('templateString', () => {
 		it('should parse a template string', () => {
 			expect(eelscript.templateString.parse('`test`'))

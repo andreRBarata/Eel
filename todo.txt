@@ -1,1 +1,5 @@
 #Done: Start writing SweetJS scripts id:24
+#TODO: Fix stream not ending bug id:25
+#TODO: Complete helptext id:26
+#TODO: Make ls command id:27
+#TODO: Complete auto complete id:28

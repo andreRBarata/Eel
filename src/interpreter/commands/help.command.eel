@@ -35,6 +35,7 @@ It is possible to pipe two commands using the operator "|>".
 
 module.exports = command('help')
 	.display('text/html', (data) => data)
+	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
 		#marked(helptext) |> $stdout;
 	});

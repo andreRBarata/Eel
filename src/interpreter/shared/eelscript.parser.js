@@ -57,12 +57,12 @@ const eelscript = {
 		)
 	},
 	excapedCharacter: P.regex(/\\./),
-	//TODO:0 Test this id:6
+	//TODO: Test this id:6
 	comment: P.alt(
 		P.regex(/\/\/.*\n/),
 		P.regex(/\/\*(.|\n)*\*\//)
 	),
-	//TODO:0 Fix escaping id:7
+	//TODO: Fix escaping id:7
 	templateVariable: P.seq(
 		P.string('${'),
 		P.lazy(() => eelscript.expressions),
@@ -121,7 +121,7 @@ const eelscript = {
 	),
 	expressions: P.lazy(() => eelscript.expression).many()
 		.map((...args) => flatten(args).join('')),
-	//TODO:0 Write tests for this id:8
+	//TODO: Write tests for this id:8
 	parse(code = '') {
 		//console.log('preparse', code);
 		let step1 = eelscript.expressions

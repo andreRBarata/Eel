@@ -13,6 +13,7 @@ angular.module('termApp')
 			templateUrl: 'inputHighlight/inputHighlight.tpl.html',
 			controller: function InputHighlight($scope) {
 				$scope.curLocation = -1;
+				//TODO: Try to add greyed out auto complete history id:24
 				$scope.cmOption = {
 					lineNumbers: false,
 					indentWithTabs: true,
@@ -43,7 +44,7 @@ angular.module('termApp')
 							if (cm.getCursor().line === cm.lastLine()) {
 								$scope.curLocation++;
 
-								if ($scope.curLocation < 0) {
+								if ($scope.curLocation > $scope.length) {
 									$scope.curLocation = $scope
 										.history.length;
 								}

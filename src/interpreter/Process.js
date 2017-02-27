@@ -88,6 +88,7 @@ class Process extends stream.Duplex {
 			this._preprocessor =
 				preprocessor;
 		}
+		//TODO: Consider change to embed stream model id:23
 		if (defaultOutput) {
 			let mapper = (this._preprocessor)?
 				this._preprocessor(defaultOutput): null;
@@ -145,7 +146,7 @@ class Process extends stream.Duplex {
 		return super.pipe(destination, options);
 	}
 
-	//TODO:150 Warning for readonly processes id:2
+	//TODO: Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
 	* 	@static

@@ -75,7 +75,7 @@ const common = {
 
 			if (innerargs.length === 1 && options.map) {
 				let element = innerargs[0];
-				//TODO: Add order priorities
+				//TODO: Add order priorities id:21
 				for (let [key, value] of this[index]) {
 					if (Type.is(key, RegExp) &&
 						Type.is(element, String) &&
