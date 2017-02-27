@@ -53,7 +53,7 @@ const eelscript = {
 		).map(([, func, args = []]) =>
 			`process.sys[${func}](${
 				args.join(',')
-			})`
+			}).config({defaultOutput: process.stdout})`
 		)
 	},
 	excapedCharacter: P.regex(/\\./),

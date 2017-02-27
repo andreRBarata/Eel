@@ -15,150 +15,151 @@ const {chainingObject}	= require('./shared/common');
 *	@param {string} description
 */
 module.exports =
-	function command(commandname = '', description = '') {
-		let Command = chainingObject({
-			arguments:
-				['arguments', (args = '') => {
-					let parsed = commandAPI
-						.args
-						.parse(args);
+	function (header = '', description = '') {
+		let parsedHeader = commandAPI
+			.header
+			.parse(header);
 
-					if (parsed.status === false) {
-						throw new Error('Invalid arguments provided');
+		if (parsedHeader.status === false) {
+			throw new Error('Invalid header provided');
+		}
+
+		let [commandname, argsTemplate] =
+			parsedHeader.value;
+
+
+		let command = Object.assign(
+			function command(...commandArgs) {
+				let expectedArgs = argsTemplate;
+
+				let options = {
+					preprocessor: (destination) => {
+						let receives = destination.receives || '';
+						let fn = command.display(receives);
+
+						if (fn) {
+							return stream.Transform({
+								objectMode: true,
+								transform(chunk, encoding, cb) {
+									cb(null, fn(chunk));
+								}
+							});
+						}
+					},
+					receives: command.receives(),
+				};
+
+				return new Process(({push, emit, stdin, stdout}) => {
+					let parsedArgs;
+
+					try {
+						parsedArgs = command.parseArgs(commandArgs);
+					}
+					catch (err) {
+						emit('error', err);
 					}
 
-					return parsed.value;
-				}, {default: []}],
-			description: ['description',
-				{default: description}
-			],
-			receives: ['receives'],
-			version: ['version'],
-			help: ['help'],
-			validation:
-				['validation', () => {
-					// function
-				}],
-			option:
-				['option',
-					(flags, description) => {
-						let parsedFlags = commandAPI
-							.options
-							.flaglist
-							.parse(flags);
-
-						if (parsedFlags.status === false) {
-							throw new Error('Invalid flags provided');
+					command.action()(Object.assign({
+							$stdin: stdin,
+							$stdout: stdout,
+						}, parsedArgs),
+						(data) => {
+							if (Type.is(data, Error)) {
+								emit('error', data);
+							}
+							else {
+								push(data);
+							}
 						}
-
-						return Object.assign(parsedFlags.value,
-							{description: description}
-						);
-					}, {multiple: true}
-				],
-			display:
-				['display',
-					(mimetype = '', template = '') => [mimetype, template], {map: true, default: new Map([
-						['object/scoped-html', (data) => {
-							return {
-								scope: data,
-								html: Command.display('text/html')(data)
-							};
-						}],
-						['text/html', (data) => '{{src}}'],
-						['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
-					])}
-				],
-			action: ['action'],
-			//#Done: Complete parameter parsing id:14
-			parseArgs(rawargs = []) {
-				let counts = this.arguments();
-				let args = [];
-				let flags = {};
-				let possibleFlags = false;
-
-				if (this.option().length) {
-					possibleFlags = P.alt(...(this.option()
-						.map((option) => option.parser))
 					);
-				}
+				}, options);
+			},
+			chainingObject({
+				args: argsTemplate,
+				description: ['description',
+					{default: description}
+				],
+				receives: ['receives'],
+				version: ['version'],
+				help: ['help'],
+				validation:
+					['validation', () => {
+						// function
+					}],
+				option:
+					['option',
+						(flags, description) => {
+							let parsedFlags = commandAPI
+								.options
+								.flaglist
+								.parse(flags);
 
-				for (let arg of rawargs) {
-					if (Type.is(arg, String) && possibleFlags) {//TODO: Complete flag variables id:20
-						let parsedArg = possibleFlags.parse(arg);
-						if (parsedArg.status) {
-							flags[parsedArg.value.name] = parsedArg.value.value;
+							if (parsedFlags.status === false) {
+								throw new Error('Invalid flags provided');
+							}
+
+							return Object.assign(parsedFlags.value,
+								{description: description}
+							);
+						}, {multiple: true}
+					],
+				display:
+					['display',
+						(mimetype = '', template = '') => [mimetype, template], {map: true, default: new Map([
+							['object/scoped-html', (data) => {
+								return {
+									scope: data,
+									html: command.display('text/html')(data)
+								};
+							}],
+							['text/html', (data) => '{{src}}'],
+							['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
+						])}
+					],
+				action: ['action'],
+				//#Done: Complete parameter parsing id:14
+				parseArgs(rawargs = []) {
+					let args = [];
+					let flags = {};
+					let possibleFlags = false;
+
+					if (command.option().length) {
+						possibleFlags = P.alt(...(command.option()
+							.map((option) => option.parser))
+						);
+					}
+
+					for (let arg of rawargs) {
+						if (Type.is(arg, String) && possibleFlags) {//TODO: Complete flag variables id:20
+							let parsedArg = possibleFlags.parse(arg);
+							if (parsedArg.status) {
+								flags[parsedArg.value.name] = parsedArg.value.value;
+							}
+							else {
+								args.push(arg);
+							}
 						}
 						else {
 							args.push(arg);
 						}
 					}
-					else {
-						args.push(arg);
+
+					if (argsTemplate) {
+						if (argsTemplate.min > args.length) {
+							throw new Error('Not enough arguments');
+						}
+
+						if (argsTemplate.max !== '*' && argsTemplate.max < args.length) {
+							throw new Error('Too many arguments');
+						}
 					}
+
+					return Object.assign(flags, {
+						_: args
+					});
 				}
+			})
+		);
 
-				if (counts.min > args.length) {
-					throw new Error('Not enough arguments');
-				}
-
-				if (counts.max !== '*' && counts.max < args.length) {
-					throw new Error('Too many arguments');
-				}
-
-				return Object.assign(flags, {
-					_: args
-				});
-			},
-			toFunction(sysout) {
-				return (...commandArgs) => {
-					let expectedArgs = this.arguments();
-
-					let options = {
-						defaultOutput: sysout,
-						preprocessor: (destination) => {
-							let receives = destination.receives || '';
-							let fn = this.display(receives);
-
-							if (fn) {
-								return stream.Transform({
-									objectMode: true,
-									transform(chunk, encoding, cb) {
-										cb(null, fn(chunk));
-									}
-								});
-							}
-						},
-						receives: this.receives(),
-					};
-
-					return new Process(({push, emit, stdin, stdout}) => {
-						let parsedArgs;
-
-						try {
-							parsedArgs = this.parseArgs(commandArgs);
-						}
-						catch (err) {
-							emit('error', err);
-						}
-
-						this.action()(Object.assign({
-								$stdin: stdin,
-								$stdout: stdout,
-							}, parsedArgs),
-							(data) => {
-								if (Type.is(data, Error)) {
-									emit('error', data);
-								}
-								else {
-									push(data);
-								}
-							}
-						);
-					}, options);
-				}
-			}
-		});
-
-		return Command;
+		return command;
 	};

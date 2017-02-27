@@ -30,12 +30,23 @@ It is possible to pipe two commands using the operator "|>".
 
 # Available Commands
 
-
+{{#each commands}}
+	{{name}}
+{{/each}}
 `;
 
 module.exports = command('help')
 	.display('text/html', (data) => data)
 	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
-		#marked(helptext) |> $stdout;
+		console.log(Object.keys(process.sys)
+			.map((command) => {
+				return {
+					name: command,
+					command: process.sys[command]
+				};
+			}));
+		#handlebars(
+			helptext, {}
+		) |> #marked |> $stdout;
 	});

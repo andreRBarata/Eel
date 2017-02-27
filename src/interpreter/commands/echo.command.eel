@@ -2,8 +2,7 @@ const command	= require('command');
 const Type		= require('type-of-is');
 
 
-module.exports = command('echo')
-	.arguments('[text...]')
+module.exports = command('echo [text...]')
 	.display('text/html', (data) => {
 		switch (Type.string(data)) {
 			case 'String':
