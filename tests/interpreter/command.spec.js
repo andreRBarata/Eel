@@ -21,20 +21,20 @@ describe('command', () => {
 					done();
 				});
 
-				echo.toFunction()();
+				echo();
 			}
 		);
 
 		it('should create function which executes action with converted arguments when ran',
 			(done) => {
 				echo
-					.arguments('<path>')
+					.usage('<path>')
 					.action(({_:[path]}) => {
 						expect(path).toEqual('./test');
 						done();
 					});
 
-				echo.toFunction()('./test');
+				echo('./test');
 			}
 		);
 
@@ -50,8 +50,8 @@ describe('command', () => {
 				.action(({}, push) => {
 					push('test');
 					push(null);
-				})
-				.toFunction(sysoutMock)();
+				})()
+				.config({defaultOutput: sysoutMock});;
 		});
 
 		it('should write into stream nested stream', (done) => {
@@ -76,8 +76,7 @@ describe('command', () => {
 						test2: []
 					});
 					push(null);
-				})
-				.toFunction(sysoutMock)();
+				})();
 		});
 
 
@@ -94,15 +93,14 @@ describe('command', () => {
 						expect(received).toEqual(['test']);
 						done();
 					});
-				})
-				.toFunction(sysoutMock);
+				});
 
 			let echofunc = echo
 				.action(({}, push) => {
 					push('test');
 					push(null);
-				})
-				.toFunction(sysoutMock)();
+				})()
+				.config({defaultOutput: sysoutMock});
 
 			echofunc.pipe(ls());
 		});
@@ -113,14 +111,14 @@ describe('command', () => {
 			echo.option('--help, -h', 'test')
 				.action((args) => {
 					done();
-				}).toFunction()('--help');
+				})('--help');
 		});
 	});
 
-	describe('"arguments" function', () => {
+	describe('"usage" function', () => {
 		it('should return error is arguments are invalid', () => {
 			try {
-				echo.arguments('<test.. [test2] <test3>');
+				echo.usage('<test.. [test2] <test3>');
 			}
 			catch (err) {
 				expect(err).toBeAn(Error);
@@ -129,12 +127,12 @@ describe('command', () => {
 
 		it('should add arguments list', () => {
 			echo
-				.arguments('<test...> [test2] <test3>')
+				.usage('<test...> [test2] <test3>')
 				.action(() => {
 					done();
 				});
 
-			expect(echo.arguments()).toInclude({
+			expect(echo.usage()).toInclude({
 				min: 2,
 				max: '*',
 				string: '<test...> [test2] <test3>'
@@ -143,12 +141,12 @@ describe('command', () => {
 
 		it('should fail to accept no parameters', (done) => {
 			echo
-				.arguments('<test...>')
+				.usage('<test...>')
 				.action(() => {
 					done();
 				});
 
-			echo.toFunction()().on('error', (err) => {
+			echo().on('error', (err) => {
 				expect(err)
 					.toBeAn(Error);
 
@@ -170,7 +168,7 @@ describe('command', () => {
 				`{{variable}}`
 			);
 
-			echo.toFunction()();
+			echo();
 		});
 	});
 });

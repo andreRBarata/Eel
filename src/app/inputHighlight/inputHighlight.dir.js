@@ -30,8 +30,7 @@ angular.module('termApp')
 							.uniq()
 							.toArray((history) => {
 								callback({
-									list: history
-										,
+									list: history,
 									from: CodeMirror.Pos(
 										cur.line, start
 									),
