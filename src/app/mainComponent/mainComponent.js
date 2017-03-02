@@ -1,15 +1,22 @@
-const storage = require('electron-storage');
-
 angular.module('termApp')
-	.controller('mainController', ($scope, $window, vm) => {
+	.controller('mainController', ($scope, $window, vm, historyService) => {
+		let firstRun = false;
+
 		$scope.process = vm._context
 			.process;
 		$scope.cwd = process.cwd();
 		$scope.command = '';
-		$scope.history = [];
 
-		$scope.scrollDown = () =>
-			window.scrollTo(0, document.body.scrollHeight);
+		$scope.firstRun = () => {
+			historyService.get()
+				.toArray((history) => {
+					firstRun = history.length === 0;
+				});
+
+			return firstRun;
+		};
+
+		$scope.firstRun();
 
 		$scope.process
 			.stdout.on('cwdchange', (cwd) => {
@@ -17,15 +24,8 @@ angular.module('termApp')
 				$scope.$apply();
 			});
 
-		storage.get('history')
-			.then((data) => $scope.history = data)
-			.catch(() => {
-				storage.set('history', $scope.history);
-			});
-
-		$window.addEventListener('beforeunload', () => {
-			storage.set('history', $scope.history);
-		});
+		$scope.scrollDown = () =>
+			window.scrollTo(0, document.body.scrollHeight);
 
 		$scope.execute = (command) => {
 			$scope.process
@@ -38,14 +38,8 @@ angular.module('termApp')
 				vm.run(command);
 
 				if (command && command !== '') {
-					let lastCommand = $scope
-						.history[$scope.history.length - 1];
-
-					if (lastCommand !== command) {
-						$scope.history
-							.push(command);
-						$scope.$apply();
-					}
+					historyService
+						.push(command);
 				}
 			}
 			catch (err) {

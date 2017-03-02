@@ -31,7 +31,10 @@ It is possible to pipe two commands using the operator "|>".
 # Available Commands
 
 {{#each commands}}
-	{{name}}
+## #{{name}} {{usage}}
+
+{{description}}
+
 {{/each}}
 `;
 
@@ -39,14 +42,18 @@ module.exports = command('help')
 	.display('text/html', (data) => data)
 	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
-		console.log(Object.keys(process.sys)
-			.map((command) => {
-				return {
-					name: command,
-					command: process.sys[command]
-				};
-			}));
 		#handlebars(
-			helptext, {}
+			helptext, {
+				commands: Object.keys(process.sys)
+					.map((command) => {
+						return {
+							name: command,
+							description: process.sys[command]
+								.description(),
+							usage: process.sys[command]
+								.usage().string
+						};
+					})
+			}
 		) |> #marked |> $stdout;
 	});

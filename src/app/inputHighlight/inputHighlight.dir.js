@@ -1,20 +1,59 @@
+const CodeMirror = require('codemirror');
+
 angular.module('termApp')
-	.directive('inputHighlight', () => {
+	.directive('inputHighlight', (historyService) => {
 		return {
 			scope: {
 				onexec: '=',
 				command: '=',
-				readonly: '=',
-				history: '='
-			},
-			compile(element, attrs) {
-				if (!attrs.command) { attrs.command = ''; }
+				readonly: '='
 			},
 			templateUrl: 'inputHighlight/inputHighlight.tpl.html',
-			controller: function InputHighlight($scope) {
-				$scope.curLocation = -1;
+			controller: function InputHighlight($scope, $element) {
+				CodeMirror.registerHelper(
+					'hint',
+					'anyword',
+					require('codemirror/addon/hint/show-hint')
+				);
+				CodeMirror.registerHelper(
+					'hint',
+					'ajax',
+					(editor, callback, options) => {
+						let cur = editor.getCursor(),
+							curLine = editor.getLine(cur.line);
+
+						let start = cur.ch, end = start;
+
+						historyService.get()
+							.filter((line) => line.startsWith(curLine))
+							.map((line) => line.slice(curLine.length))
+							.uniq()
+							.toArray((history) => {
+								callback({
+									list: history
+										,
+									from: CodeMirror.Pos(
+										cur.line, start
+									),
+									to: CodeMirror.Pos(
+										cur.line, end
+									)
+								})
+							});
+					}
+				);
+
+				CodeMirror.registerHelper(
+					'hint', 'eelscript',
+					(mirror, options) => {
+						CodeMirror
+							.commands
+							.autocomplete(mirror, CodeMirror.hint.ajax, { async: true })
+					}
+				);
+
 				//TODO: Try to add greyed out auto complete history id:24
-				$scope.cmOption = {
+				let cmOption = {
 					lineNumbers: false,
 					indentWithTabs: true,
 					lineWrapping: true,
@@ -22,18 +61,16 @@ angular.module('termApp')
 					cursorHeight: 1,
 					readOnly: $scope.readonly,
 					extraKeys: {
+						Enter(cm) {
+							$scope.onexec(
+								cm.getValue()
+							);
+
+							cm.setValue('');
+						},
 						Up(cm) {
 							if (cm.getCursor().line === 0) {
-								$scope.curLocation--;
-
-								if ($scope.curLocation < 0) {
-									$scope.curLocation = $scope
-										.history.length;
-								}
-
-								$scope.command = $scope
-									.history[$scope.curLocation];
-								$scope.$apply();
+								return cm.execCommand('autocomplete');
 							}
 							else {
 								CodeMirror.commands
@@ -42,34 +79,25 @@ angular.module('termApp')
 						},
 						Down(cm) {
 							if (cm.getCursor().line === cm.lastLine()) {
-								$scope.curLocation++;
-
-								if ($scope.curLocation > $scope.length) {
-									$scope.curLocation = $scope
-										.history.length;
-								}
-
-								$scope.command = $scope
-									.history[$scope.curLocation];
-								$scope.$apply();
+								return cm.execCommand('autocomplete');
 							}
 							else {
 								CodeMirror.commands
 									.goLineDown(cm);
 							}
 						},
-						Enter(cm) {
-							$scope.curLocation = -1;
-
-							$scope.onexec(
-								$scope.command
-							);
-
-							$scope.command = '';
-							$scope.$apply();
-						}
+						'Ctrl-Space': 'autocomplete'
 					}
 				};
+
+				$scope.editor = CodeMirror.fromTextArea(
+					angular.element($element)
+						.find('textarea')[0],
+					cmOption
+				);
+
+				$scope.editor
+					.setValue($scope.command || '');
 			}
 		};
 	});

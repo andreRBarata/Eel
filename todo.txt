@@ -3,3 +3,4 @@
 #TODO: Complete helptext id:26
 #TODO: Make ls command id:27
 #TODO: Complete auto complete id:28
+#TODO: Make ctrl-c work

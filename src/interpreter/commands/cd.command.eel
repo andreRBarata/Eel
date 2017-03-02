@@ -1,18 +1,21 @@
 const command	= require('command');
 const fs		= require('fs');
 
-module.exports = command('cd <path>')
+module.exports = command('cd <path>', 'Change the current directory')
 	.action(({_: [path]}, push) => {
 		#realpath(path) |> #then(([abspath]) => {
 			fs.stat(abspath, (err, stats) => {
 				if (!err && stats.isDirectory()) {
 					process.chdir(abspath);
 				}
+				else if (err) {
+					push(new Error('Path does not exist'));
+				}
 				else if (!stats.isDirectory()) {
 					push(new Error('Path is not a directory'));
 				}
 				else {
-					push(new Error('Path does not exist'));
+					push(new Error('Unknown Error'));
 				}
 
 				push(null);

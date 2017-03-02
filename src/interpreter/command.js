@@ -30,7 +30,7 @@ module.exports =
 
 		let command = Object.assign(
 			function command(...commandArgs) {
-				let expectedArgs = argsTemplate;
+				let expectedArgs = command.usage();
 
 				let options = {
 					preprocessor: (destination) => {
@@ -75,7 +75,6 @@ module.exports =
 				}, options);
 			},
 			chainingObject({
-				args: argsTemplate,
 				description: ['description',
 					{default: description}
 				],
@@ -86,6 +85,20 @@ module.exports =
 					['validation', () => {
 						// function
 					}],
+				usage:
+					['usage', (usage) => {
+						let parsedUsage = commandAPI
+							.args
+							.parse(usage);
+
+
+						if (parsedUsage.status === false) {
+							throw new Error('Invalid usage provided');
+						}
+
+						return parsedUsage.value;
+
+					}, {default: argsTemplate}],
 				option:
 					['option',
 						(flags, description) => {
@@ -144,12 +157,12 @@ module.exports =
 						}
 					}
 
-					if (argsTemplate) {
-						if (argsTemplate.min > args.length) {
+					if (command.usage()) {
+						if (command.usage().min > args.length) {
 							throw new Error('Not enough arguments');
 						}
 
-						if (argsTemplate.max !== '*' && argsTemplate.max < args.length) {
+						if (command.usage().max !== '*' && command.usage().max < args.length) {
 							throw new Error('Too many arguments');
 						}
 					}

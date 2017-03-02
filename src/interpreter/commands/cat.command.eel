@@ -4,7 +4,7 @@ const util		= require('util');
 const Highland	= require('highland');
 const mime		= require('mime');
 
-module.exports = command('cat [path]')
+module.exports = command('cat [path]', 'Displays the contents of a file')
 	.option('-n, --number')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';
@@ -69,5 +69,4 @@ module.exports = command('cat [path]')
 				}
 			}) |> $stdout;
 		}
-
 	});

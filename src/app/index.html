@@ -11,8 +11,10 @@
 			href="../../node_modules/jsonformatter/dist/json-formatter.min.css">
 		<link rel="stylesheet" type="text/css"
 			href="../../node_modules/codemirror/lib/codemirror.css">
-			<link rel="stylesheet" type="text/css"
-				href="../../node_modules/codemirror/theme/base16-light.css">
+		<link rel="stylesheet" type="text/css"
+			href="../../node_modules/codemirror/addon/hint/show-hint.css">
+		<link rel="stylesheet" type="text/css"
+			href="../../node_modules/codemirror/theme/base16-light.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/styles.css">
 		<script>
 			// You can also require other files to run in this process
@@ -25,10 +27,10 @@
 				{{scrollDown()}}
 			</stream-display>
 			<div class="command-pane"
-				popover-enable="!history.length"
+				popover-enable="firstRun()"
 				popover-placement="bottom-left"
 				uib-popover="Type #help for intructions on the syntax and a list of commands">
-					<input-highlight onexec="execute" history="history">
+					<input-highlight onexec="execute">
 					</input-highlight>
 			</div>
 		</div>

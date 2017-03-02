@@ -1,6 +1,6 @@
 const command = require('command');
 
-module.exports = command('pwd')
+module.exports = command('pwd', 'Shows current directory')
 	.action(({}, push) => {
 		push(process.cwd());
 		push(null);

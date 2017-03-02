@@ -159,7 +159,7 @@ const commandAPI = (function() {
 		),
 		P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
 			.map((name) => {
-				return [name];
+				return [name, {}];
 			})
 	);
 
