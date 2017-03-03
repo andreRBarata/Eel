@@ -63,6 +63,8 @@ class Process extends stream.Duplex {
 			});
 		}
 
+		this.on('end', () =>
+			stdout.push(null));
 		this.config(config);
 
 		this.end = () => stdin.end();

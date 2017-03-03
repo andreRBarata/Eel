@@ -4,3 +4,5 @@
 #TODO: Make ls command id:27
 #TODO: Complete auto complete id:28
 #TODO: Make ctrl-c work id:30
+#TODO: Make --help work id:31
+#TODO: Add anchors id:32

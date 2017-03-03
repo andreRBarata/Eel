@@ -1,40 +1,33 @@
-const storage	= require('electron-storage');
 const Highland	= require('highland');
+const JsonDB	= require('node-json-db');
+const remote	= require('electron').remote;
+const path		= require('path');
 
 angular.module('termApp')
-	.factory('historyService', ($window) => {
-		let history;
-
-		$window.addEventListener('beforeunload', () => {
-			storage.set('history', history || []);
-		});
+	.factory('historyService', () => {
+		let data = new JsonDB(
+			path.join(
+				remote.app.getPath('userData'),
+				'data.json'
+			),
+			true
+		);
 
 		return {
 			get() {
-				if (!history) {
-					return new Highland(
-						storage.get('history')
-					)
-					.each((_history) => {
-						history = _history;
-					})
-					.errors(() => {
-						storage.set('history', [], () => {
-							history = [];
-						});
-					});
+				if (!data.getData('/').history) {
+					data.push('/history', []);
 				}
-				else {
-					return new Highland(history);
-				}
+
+				return new Highland(
+					data.getData('/history')
+				);
 			},
 			push(element) {
-				this.get().done(() => {
-					let lastCommand = history
-						[history.length - 1];
 
-					if (lastCommand !== element) {
-							history.push(element);
+				this.get().done(() => {
+					if (data.getData('/history[-1]') !== element) {
+						data.push('/history[]', element);
 					}
 				});
 			}
