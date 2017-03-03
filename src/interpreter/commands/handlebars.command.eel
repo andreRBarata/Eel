@@ -2,7 +2,7 @@ const command		= require('command');
 const Handlebars	= require('handlebars');
 const Type			= require('type-of-is');
 
-module.exports = command('handlebars <text> [context] [options]')
+module.exports = command('handlebars <text> [context] [options]', 'Uses handlebars on template')
 	.action(({_: $arguments, $stdin}, push) => {
 		let text, context, options;
 

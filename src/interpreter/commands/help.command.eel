@@ -1,7 +1,8 @@
 const command	= require('command');
 const Highland	= require('highland');
 
-const helptext = `Eelscript, the language used on this terminal, is a superset of Javascript.
+const helptext = `
+Eelscript, the language used on this terminal, is a superset of Javascript.
 It adds syntax to allow easy execution of commands native to the system and commands designed for this shell. Commands are identified by the hash symbol (i.e \`#ls\`). Both native and Eelscript commands are called this way.
 
 ---
@@ -32,13 +33,20 @@ It is possible to pipe two commands using the operator "|>".
 
 {{#each commands}}
 ## #{{name}} {{usage}}
-
 {{description}}
+
+	{{#each options}}
+		{{#each flags}}
+&nbsp;&nbsp;&nbsp;
+**{{fullflag}}{{#unless @last}},{{/unless}}**
+		{{/each}}
+		{{description}}
+	{{/each}}
 
 {{/each}}
 `;
 
-module.exports = command('help')
+module.exports = command('help', 'Shows the instructions for this shell')
 	.display('text/html', (data) => data)
 	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
@@ -51,9 +59,15 @@ module.exports = command('help')
 							description: process.sys[command]
 								.description(),
 							usage: process.sys[command]
-								.usage().string
+								.usage().string,
+							options: process.sys[command]
+								.option()
 						};
 					})
 			}
-		) |> #marked |> $stdout;
+		) |> #marked |>
+ 		#map((data) => `
+		<pagination>
+			${data}
+		</pagination>`)|> $stdout;
 	});

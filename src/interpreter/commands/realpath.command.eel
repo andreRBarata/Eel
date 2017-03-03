@@ -2,7 +2,7 @@ const command	= require('command');
 const path		= require('path');
 const os		= require('os');
 
-module.exports = command('realpath <location>')
+module.exports = command('realpath <location>', 'Converts a relative path into an absolute path')
 	.action(({_: [location]}, push) => {
 		push(path.resolve(process.cwd(),
 		(location === '~')? os.homedir():

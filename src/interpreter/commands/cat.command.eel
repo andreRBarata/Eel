@@ -5,7 +5,7 @@ const Highland	= require('highland');
 const mime		= require('mime');
 
 module.exports = command('cat [path]', 'Displays the contents of a file')
-	.option('-n, --number')
+	.option('-n, --number', 'Shows line numbers (if applicable)')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';
 
