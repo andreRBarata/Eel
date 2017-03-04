@@ -65,9 +65,5 @@ module.exports = command('help', 'Shows the instructions for this shell')
 						};
 					})
 			}
-		) |> #marked |>
- 		#map((data) => `
-		<pagination>
-			${data}
-		</pagination>`)|> $stdout;
+		) |> #marked |> $stdout;
 	});
