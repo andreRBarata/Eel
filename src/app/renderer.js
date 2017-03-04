@@ -23,6 +23,8 @@ Highland.wrapCallback(
 
 require('./assets/languages/eelscript');
 require('./app.js');
+require('./localLink/localLink.js');
+require('./commandService/commandService.js');
 require('./historyService/historyService.js');
 require('./inputHighlight/inputHighlight.dir.js');
 require('./streamDisplay/streamDisplay.dir.js');

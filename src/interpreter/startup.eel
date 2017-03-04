@@ -16,6 +16,7 @@ process.sys.filter = command('filter <callback>')
 		$stdin.filter(callback) |> $stdout;
 	});
 
+//process.sys.ls = load(`${__dirname}/commands/ls.command.eel`);
 
 process.sys.marked = load(`${__dirname}/commands/marked.command.eel`);
 

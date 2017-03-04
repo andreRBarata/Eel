@@ -4,11 +4,13 @@ const os		= require('os');
 
 module.exports = command('realpath <location>', 'Converts a relative path into an absolute path')
 	.action(({_: [location]}, push) => {
-		push(path.resolve(process.cwd(),
-		(location === '~')? os.homedir():
-			location.replace('~/',
-				os.homedir() + '/'
-			)
+
+		push(path.resolve(
+			(location.startsWith('~')?
+				os.homedir() :
+				process.cwd()
+			),
+			location.replace(/^~/, '.')
 		));
 
 		push(null);

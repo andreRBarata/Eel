@@ -1,7 +1,6 @@
 const Type			= require('type-of-is');
 const Highland		= require('highland');
 const stream		= require('stream');
-const AnsiToHtml	= require('ansi-to-html');
 const P				= require('parsimmon');
 
 
@@ -51,6 +50,14 @@ module.exports =
 
 				return new Process(({push, emit, stdin, stdout}) => {
 					let parsedArgs;
+
+					if (commandArgs.includes('-h') ||
+						commandArgs.includes('--help')) {
+							push(header);
+							push(null);
+
+							return;
+					}
 
 					try {
 						parsedArgs = command.parseArgs(commandArgs);

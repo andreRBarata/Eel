@@ -1,9 +1,9 @@
 const command	= require('command');
 const fs		= require('fs');
 
-module.exports = command('cd <path>', 'Change the current directory')
-	.action(({_: [path]}, push) => {
-		#realpath(path) |> #then(([abspath]) => {
+module.exports = command('cd <location>', 'Change the current directory')
+	.action(({_: [location]}, push) => {
+		#realpath(location) |> #then(([abspath]) => {
 			fs.stat(abspath, (err, stats) => {
 				if (!err && stats.isDirectory()) {
 					process.chdir(abspath);
@@ -20,6 +20,5 @@ module.exports = command('cd <path>', 'Change the current directory')
 
 				push(null);
 			});
-
 		});
 	});

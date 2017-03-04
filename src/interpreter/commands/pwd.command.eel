@@ -1,6 +1,9 @@
 const command = require('command');
 
 module.exports = command('pwd', 'Shows current directory')
+	.display('text/html', (data) => `
+		<local-link of="src"/>
+	`)
 	.action(({}, push) => {
 		push(process.cwd());
 		push(null);

@@ -23,7 +23,7 @@
 	</head>
 	<body ng-app="termApp" ng-controller="mainController">
 		<div class="container-fluid" id="container">
-			<stream-display src="process.stdout">
+			<stream-display src="stdout">
 				{{scrollDown()}}
 			</stream-display>
 			<div class="command-pane"
@@ -38,7 +38,9 @@
 		<footer class="navbar navbar-inverse navbar-fixed-bottom">
 			<div class="container">
 				<!-- #TODO: Make link displaying directive  id:22-->
-				<p class="navbar-text">{{cwd}}</p>
+				<div class="navbar-text">
+					<local-link of="cwd"/>
+				</div>
 			</div>
 		</footer>
 	</body>

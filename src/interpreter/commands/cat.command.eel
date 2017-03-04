@@ -4,7 +4,7 @@ const util		= require('util');
 const Highland	= require('highland');
 const mime		= require('mime');
 
-module.exports = command('cat [path]', 'Displays the contents of a file')
+module.exports = command('cat [location]', 'Displays the contents of a file (Image, sound, video or text)')
 	.option('-n, --number', 'Shows line numbers (if applicable)')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';
@@ -30,13 +30,13 @@ module.exports = command('cat [path]', 'Displays the contents of a file')
 		}" ng-model="src.content"></textarea>`;
 
 	})
-	.action(({_: [path], $stdin, $stdout, number}, push) => {
-		if (path) {
-			#realpath(path) |>
+	.action(({_: [location], $stdin, $stdout, number}, push) => {
+		if (location) {
+			#realpath(location) |>
 			#map((realpath) => {
 				fs.createReadStream(realpath) |>
 				#then((content) => {
-					let mimetype = mime.lookup(path)
+					let mimetype = mime.lookup(location)
 						.replace('application', 'text');
 
 					push({
