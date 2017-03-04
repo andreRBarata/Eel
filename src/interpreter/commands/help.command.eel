@@ -29,7 +29,7 @@ It is possible to pipe two commands using the operator "|>".
 
 ---
 
-# Available Commands
+# Eelscript Commands
 
 {{#each commands}}
 ## #{{name}} {{usage}}
