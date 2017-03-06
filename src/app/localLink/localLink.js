@@ -33,9 +33,8 @@ angular.module('termApp')
 				},
 			template: `
 				<span ng-repeat="part in parts track by $index">
-					<a ng-click="go(part.path)">
-						{{part.segment}}
-					</a> {{$last ? '' : ' / '}}
+					<a ng-click="go(part.path)">{{part.segment}}</a>
+						{{$last ? '' : ' / '}}
 				</span>
 			`
 		};

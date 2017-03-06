@@ -20,10 +20,6 @@ class Process extends stream.Duplex {
 	*/
 	constructor(...args) {
 		let stdin = new Highland();
-		let stdout = new stream.Readable({
-			read() {},
-			objectMode: true
-		});
 
 		if (Type.is(args[0], Function) && args.length < 2) {
 			args.push({});
@@ -31,9 +27,7 @@ class Process extends stream.Duplex {
 		let [config, source] = args.reverse();
 
 		super({
-			read(size) {
-				return stdout.read(size);
-			},
+			read(size) {},
 			write(chunk, encoding, callback) {
 				stdin.write(chunk);
 				callback();
@@ -44,6 +38,8 @@ class Process extends stream.Duplex {
 			},
 			objectMode: true
 		});
+
+		this.config(config);
 
 		if (source) {
 			source({
@@ -63,11 +59,10 @@ class Process extends stream.Duplex {
 			});
 		}
 
-		this.on('end', () =>
-			stdout.push(null));
-		this.config(config);
 
-		this.end = () => stdin.end();
+		this.end = () => {
+			stdin.end();
+		}
 	}
 
 	/**
@@ -91,34 +86,8 @@ class Process extends stream.Duplex {
 				preprocessor;
 		}
 		//TODO: Consider change to embed stream model id:23
-		if (defaultOutput) {
-			let mapper = (this._preprocessor)?
-				this._preprocessor(defaultOutput): null;
-			let link = (mapper)?
-				Process.pipe(this, mapper): this;
-
-			if (!this._defaultOutput) {
-				let hasNoOtherlisteners = () => {
-					return this.listeners('data')
-						.length <= ((mapper)? 1: 0);
-				}
-
-				link.on('data', (data) => {
-					if (hasNoOtherlisteners() && this._defaultOutput) {
-						this._defaultOutput
-							.write(data);
-					}
-				});
-
-				link.on('error', (err) => {
-					if (hasNoOtherlisteners() && this._defaultOutput) {
-						this._defaultOutput
-							.emit('error', err);
-					}
-				});
-			}
-
-			this._defaultOutput = defaultOutput;
+		if (defaultOutput && !this.listeners().length) {
+			defaultOutput.write(this);
 		}
 
 		Object.keys(configs).forEach((attr) => {
@@ -139,6 +108,8 @@ class Process extends stream.Duplex {
 	pipe(destination, options) {
 		let mapper = (this._preprocessor)?
 			this._preprocessor(destination): null;
+
+		this.unpipe();
 
 		if (mapper) {
 			return super.pipe(mapper)

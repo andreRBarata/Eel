@@ -28,7 +28,7 @@ module.exports =
 
 
 		let command = Object.assign(
-			function command(...commandArgs) {
+			function (...commandArgs) {
 				let expectedArgs = command.usage();
 
 				let options = {
@@ -50,14 +50,6 @@ module.exports =
 
 				return new Process(({push, emit, stdin, stdout}) => {
 					let parsedArgs;
-
-					if (commandArgs.includes('-h') ||
-						commandArgs.includes('--help')) {
-							push(header);
-							push(null);
-
-							return;
-					}
 
 					try {
 						parsedArgs = command.parseArgs(commandArgs);
@@ -87,11 +79,7 @@ module.exports =
 				],
 				receives: ['receives'],
 				version: ['version'],
-				help: ['help'],
-				validation:
-					['validation', () => {
-						// function
-					}],
+				// help: ['help'],
 				usage:
 					['usage', (usage) => {
 						let parsedUsage = commandAPI

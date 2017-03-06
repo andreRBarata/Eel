@@ -5,7 +5,7 @@ module.exports = command('ls [location]',
 		'Lists the contents of a given directive'
 	)
 	.display('text/html', (file) => `
-		<div>
+		<div class="col-xs-4">
 			{{src.name}}
 		</div>
 	`)

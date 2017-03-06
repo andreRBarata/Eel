@@ -72,8 +72,7 @@ angular.module('termApp')
 								return cm.execCommand('autocomplete');
 							}
 							else {
-								CodeMirror.commands
-									.goLineUp(cm);
+								return CodeMirror.Pass;
 							}
 						},
 						Down(cm) {
@@ -81,8 +80,7 @@ angular.module('termApp')
 								return cm.execCommand('autocomplete');
 							}
 							else {
-								CodeMirror.commands
-									.goLineDown(cm);
+								return CodeMirror.Pass;
 							}
 						},
 						'Ctrl-Space': 'autocomplete'

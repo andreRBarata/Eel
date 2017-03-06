@@ -4,6 +4,7 @@
 
 .CodeMirror {
 	height: auto;
+	font-size: 12px;
 }
 
 .center {
@@ -60,6 +61,7 @@ input-highlight .form-control.readonly {
 
 input-highlight .CodeMirror {
 	padding: 0;
+	font-size: 14px;
 	margin: -3px;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
