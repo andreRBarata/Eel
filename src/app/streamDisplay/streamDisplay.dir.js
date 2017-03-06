@@ -64,8 +64,14 @@ angular.module('termApp')
 						return tmp;
 					}
 
+					let rootTransform = transform($element);
+
 					$scope.src
-						.pipe(transform($element));
+						.pipe(rootTransform);
+
+					$scope.src.on('error', (err) => {
+						rootTransform.emit('error', err);
+					});
 				}
 		}
 	});
