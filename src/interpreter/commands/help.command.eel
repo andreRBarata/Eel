@@ -8,7 +8,7 @@ It adds syntax to allow easy execution of commands native to the system and comm
 ---
 
 # Command calls
-**Can be called using two methods:**
+**Can be called using either of two methods:**
 
 ## Stringy call (e.g \`#ls src\`)
 All parameters in front of the call are presumed to be a string and split using spaces. To include a space seperated string in a parameters quotes use single ('), double (") or template (\`) quotes.

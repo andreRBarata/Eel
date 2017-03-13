@@ -51,7 +51,7 @@ describe('command', () => {
 					push('test');
 					push(null);
 				})()
-				.config({defaultOutput: sysoutMock});;
+				.config({defaultOutput: sysoutMock});
 		});
 
 		it('should write into stream nested stream', (done) => {

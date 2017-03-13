@@ -14,7 +14,7 @@ angular.module('termApp')
 								src.filter((ele) => {
 									if (ele.pipe) {
 										let newParent = angular.element(
-											'<div class="container"></div>'
+											'<div class="container-fluid"></div>'
 										);
 										let newTransform =
 											transform(newParent);

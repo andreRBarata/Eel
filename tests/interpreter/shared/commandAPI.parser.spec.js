@@ -38,7 +38,7 @@ describe('commandAPI parser', () => {
 		describe('required', () => {
 			it('should parse a required parameter', () => {
 				expect(
-					variables.required.parse('<test>')
+					variables.required().parse('<test>')
 				).toInclude({
 					status: true,
 					value: {
@@ -51,7 +51,7 @@ describe('commandAPI parser', () => {
 
 			it('should parse a required parameter with the spread indicator', () => {
 				expect(
-					variables.required.parse('<test...>')
+					variables.required().parse('<test...>')
 				).toInclude({
 					status: true,
 					value: {
@@ -66,7 +66,7 @@ describe('commandAPI parser', () => {
 		describe('optional', () => {
 			it('should parse a optional parameter', () => {
 				expect(
-					variables.optional.parse('[test]')
+					variables.optional().parse('[test]')
 				).toInclude({
 					status: true,
 					value: {
@@ -79,7 +79,7 @@ describe('commandAPI parser', () => {
 
 			it('should parse a optional parameter with the spread indicator', () => {
 				expect(
-					variables.optional.parse('[test...]')
+					variables.optional().parse('[test...]')
 				).toInclude({
 					status: true,
 					value: {
@@ -154,7 +154,11 @@ describe('commandAPI parser', () => {
 						.shortflag.parse('-a')
 				).toInclude({
 					status: true,
-					value: ['-', 'a']
+					value: {
+						id: 'a',
+						type: 'shortflag',
+						fullflag: '-a'
+					}
 				});
 			});
 		});
@@ -166,7 +170,11 @@ describe('commandAPI parser', () => {
 						.longflag.parse('--page')
 				).toInclude({
 					status: true,
-					value: ['--', 'page']
+					value: {
+						id: 'page',
+						type: 'longflag',
+						fullflag: '--page'
+					}
 				});
 			});
 		});
@@ -191,6 +199,30 @@ describe('commandAPI parser', () => {
 								fullflag: '-p'
 							}
 						]
+					}
+				});
+			});
+
+			it('should match a list of flags with a parameter', () => {
+				expect(
+					commandAPI.options
+						.flaglist.parse('--page, -p <pagenumber>')
+				).toInclude({
+					status: true,
+					value: {
+						name: 'page',
+						flags: [
+							{
+								id: 'page',
+								type: 'longflag',
+								fullflag: '--page'
+							}, {
+								id: 'p',
+								type: 'shortflag',
+								fullflag: '-p'
+							}
+						],
+						variable: 'required'
 					}
 				});
 			});
@@ -247,13 +279,61 @@ describe('commandAPI parser', () => {
 					}
 				});
 			});
+
+			describe('with variable', () => {
+				let flags;
+
+				before(() => {
+					flags = commandAPI.options
+						.flaglist.parse('-p, --page <number>');
+				});
+
+				it('should create the flag description', () => {
+					expect(flags).toInclude({
+						status: true,
+						value: {
+							name: 'page',
+							flags: [
+								{
+									id: 'p',
+									type: 'shortflag',
+									fullflag: '-p'
+								},
+								{
+									id: 'page',
+									type: 'longflag',
+									fullflag: '--page'
+								}
+							]
+						}
+					});
+				});
+
+				describe('parser', () => {
+					//TODO: Fix symbols id:33
+					it('should parse the shortflag', () => {
+						let result = flags.value
+							.parser.parse('-p');
+
+						expect(result).toEqual({
+							status: true,
+							value: {
+								name: 'page',
+								next: true,
+								value: null
+							}
+						});
+					});
+				});
+			});
+
 		});
 	});
 
-	describe('args', () => {
+	describe('headerArgs', () => {
 		it('should parse single variable', () => {
 			expect(
-				commandAPI.args.parse('<test>')
+				commandAPI.headerArgs.parse('<test>')
 			).toInclude({
 				status: true,
 				value: {
@@ -266,7 +346,7 @@ describe('commandAPI parser', () => {
 
 		it('should parse multiple variables', () => {
 			expect(
-				commandAPI.args.parse('<test> [test2...] <test3>')
+				commandAPI.headerArgs.parse('<test> [test2...] <test3>')
 			).toInclude({
 				status: true,
 				value: {

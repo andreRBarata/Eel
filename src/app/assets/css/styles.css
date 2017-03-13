@@ -1,3 +1,23 @@
+h1 {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+h2 {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+h3 {
+	font-size: 13px;
+	font-style: italic;
+}
+
+h4 {
+	font-size: 12px;
+	font-style: italic;
+}
+
 #container {
 	margin-bottom: 60px;
 }
@@ -20,25 +40,6 @@
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
-h1 {
-	font-size: 16px;
-	font-weight: bold;
-}
-
-h2 {
-	font-size: 14px;
-	font-weight: bold;
-}
-
-h3 {
-	font-size: 13px;
-	font-style: italic;
-}
-
-h4 {
-	font-size: 12px;
-	font-style: italic;
-}
 
 span.cm-command {
     border-style: solid;

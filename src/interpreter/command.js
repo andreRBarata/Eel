@@ -83,7 +83,7 @@ module.exports =
 				usage:
 					['usage', (usage) => {
 						let parsedUsage = commandAPI
-							.args
+							.headerArgs
 							.parse(usage);
 
 
@@ -125,23 +125,39 @@ module.exports =
 						])}
 					],
 				action: ['action'],
-				//#Done: Complete parameter parsing id:14
 				parseArgs(rawargs = []) {
 					let args = [];
 					let flags = {};
-					let possibleFlags = false;
+					let possibleFlags = P.alt(...(command.option()
+						.map((option) => option.parser))
+					);
 
-					if (command.option().length) {
-						possibleFlags = P.alt(...(command.option()
-							.map((option) => option.parser))
-						);
-					}
+					for (let index in rawargs) {
+						let arg = rawargs[index];
+						let next = (rawargs.length > index)?
+							rawargs[index + 1]:
+							null;
 
-					for (let arg of rawargs) {
-						if (Type.is(arg, String) && possibleFlags) {//TODO: Complete flag variables id:20
-							let parsedArg = possibleFlags.parse(arg);
+
+						if (Type.is(arg, String) && possibleFlags) {//#ForThisSprint: Test flag variables id:20
+							let parsedArg = possibleFlags
+								.parse(arg);
+
 							if (parsedArg.status) {
-								flags[parsedArg.value.name] = parsedArg.value.value;
+								let parsed = parsedArg.value;
+
+								if (parsed.value.next) {
+									if (next) {
+										flags[parsed.name] = next;
+										index++;
+									}
+									else {
+										throw new Error('Not enough arguments');
+									}
+								}
+								else {
+									flags[parsed.name] = parsed.value;
+								}
 							}
 							else {
 								args.push(arg);

@@ -1,6 +1,7 @@
-const P	= require('parsimmon');
+const P			= require('parsimmon');
+const eelscript	= require('./eelscript.parser');
 
-const commandAPI = (function() {
+module.exports = (function() {
 	this.variables = (function() {
 		this.single = P.regexp(/[a-zA-Z0-9]+/)
 			.map((name) => {
@@ -18,12 +19,13 @@ const commandAPI = (function() {
 					string: `${single.string}...`
 				};
 			});
-		this.required = P.seq(
+
+		this.required = (base) => P.seq(
 				P.string('<'),
-				P.alt(
+				(!base)? P.alt(
 					this.multiple,
 					this.single
-				),
+				): base,
 				P.string('>')
 			).map(([,word,]) => {
 				return {
@@ -32,13 +34,13 @@ const commandAPI = (function() {
 					string: `<${word.string}>`
 				};
 			});
-		this.optional = P.lazy(
+		this.optional = (base) => P.lazy(
 			() => P.seq(
 				P.string('['),
-				P.alt(
+				(!base)? P.alt(
 					this.multiple,
 					this.single
-				),
+				): base,
 				P.string(']')
 			).map(([,word,]) => {
 				return {
@@ -49,12 +51,12 @@ const commandAPI = (function() {
 			})
 		);
 		this.variable = P.alt(
-				this.optional,
-				this.required
+			this.optional(),
+			this.required()
 		);
 
 		return this;
-	}).apply({});
+	}).apply({parent: this});
 
 	this.options = (function() {
 		this.flagcharacters =
@@ -71,36 +73,64 @@ const commandAPI = (function() {
 			).map(([letter, rest]) =>
 				[letter, ...rest].join('')
 			)
-		);
+		).map((flag) => {
+			return {
+				type: 'longflag',
+				id: flag[1],
+				fullflag: flag.join('')
+			};
+		});
 
 		this.shortflag = P.seq(
 			P.string('-'),
 			this.flagcharacters
+		).map((flag) => {
+			return {
+				type: 'shortflag',
+				id: flag[1],
+				fullflag: flag.join('')
+			};
+		});
+
+		this.flag = P.alt(
+			this.longflag,
+			this.shortflag
 		);
 
-		this.flaglist = P.sepBy(
-			P.alt(
-				this.longflag
-					.map((flag) => {
-						return {
-							type: 'longflag',
-							id: flag[1],
-							fullflag: flag.join('')
-						};
-					}),
-				this.shortflag.map((flag) => {
-					return {
-						type: 'shortflag',
-						id: flag[1],
-						fullflag: flag.join('')
-					};
-				})
+		this.flaglist = P.seq(
+			P.sepBy(
+				this.flag,
+				P.optWhitespace
+					.then(P.string(','))
+					.then(P.optWhitespace)
 			),
-			P.optWhitespace
-				.then(P.string(','))
-				.then(P.optWhitespace)
-		).map((flags) => {
-			let toReturn = {
+			P.alt(
+				P.seq(
+					P.whitespace,
+					P.alt(
+						this.parent.variables
+							.optional(
+								this.parent
+									.variables
+									.single
+							)
+							.map(() => 'optional'),
+						this.parent.variables
+							.required(
+								this.parent
+									.variables
+									.single
+							)
+							.map(() => 'required')
+					)
+				).map(([,variable]) => variable),
+				P.eof
+			)
+		).map(([flags, variable]) => {
+			let fullflagList = flags
+				.map((flag) => P.string(flag.fullflag));
+
+			let flaglist = {
 				name: [...flags]
 					.reverse()
 					.find((flag) => flag.type === 'longflag')
@@ -109,25 +139,34 @@ const commandAPI = (function() {
 						([,letter]) => letter.toUpperCase()
 					),
 				flags: flags,
-				parser: P.alt(
-					...(flags
-						.map((flag) => P.string(flag.fullflag)))
-				).map((flag) => {
+				variable: variable,
+				parser: P.seq(
+					P.alt(
+						...fullflagList
+					),
+					P.alt(
+						P.seq(
+							P.string('='),
+							eelscript.shell.arg
+						),
+						P.eof
+					)
+				).map(([flag, value = true]) => {
 					return {
-						name: toReturn.name,
-						value: true
+						name: flaglist.name,
+						value: value,
+						next: variable && variable === 'required'
 					};
 				})
-			}
+			};
 
-			return toReturn;
+			return flaglist;
 		});
 
-
 		return this;
-	}).apply({});
+	}).apply({parent: this});
 
-	this.args = P.sepBy(
+	this.headerArgs = P.sepBy(
 		this
 			.variables.variable,
 		P.whitespace
@@ -155,7 +194,7 @@ const commandAPI = (function() {
 		P.seq(
 			P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
 				.then(P.whitespace),
-			this.args
+			this.headerArgs
 		),
 		P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
 			.map((name) => {
@@ -165,5 +204,3 @@ const commandAPI = (function() {
 
 	return this;
 }).apply({});
-
-module.exports = commandAPI;

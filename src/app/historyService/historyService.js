@@ -24,12 +24,13 @@ angular.module('termApp')
 				);
 			},
 			push(element) {
-
-				this.get().done(() => {
-					if (data.getData('/history[-1]') !== element) {
-						data.push('/history[]', element);
-					}
-				});
+				this.get()
+					.last()
+					.toArray((last) => {
+						if (last && last !== element) {
+							data.push('/history[]', element);
+						}
+					});
 			}
 		};
 	});
