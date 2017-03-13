@@ -22,8 +22,8 @@ h4 {
 	margin-bottom: 60px;
 }
 
-.CodeMirror-hint {
-	z-index: -1;
+.navbar {
+	z-index: 1;
 }
 
 .CodeMirror {
