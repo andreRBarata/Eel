@@ -310,7 +310,7 @@ describe('commandAPI parser', () => {
 				});
 
 				describe('parser', () => {
-					//TODO: Fix symbols id:33
+					//#Done: Fix symbols id:33
 					it('should parse the shortflag', () => {
 						let result = flags.value
 							.parser.parse('-p');

@@ -13,13 +13,18 @@ angular.module('termApp')
 						let part = $scope.of
 							.split(path.sep);
 
+						$scope.seperator = path.sep;
+
 						$scope.parts = part
 							.map((segment, index) => {
 								return {
 									segment: segment,
 									path: part
 										.slice(0, index + 1)
-										.join(path.sep)
+										.join((path.sep === '\\')?
+											'\\\\':
+											path.sep
+										)
 								};
 							});
 
@@ -34,7 +39,7 @@ angular.module('termApp')
 			template: `
 				<span ng-repeat="part in parts track by $index">
 					<a ng-click="go(part.path)">{{part.segment}}</a>
-						{{$last ? '' : ' / '}}
+						{{$last ? '' : seperator}}
 				</span>
 			`
 		};
