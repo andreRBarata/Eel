@@ -16,7 +16,7 @@ const Type				= require('type-of-is');
 class Process extends stream.Duplex {
 	/**
 	*	@param {ProcessGenerator} [source]
-	* 	@param {{defaultOutput, preprocessor}} config
+	* 	@param {{parent, preprocessor}} config
 	*/
 	constructor(...args) {
 		let stdin = new Highland();
@@ -75,23 +75,23 @@ class Process extends stream.Duplex {
 
 	/**
 	*	Sets configurations for the process
-	* 	@param {{defaultOutput, preprocessor}} config - Config object
+	* 	@param {{parent, preprocessor}} config - Config object
 	* 	@returns {Process}
 	*/
 	config(configs) {
-		let {defaultOutput, preprocessor} = configs;
+		let {parent, preprocessor} = configs;
 
 		if (preprocessor) {
 			this._preprocessor =
 				preprocessor;
 		}
 		//TODO: Consider change to embed stream model id:23
-		if (defaultOutput && !this.listeners().length) {
-			defaultOutput.write(this);
+		if (parent && !this.listeners().length) {
+			parent.write(this);
 		}
 
 		Object.keys(configs).forEach((attr) => {
-			if (!(attr in ['defaultOutput', 'preprocessor'])) {
+			if (!(attr in ['parent', 'preprocessor'])) {
 				this[attr] = configs[attr];
 			}
 		});

@@ -27,7 +27,6 @@ angular.module('termApp')
 						historyService.get()
 							.filter((line) => line.startsWith(curLine))
 							.map((line) => line.slice(curLine.length))
-							.uniq()
 							.toArray((history) => {
 								callback({
 									list: history,

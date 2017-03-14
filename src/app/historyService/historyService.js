@@ -26,7 +26,7 @@ angular.module('termApp')
 			push(element) {
 				this.get()
 					.last()
-					.toArray((last) => {
+					.toArray(([last]) => {
 						if (last && last !== element) {
 							data.push('/history[]', element);
 						}

@@ -38,7 +38,7 @@ describe('command', () => {
 			}
 		);
 
-		it('should pipe into defaultOutput', (done) => {
+		it('should pipe into parent', (done) => {
 			let sysoutMock = Highland.pipeline(
 				Highland.each((data) => {
 					expect(data).toEqual('test');
@@ -51,7 +51,7 @@ describe('command', () => {
 					push('test');
 					push(null);
 				})()
-				.config({defaultOutput: sysoutMock});
+				.config({parent: sysoutMock});
 		});
 
 		it('should write into stream nested stream', (done) => {
@@ -100,7 +100,7 @@ describe('command', () => {
 					push('test');
 					push(null);
 				})()
-				.config({defaultOutput: sysoutMock});
+				.config({parent: sysoutMock});
 
 			echofunc.pipe(ls());
 		});

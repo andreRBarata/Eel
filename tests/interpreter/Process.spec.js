@@ -118,7 +118,7 @@ describe('Process', () => {
 		});
 
 		it('should create pipe between processes with a default output', (done) => {
-			let defaultOutput = new Process(({stdin}) => {
+			let parent = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
 					expect(data).toNotEqual('test');
 				});
@@ -135,18 +135,18 @@ describe('Process', () => {
 			let output = new Process(({push}) => {
 				push('test');
 				push(null);
-			}, {defaultOutput: defaultOutput});
+			}, {parent: parent});
 
 			Process.pipe(output, workProcess);
 		});
 
 		it('should create pipe between processes with a default output and a preprocessor', (done) => {
-			let defaultOutput = new Process(({stdin}) => {
+			let parent = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
 					expect(data).toNotEqual('testtest');
 				});
 			});
-			defaultOutput.defaultOutput = true;
+			parent.parent = true;
 
 
 			let workProcess = new Process(({stdin}) => {
@@ -157,7 +157,7 @@ describe('Process', () => {
 			});
 
 			let output = new Process({
-				defaultOutput: defaultOutput,
+				parent: parent,
 				preprocessor: (dest) => Highland.pipeline(
 					Highland.map((arg) => 'test' + arg)
 				)
@@ -169,7 +169,7 @@ describe('Process', () => {
 		});
 
 		it('should create pipe between processes with a default output and an empty preprocessor', (done) => {
-			let defaultOutput = new Process(({stdin}) => {
+			let parent = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
 					expect(data).toNotEqual('test');
 				});
@@ -183,7 +183,7 @@ describe('Process', () => {
 			});
 
 			let output = new Process({
-				defaultOutput: defaultOutput,
+				parent: parent,
 				preprocessor: (dest) => {}
 			});
 
@@ -193,7 +193,7 @@ describe('Process', () => {
 		});
 
 		it('should create pipe between processes with a default output and an empty preprocessor that closes stream at the end', (done) => {
-			let defaultOutput = new Process(({stdin}) => {
+			let parent = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
 					expect(data).toNotEqual('test');
 				});
@@ -207,7 +207,7 @@ describe('Process', () => {
 			});
 
 			let output = new Process({
-				defaultOutput: defaultOutput,
+				parent: parent,
 				preprocessor: (dest) => {}
 			});
 
@@ -218,12 +218,12 @@ describe('Process', () => {
 		});
 
 		it('should create pipe between processes with a default output and a preprocessor that closes stream at the end', (done) => {
-			let defaultOutput = new Process(({stdin}) => {
+			let parent = new Process(({stdin}) => {
 				stdin.once('data', (data) => {
 					expect(data).toNotEqual('test');
 				});
 			});
-			defaultOutput.defaultOutput = true;
+			parent.parent = true;
 
 			let workProcess = new Process(({stdin}) => {
 				stdin.toArray(([data]) => {
@@ -233,7 +233,7 @@ describe('Process', () => {
 			});
 
 			let output = new Process({
-				defaultOutput: defaultOutput,
+				parent: parent,
 				preprocessor: (dest) => Highland.pipeline(
 					Highland.map((arg) => 'test' + arg)
 				)

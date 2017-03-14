@@ -59,11 +59,11 @@ module.exports = {
 			console: 'inherit',
 			require: {
 				external: true,
-				//context: 'sandbox',
+				context: 'sandbox',
 				builtin: ['fs', 'path', 'os', 'child_process',
 					'util', 'events', 'string_decoder', 'stream'],
 				mock: {
-					'./Process': Process
+					command: command
 				}
 			},
 			compiler: eelscript.parse

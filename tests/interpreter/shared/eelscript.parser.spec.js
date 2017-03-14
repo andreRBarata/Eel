@@ -27,17 +27,17 @@ describe('Eelscript parser', () => {
 
 			it('should parse simple command', () => {
 				expect(shell.command.parse('#ls'))
-					.toEqual({status: true, value: 'process.sys[\'ls\']().config({defaultOutput: process.stdout})'});
+					.toEqual({status: true, value: 'process.sys[\'ls\']().config({parent: process.stdout})'});
 			});
 
 			it('should parse command with arguments', () => {
 				expect(shell.command.parse('#ls src'))
-					.toEqual({status: true, value: `process.sys['ls']('src').config({defaultOutput: process.stdout})`});
+					.toEqual({status: true, value: `process.sys['ls']('src').config({parent: process.stdout})`});
 			});
 
 			it('should parse command with a variable', () => {
 				expect(shell.command.parse('#ls ${src}'))
-					.toEqual({status: true, value: `process.sys['ls'](src).config({defaultOutput: process.stdout})`});
+					.toEqual({status: true, value: `process.sys['ls'](src).config({parent: process.stdout})`});
 			});
 		});
 	});
@@ -67,12 +67,12 @@ describe('Eelscript parser', () => {
 
 		it('should parse a template command', () => {
 			expect(eelscript.templateString.parse('`${#ls}`'))
-				.toEqual({status: true, value: '""+(process.sys[\'ls\']().config({defaultOutput: process.stdout}))+""'});
+				.toEqual({status: true, value: '""+(process.sys[\'ls\']().config({parent: process.stdout}))+""'});
 		});
 
 		it('should parse a string and a template command', () => {
 			expect(eelscript.templateString.parse('`test${#ls}`'))
-				.toEqual({status: true, value: '"test"+(process.sys[\'ls\']().config({defaultOutput: process.stdout}))+""'});
+				.toEqual({status: true, value: '"test"+(process.sys[\'ls\']().config({parent: process.stdout}))+""'});
 		});
 
 		it('should parse a template string with escaped backtick', () => {
@@ -108,7 +108,7 @@ describe('Eelscript parser', () => {
 
 		it('should parse a system command assignment', () => {
 			expect(eelscript.expressions.parse('let test = #ls;'))
-				.toEqual({status: true, value: `let test = process.sys['ls']().config({defaultOutput: process.stdout});`});
+				.toEqual({status: true, value: `let test = process.sys['ls']().config({parent: process.stdout});`});
 		});
 
 		it('should parse an empty singlequote string', () => {

@@ -58,19 +58,24 @@ module.exports =
 						emit('error', err);
 					}
 
-					command.action()(Object.assign({
-							$stdin: stdin,
-							$stdout: stdout,
-						}, parsedArgs),
-						(data) => {
-							if (Type.is(data, Error)) {
-								emit('error', data);
+					if (parsedArgs.help) {
+						push('command.usage()');
+					}
+					else {
+						command.action()(Object.assign({
+								$stdin: stdin,
+								$stdout: stdout,
+							}, parsedArgs),
+							(data) => {
+								if (Type.is(data, Error)) {
+									emit('error', data);
+								}
+								else {
+									push(data);
+								}
 							}
-							else {
-								push(data);
-							}
-						}
-					);
+						);
+					}
 				}, options);
 			},
 			chainingObject({
@@ -109,7 +114,13 @@ module.exports =
 							return Object.assign(parsedFlags.value,
 								{description: description}
 							);
-						}, {multiple: true}
+						}, {multiple: true, default: [
+								commandAPI
+									.options
+									.flaglist
+									.parse('-h, --help').value
+							]
+						}
 					],
 				display:
 					['display',
@@ -146,7 +157,7 @@ module.exports =
 							if (parsedArg.status) {
 								let parsed = parsedArg.value;
 
-								if (parsed.value.next) {
+								if (parsed.next) {
 									if (next) {
 										flags[parsed.name] = next;
 										index++;
@@ -158,14 +169,12 @@ module.exports =
 								else {
 									flags[parsed.name] = parsed.value;
 								}
-							}
-							else {
-								args.push(arg);
+
+								continue;
 							}
 						}
-						else {
-							args.push(arg);
-						}
+
+						args.push(arg);
 					}
 
 					if (command.usage()) {
