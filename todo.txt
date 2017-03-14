@@ -2,10 +2,10 @@
 #TODO: Fix stream not ending bug id:25
 #ForThisSprint: Complete helptext id:26
 #Done: Autocomplete goes bellow the bottombar id:34
-#ForThisSprint: Fix cd link on windows id:35
+#Done: Fix cd link on windows id:35
 #TODO: Path autocomplete id:36
 #TODO: Make ls command id:27
 #TODO: Complete auto complete id:28
 #TODO: Make ctrl-c work id:30
-#TODO: Make --help work id:31
+#ForThisSprint: Make --help work id:31
 #TODO: Add anchors id:32

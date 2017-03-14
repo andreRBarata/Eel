@@ -146,15 +146,19 @@ module.exports = (function() {
 					),
 					P.alt(
 						P.string('=')
-							.then(eelscript.shell.arg)
-							.map((args) => args),
+							.then(
+								P.alt(
+									eelscript.shell.seg,
+									eelscript.string
+								)
+							),
 						P.eof
 					)
 				).map(([flag, value]) => {
 					return {
 						name: flaglist.name,
 						value: value || true,
-						next: variable && variable === 'required'
+						next: !value && variable === 'required'
 					};
 				})
 			};

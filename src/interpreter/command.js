@@ -150,7 +150,7 @@ module.exports =
 							null;
 
 
-						if (Type.is(arg, String) && possibleFlags) {//#ForThisSprint: Test flag variables id:20
+						if (Type.is(arg, String) && possibleFlags) {//#Done: Test flag variables id:20
 							let parsedArg = possibleFlags
 								.parse(arg);
 

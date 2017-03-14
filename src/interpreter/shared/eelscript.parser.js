@@ -16,8 +16,9 @@ sweet.loadMacro(
 
 const eelscript = {
 	shell: {
+		seg: P.regex(/[\-A-Za-z0-9.\\=~_/]+/),
 		arg: P.alt(
-			P.regex(/[\-A-Za-z0-9.\\=~_/]+/)
+			P.lazy(() => eelscript.shell.seg)
 				.map((word) => `'${word}'`),
 			P.lazy(() => eelscript.string)
 		).map((arg) => flatten(arg).join('')),

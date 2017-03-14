@@ -320,7 +320,21 @@ describe('commandAPI parser', () => {
 							value: {
 								name: 'page',
 								next: true,
-								value: null
+								value: true
+							}
+						});
+					});
+
+					it('should parse the shortflag with variable', () => {
+						let result = flags.value
+							.parser.parse('-p=1');
+
+						expect(result).toEqual({
+							status: true,
+							value: {
+								name: 'page',
+								next: false,
+								value: '1'
 							}
 						});
 					});
