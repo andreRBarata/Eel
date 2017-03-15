@@ -1,7 +1,7 @@
 const marked	= require('marked');
 const command	= require('command');
 
-module.exports = command('marked [markdown] [options]', 'Converts markdown into html')
+module.exports = command('marked [markdown] [options]', 'Converts markdown into html (wrapper of node module of same name)')
 	.display(/.*/, ({markdown, options}) =>
 		marked(markdown, options)
 	)

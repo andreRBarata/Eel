@@ -4,8 +4,9 @@
 #Done: Autocomplete goes bellow the bottombar id:34
 #Done: Fix cd link on windows id:35
 #TODO: Path autocomplete id:36
-#TODO: Make ls command id:27
+#ForThisSprint: Make ls command id:27
 #TODO: Complete auto complete id:28
 #TODO: Make ctrl-c work id:30
 #ForThisSprint: Make --help work id:31
 #TODO: Add anchors id:32
+#TODO: Add basic global stdin
