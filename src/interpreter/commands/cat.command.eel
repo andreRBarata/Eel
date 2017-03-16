@@ -19,42 +19,30 @@ module.exports = command('cat [location]', 'Displays the contents of a file (Ima
 			return `<audio class="center" controls ng-src="{{src.path}}"></audio>`;
 		}
 
-		return `<textarea ui-codemirror="{
-			viewportMargin: src.content
-				.split('\\n').length,
-			readOnly: 'nocursor',
-			lineWrapping: true,
-			lineNumbers: src.options
-				.lineNumbers,
-			mode: src.mimetype
-		}" ng-model="src.content"></textarea>`;
+		return `<div highlighted-block
+			numbers="src.options.lineNumbers"
+			mimetype="src.mimetype"
+			src="src.content">
+		</div>`;
 
 	})
 	.action(({_: [location], $stdin, $stdout, number}, push) => {
 		if (location) {
-			#realpath(location) |>
-			#map((realpath) => {
-				fs.createReadStream(realpath) |>
-				#then((content) => {
-					let mimetype = mime.lookup(location)
-						.replace('application', 'text');
 
-					push({
-						path: realpath,
-						mimetype: mimetype, //TODO: Replace this
-						get content() {
-							return content.join('');
-						},
-						set content(value) {
-
-						},
-						options: {
-							lineNumbers: number || false
-						}
-					});
-
-					push(null);
+			Promise.all([
+				#mimetype(location),
+				#realpath(location)
+			]) |> #then(([[mimetype, realpath]]) => {
+				push({
+					path: realpath,
+					mimetype: mimetype.mime, //TODO: Replace this
+					content: fs.createReadStream(realpath),
+					options: {
+						lineNumbers: number || false
+					}
 				});
+
+				push(null);
 			});
 		}
 		else {

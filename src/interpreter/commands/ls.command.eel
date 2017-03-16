@@ -5,14 +5,16 @@ module.exports = command('ls [location]',
 		'Lists the contents of a given directive'
 	)
 	.display('text/html', (file) => `
+		{{src.mimetype}}
 		<div class="col-xs-6 col-md-3 col-sm-4 col-lg-4 well">
 			{{src.name}}
 		</div>
 	`)
-	.action(({_: [location], $stdout}) => {
+	.action(({_: [location], $stdout}, push) => {
 		#realpath(location || '') |>
 		#then(([abspath]) => {
 			fs.readdir(abspath, (err, files) => {
+
 				files |> #map((file) => {
 					return {
 						name: file

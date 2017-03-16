@@ -10,7 +10,8 @@ const {chainingObject}	= require('./shared/common');
 
 /**
 *	Create a command that takes in variables and flags
-*	@param {string} commandname
+*	@param {string} header - the command name followed
+*	by the expected arguments
 *	@param {string} description
 */
 module.exports =

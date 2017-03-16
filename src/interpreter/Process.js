@@ -65,6 +65,42 @@ class Process extends stream.Duplex {
 		}
 	}
 
+	//TODO: Write test id:39
+	then(callback) {
+		let data = [];
+
+		//TODO: Replace this solution for single output id:38
+		let passThrough = new stream.PassThrough({
+			objectMode: true
+		});
+
+		passThrough.on('readable', () => {
+			let chunk;
+
+			while (chunk = passThrough.read()) {
+				data.push(chunk);
+			}
+		})
+		.on('end', () => {
+			if (data.length === 1) {
+				callback(data[0]);
+			}
+			else {
+				callback(data);
+			}
+		});
+
+		this.pipe(passThrough);
+
+	}
+
+	catch(callback) {
+		let errors = [];
+
+		this.on('error', (err) => errors.push(err))
+			.on('end', () => callback(errors));
+	}
+
 	/**
 	*	Turns process output into promise
 	* 	@returns {Promise}

@@ -1,6 +1,7 @@
 #Done: Start writing SweetJS scripts id:24
 #TODO: Fix stream not ending bug id:25
 #ForThisSprint: Complete helptext id:26
+#TODO: cat open big files id:41
 #Done: Autocomplete goes bellow the bottombar id:34
 #Done: Fix cd link on windows id:35
 #TODO: Path autocomplete id:36
@@ -9,4 +10,4 @@
 #TODO: Make ctrl-c work id:30
 #ForThisSprint: Make --help work id:31
 #TODO: Add anchors id:32
-#TODO: Add basic global stdin
+#TODO: Add basic global stdin id:37

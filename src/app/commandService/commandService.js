@@ -15,15 +15,16 @@ angular.module('termApp')
 
 				try {
 					vmInstance.run(command);
-
-					if (command && command !== '') {
-						historyService
-							.push(command);
-					}
 				}
 				catch (err) {
 					commandService
 						.stdout.emit('error', err);
+				}
+				finally {
+					if (command && command !== '') {
+						historyService
+							.push(command);
+					}
 				}
 			}
 		};

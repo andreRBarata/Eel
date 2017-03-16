@@ -140,6 +140,7 @@ module.exports = (function() {
 					),
 				flags: flags,
 				variable: variable,
+				//TODO: add handleling of optional non string args id:40
 				parser: P.seq(
 					P.alt(
 						...fullflagList

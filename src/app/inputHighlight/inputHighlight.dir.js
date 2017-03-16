@@ -60,9 +60,11 @@ angular.module('termApp')
 					readOnly: $scope.readonly,
 					extraKeys: {
 						Enter(cm) {
-							$scope.onexec(
-								cm.getValue()
-							);
+							if ($scope.onexec) {
+								$scope.onexec(
+									cm.getValue()
+								);
+							}
 
 							cm.setValue('');
 						},

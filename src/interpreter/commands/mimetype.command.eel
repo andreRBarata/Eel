@@ -1,0 +1,18 @@
+const command	= require('command');
+const mime		= require('mime');
+
+module.exports = command('mimetype <file>',
+	'Get the mimetype of a file'
+)
+.display('text/html', (data) => `
+	{{src.file}}: {{src.mime}}
+`)
+.action(({_: [file]}, push) => {
+	push({
+		file: file,
+		mime: mime.lookup(file)
+			.replace('application', 'text')
+	});
+
+	push(null);
+});
