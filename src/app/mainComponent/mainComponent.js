@@ -25,9 +25,6 @@ angular.module('termApp')
 					$scope.$apply();
 				});
 
-			$scope.scrollDown = () =>
-				window.scrollTo(0, document.body.scrollHeight);
-
 			$scope.execute = (command) =>
 				commandService.execute(command);
 		});

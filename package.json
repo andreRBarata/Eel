@@ -46,6 +46,7 @@
     "codemirror": "^5.23.0",
     "electron": "^1.5.0",
     "es6-macros": "0.0.7",
+    "font-awesome": "^4.7.0",
     "handlebars": "^4.0.6",
     "highland": "^2.10.0",
     "jsonformatter": "^0.6.0",

@@ -15,6 +15,8 @@
 			href="../../node_modules/codemirror/addon/hint/show-hint.css">
 		<link rel="stylesheet" type="text/css"
 			href="../../node_modules/codemirror/theme/base16-light.css">
+		<link rel="stylesheet" type="text/css"
+			href="../../node_modules/font-awesome/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/styles.css">
 		<script>
 			// You can also require other files to run in this process
@@ -24,7 +26,6 @@
 	<body ng-app="termApp" ng-controller="mainController">
 		<div class="container-fluid" id="container">
 			<stream-display src="stdout">
-				{{scrollDown()}}
 			</stream-display>
 			<div class="command-pane"
 				popover-enable="firstRun()"

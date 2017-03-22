@@ -246,33 +246,30 @@ describe('Process', () => {
 		});
 	});
 
-	describe('"toPromise" function', () => {
+	it('should call then when written on and ended', (done) => {
+		let workProcess = new Process(({push}) => {
+			push('test');
+			push(null);
+		});
+		workProcess.then((data) => {
+			expect(data).toEqual('test');
+			done();
+		});
+	});
 
-		it('should call then when written on and ended', (done) => {
-			let workProcess = new Process(({push}) => {
-				push('test');
-				push(null);
-			});
-			workProcess.toPromise().then(([data]) => {
-				expect(data).toEqual('test');
-				done();
-			});
+	it('should call catch when error emitted', (done) => {
+		let workProcess = new Process(({push, emit}) => {
+			push('test');
+			emit('error', 'Test');
+			push(null);
 		});
 
-		it('should call catch when error emitted', (done) => {
-			let workProcess = new Process(({push, emit}) => {
-				push('test');
-				emit('error', 'Test');
-				push(null);
-			});
+		workProcess.then((data) => {
+			expect(data).toNotEqual('test');
 
-			workProcess.toPromise().then((data) => {
-				expect(data[0]).toNotEqual('test');
-
-			}).catch((err) => {
-				expect(err).toBeAn(Error);
-				done();
-			});
+		}).catch((err) => {
+			expect(err).toBeAn(Error);
+			done();
 		});
 	});
 });

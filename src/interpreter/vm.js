@@ -1,3 +1,9 @@
+/**
+ * @summary Creates and return a VM instance
+ *
+ * @author André Barata
+ */
+
 const {NodeVM}			= require('vm2');
 const Highland			= require('highland');
 const fs				= require('fs');
@@ -18,7 +24,7 @@ module.exports = {
 				stdout: new Highland(),
 				title: 'Eelscript',
 				version: process.version,
-				env: Object.assign(process.env, {TERM: 'xterm-256color'}),
+				env: Object.assign(process.env, {TERM: 'xterm-color'}),
 				sys: new Proxy({}, {
 					get: (obj, prop) => (obj[prop])? obj[prop]:
 						(...args) => obj['exec'](prop, ...args),

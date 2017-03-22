@@ -1,3 +1,10 @@
+/**
+ * @summary Main aplication file, initializes electron
+ * and loads the index page.
+ *
+ * Modified from: https://github.com/electron/electron-quick-start/blob/master/main.js
+ */
+
 const {app, BrowserWindow} = require('electron');
 
 const path = require('path');

@@ -7,71 +7,66 @@ angular.module('termApp')
 				src: '='
 			},
 			controller:
-				function ResultDisplayController($scope, $compile, $element) {
-					let transform = (parent) => {
-						let tmp = Highland
-							.pipeline((src) => {
-								src.filter((ele) => {
-									if (ele.pipe) {
-										let newParent = angular.element(
-											'<div class="container-fluid"></div>'
-										);
-										let newTransform =
-											transform(newParent);
+				function ResultDisplayController($scope, $compile, $element, $timeout) {
+					function compile(ele) {
+						let tmpscope = $scope.$new(true);
+						let component;
 
-										if (ele.listeners('data').length > 0) {
-											return false;
-										}
+						tmpscope.src = ele.scope;
 
-										ele.pipe(newTransform);
+						component = $compile(
+							`<section style="display: inline;" ng-cloak class="contrainer">${ele.html}</section>`
+						)(tmpscope);
 
-										ele.on('error', (err) => {
-											newTransform.emit('error', err);
-										});
+						$timeout(
+							() => tmpscope.$apply(
+								scrollDown
+							),
+							30
+						);
 
-
-										parent.append(newParent);
-									}
-
-									return !ele.pipe;
-								})
-								.map((ele) => {
-									let tmpscope = $scope.$new(true);
-									tmpscope.src = ele.scope;
-
-									parent.append(
-										$compile(`<section style="display: inline; class="contrainer">${ele.html}</section>`)(tmpscope)
-									);
-
-									return tmpscope;
-								})
-								.debounce(10)
-								.each((tmpscope) => {
-									tmpscope.$apply();
-								});
-						})
-						.on('error', (err) => {
-							$scope.src
-								.write({
-									html:
-										`<div class="alert alert-danger" role="alert">{{src}}</div>`,
-									scope: err.message
-								});
-						});
-
-						tmp.receives = 'object/scoped-html';
-
-						return tmp;
+						return component;
 					}
 
-					let rootTransform = transform($element);
-
 					$scope.src
-						.pipe(rootTransform);
+						.map((data) => {
+							if (data.pipe) {
+								let stream = (data.lens)?
+									data.lens('object/scoped-html'):
+									data;
+								let newParent = $compile(
+									`<div class="container-fluid" ng-cloak></div>`
+								)($scope);
 
-					$scope.src.on('error', (err) => {
-						rootTransform.emit('error', err);
-					});
+								if (data.state !== 'unpiped') {
+									return;
+								}
+
+								stream.on('error', (err) => {
+									if (data.state === 'unpiped') {
+										newParent.append(compile({
+											html:
+											`<div class="alert alert-danger" role="alert">{{src}}</div>`,
+											scope: err.message
+										}));
+									}
+								});
+
+								stream.on('data', (inner) => {
+									if (data.state === 'unpiped') {
+										newParent.append(compile(inner));
+									}
+								});
+
+								return newParent;
+							}
+							else {
+								return compile(data);
+							}
+
+						})
+						.compact()
+						.each((ele) => $element.append(ele));
 				}
 		}
 	});

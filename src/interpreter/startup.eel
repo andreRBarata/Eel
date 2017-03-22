@@ -1,5 +1,10 @@
-const command	= require('command');
+/**
+ * @summary Initionalizes the commands in the VM
+ *
+ * @author André Barata
+ */
 
+const command	= require('command');
 
 //TODO: Test these
 process.sys.map = command('map <callback>')

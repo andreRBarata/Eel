@@ -29,21 +29,12 @@ angular.module('termApp')
 								}
 
 								editor.setValue($scope.doc);
-								editor.setViewportMargin(
-									$scope.doc
-										.split('\\n').length
-								);
-
 							});
 					}
 					else {
 						$scope.doc = $scope.src;
 
 						editor.setValue($scope.doc);
-						editor.setViewportMargin(
-							$scope.doc
-								.split('\\n').length
-						);
 					}
 				};
 			}

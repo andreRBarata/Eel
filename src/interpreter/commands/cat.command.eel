@@ -10,13 +10,13 @@ module.exports = command('cat [location]', 'Displays the contents of a file (Ima
 		let mimetype = data.mimetype || '';
 
 		if (mimetype.match(/image\/.*/)) {
-			return `<img class="img-rounded img-responsive center" ng-src="{{src.path}}"></img>`;
+			return `<img class="img-rounded img-responsive center" ng-src="{{src.path}}" ng-init="scrollDown()"></img>`;
 		}
 		else if (mimetype.match(/video\/.*/)) {
-			return `<video class="img-rounded img-responsive center" controls ng-src="{{src.path}}"></video>`;
+			return `<video class="img-rounded img-responsive center" controls ng-src="{{src.path}}" ng-init="scrollDown()"></video>`;
 		}
 		else if (mimetype.match(/audio\/.*/)) {
-			return `<audio class="center" controls ng-src="{{src.path}}"></audio>`;
+			return `<audio class="center" controls ng-src="{{src.path}} ng-init="scrollDown()""></audio>`;
 		}
 
 		return `<div highlighted-block

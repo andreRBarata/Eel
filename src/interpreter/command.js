@@ -9,10 +9,12 @@ const commandAPI		= require('./shared/commandAPI.parser');
 const {chainingObject}	= require('./shared/common');
 
 /**
-*	Create a command that takes in variables and flags
+*	Creates a command that takes in variables and flags
 *	@param {string} header - the command name followed
 *	by the expected arguments
 *	@param {string} description
+*
+*	@author André Barata
 */
 module.exports =
 	function (header = '', description = '') {
@@ -33,9 +35,18 @@ module.exports =
 				let expectedArgs = command.usage();
 
 				let options = {
-					preprocessor: (destination) => {
-						let receives = destination.receives || '';
-						let fn = command.display(receives);
+					preprocessor(destination) {
+						let mimetype;
+						let fn;
+
+						if (destination.pipe) {
+							mimetype = destination.receives || '';
+						}
+						else {
+							mimetype = destination;
+						}
+
+						fn = command.display(mimetype);
 
 						if (fn) {
 							return stream.Transform({
@@ -45,8 +56,24 @@ module.exports =
 								}
 							});
 						}
+
 					},
-					receives: command.receives(),
+					lens(mimetype) {
+						let transform = this._preprocessor(mimetype);
+
+						return new Process(({stdout, emit}) => {
+							this.on('data', (data) => {
+								transform.write(data);
+							});
+
+							this.on('error', (err) => {
+								emit('error', err);
+							});
+
+							transform.pipe(stdout);
+						});
+					},
+					receives: command.receives()
 				};
 
 				return new Process(({push, emit, stdin, stdout}) => {

@@ -1,3 +1,10 @@
+/**
+ * @summary Class that wraps a commands execution.
+ * Is compatible with Streams and Promises
+ *
+ * @author André Barata
+ */
+
 const Highland			= require('highland');
 const stream			= require('stream');
 const streamToPromise	= require('stream-to-promise');
@@ -39,21 +46,23 @@ class Process extends stream.Duplex {
 			objectMode: true
 		});
 
+		this.state = 'unpiped';
+
 		this.config(config);
 
 		if (source) {
 			source({
-				push: (data) => super.push(data),
+				push: (data) => this.push(data),
 				emit: (event, data) =>
-					super.emit(event, data),
+					this.emit(event, data),
 				stdin: stdin,
 				stdout: Highland
 					.pipeline((s) =>
 						s.errors(
 							(err, push) =>
-								super.emit('error', err))
+								this.emit('error', err))
 						.each((data) =>
-							super.push(data))
+							this.push(data))
 						.done(() => super.end())
 					)
 			});
@@ -66,18 +75,19 @@ class Process extends stream.Duplex {
 	}
 
 	//TODO: Write test id:39
+	/**
+	*	Consume stream on completion
+	*	@param {Function} callback
+	*	@returns {Process}
+	*/
 	then(callback) {
 		let data = [];
 
-		//TODO: Replace this solution for single output id:38
-		let passThrough = new stream.PassThrough({
-			objectMode: true
-		});
+		this.state = 'consumed';
 
-		passThrough.on('readable', () => {
+		this.on('readable', () => {
 			let chunk;
-
-			while (chunk = passThrough.read()) {
+			while (chunk = this.read()) {
 				data.push(chunk);
 			}
 		})
@@ -90,15 +100,21 @@ class Process extends stream.Duplex {
 			}
 		});
 
-		this.pipe(passThrough);
-
+		return this;
 	}
 
+	/**
+	*	Consume errors on completion
+	*	@param {Function} callback
+	*	@returns {Process}
+	*/
 	catch(callback) {
 		let errors = [];
 
 		this.on('error', (err) => errors.push(err))
 			.on('end', () => callback(errors));
+
+		return this;
 	}
 
 	/**
@@ -122,7 +138,7 @@ class Process extends stream.Duplex {
 				preprocessor;
 		}
 		//TODO: Consider change to embed stream model id:23
-		if (parent && !this.listeners().length) {
+		if (parent && this.state === 'unpiped') {
 			parent.write(this);
 		}
 
@@ -145,7 +161,7 @@ class Process extends stream.Duplex {
 		let mapper = (this._preprocessor)?
 			this._preprocessor(destination): null;
 
-		this.unpipe();
+		this.state = 'piping';
 
 		if (mapper) {
 			return super.pipe(mapper)

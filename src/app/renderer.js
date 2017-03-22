@@ -30,3 +30,8 @@ require('./historyService/historyService.js');
 require('./inputHighlight/inputHighlight.dir.js');
 require('./streamDisplay/streamDisplay.dir.js');
 require('./mainComponent/mainComponent.js');
+
+global.scrollDown = () => {
+	console.log('scroll');
+	window.scrollTo(0, document.body.scrollHeight);
+}
