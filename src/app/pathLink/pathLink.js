@@ -21,10 +21,7 @@ angular.module('termApp')
 									segment: segment,
 									path: part
 										.slice(0, index + 1)
-										.join((path.sep === '\\')?
-											'\\\\':
-											path.sep
-										)
+										.join(path.sep)
 								};
 							});
 
