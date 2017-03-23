@@ -9,7 +9,6 @@ const Highland			= require('highland');
 const fs				= require('fs');
 const childProcess		= require('child_process');
 const Type				= require('type-of-is');
-const streamToPromise	= require('stream-to-promise');
 
 const Process	= require('./Process');
 const command	= require('./command');
@@ -58,7 +57,6 @@ module.exports = {
 			'_' : Process
 		};
 
-		sandbox.process.stdout.receives = 'object/scoped-html';
 		vm = new NodeVM({
 			timeout: 1000,
 	    	sandbox: sandbox,

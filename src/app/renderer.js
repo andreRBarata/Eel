@@ -23,7 +23,8 @@ Highland.wrapCallback(
 
 require('./assets/languages/eelscript');
 require('./app.js');
-require('./localLink/localLink.js');
+require('./localRef/localRef.js');
+require('./pathLink/pathLink.js');
 require('./commandService/commandService.js');
 require('./highlightedBlock/highlightedBlock.js');
 require('./historyService/historyService.js');
@@ -32,6 +33,6 @@ require('./streamDisplay/streamDisplay.dir.js');
 require('./mainComponent/mainComponent.js');
 
 global.scrollDown = () => {
-	console.log('scroll');
+	console.log('scroll', 0, document.body.scrollHeight);
 	window.scrollTo(0, document.body.scrollHeight);
 }

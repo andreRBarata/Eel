@@ -28,12 +28,14 @@ h4 {
 	margin-bottom: 1em;
 }
 
+.seg-box:hover {
+	background-color: white;
+}
+
 .seg-box:hover div {
 	border-bottom: 2px solid #429be4;
 	transition: 0.5s ease-in-out;
 	overflow: visible;
-	border-radius: 4px;
-
 }
 
 .seg-box div {
@@ -114,5 +116,5 @@ input-highlight input {
 }
 
 .CodeMirror-hints {
-	width: auto;
+	max-width: 90%;
 }

@@ -3,6 +3,9 @@ const path		= require('path');
 const os		= require('os');
 
 module.exports = command('realpath <location>', 'Converts a relative path into an absolute path')
+	.display('text/html', (data) => `
+		<path-link of="src"/>
+	`)
 	.action(({_: [location]}, push) => {
 
 		push(path.resolve(

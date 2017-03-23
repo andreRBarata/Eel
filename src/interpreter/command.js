@@ -58,21 +58,6 @@ module.exports =
 						}
 
 					},
-					lens(mimetype) {
-						let transform = this._preprocessor(mimetype);
-
-						return new Process(({stdout, emit}) => {
-							this.on('data', (data) => {
-								transform.write(data);
-							});
-
-							this.on('error', (err) => {
-								emit('error', err);
-							});
-
-							transform.pipe(stdout);
-						});
-					},
 					receives: command.receives()
 				};
 

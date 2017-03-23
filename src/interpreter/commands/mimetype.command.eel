@@ -8,10 +8,11 @@ module.exports = command('mimetype <file>',
 	{{src.file}}: {{src.mime}}
 `)
 .action(({_: [file]}, push) => {
+	let extension = file.match(/.*\.(.*)$/);
 	push({
 		file: file,
-		mime: mime.lookup(file)
-			.replace('application', 'text')
+		mime: mime.lookup(file),
+		extension: (extension)? extension[1]: ''
 	});
 
 	push(null);

@@ -15,18 +15,15 @@ angular.module('termApp')
 						tmpscope.src = ele.scope;
 
 						component = $compile(
-							`<section style="display: inline;" ng-cloak class="contrainer">${ele.html}</section>`
+							`<section ng-cloak>${ele.html}</section>`
 						)(tmpscope);
 
-						$timeout(
-							() => tmpscope.$apply(
-								scrollDown
-							),
-							30
-						);
+						tmpscope.$apply();
 
 						return component;
 					}
+
+					$scope.$watch(() => scrollDown());
 
 					$scope.src
 						.map((data) => {
@@ -66,7 +63,9 @@ angular.module('termApp')
 
 						})
 						.compact()
-						.each((ele) => $element.append(ele));
+						.each((ele) =>
+							$element.append(ele)
+						);
 				}
 		}
 	});

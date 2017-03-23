@@ -10,7 +10,8 @@ angular.module('termApp')
 				<div ui-codemirror="{
 					lineWrapping: true,
 					lineNumbers: numbers,
-					mode: mimetype,
+					mode: mimetype
+						.replace('application', 'text'),
 					onLoad: onLoad,
 					readOnly: true
 				}"></div>

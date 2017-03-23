@@ -8,16 +8,17 @@ module.exports = command('ls [location]',
 	'Lists the contents of a given directive'
 )
 .display('text/html', (file) => `
-	<div class="col-xs-6 col-md-3 col-sm-4 col-lg-4 seg-box">
-		<span ng-if="src.icon"
-			class="glyphicon text-center fa-2x
-				col-xs-3 col-md-2 col-sm-4 col-lg-3"
-			ng-class="src.icon"
-			aria-hidden="true">
-		</span>
-		<div class="col-xs-8 col-md-8 col-sm-7 col-lg-7">
-			{{src.name}}
-		</div>
+	<div class="col-xs-6 col-md-3 col-sm-4 col-lg-4 seg-box"
+		local-ref="src.fullpath">
+			<i ng-if="src.icon"
+				class="glyphicon text-center fa-2x
+					col-xs-3 col-md-2 col-sm-4 col-lg-3"
+				ng-class="src.icon"
+				aria-hidden="true">
+			</i>
+			<div class="col-xs-7 col-md-8 col-sm-7 col-lg-7">
+				{{src.name}}
+			</div>
 	</div>
 `)
 .action(({_: [location], $stdout}) => {
@@ -39,8 +40,12 @@ module.exports = command('ls [location]',
 					if (stat.isDirectory()) {
 						icon = 'glyphicon-folder-open';
 					}
+					else if (mimetype.extension) {
+						icon += ` fa-file-${mimetype.extension}-o`;
+					}
 
 					return {
+						fullpath: path.join(abspath, file),
 						name: file,
 						type: (stat.isDirectory())?
 							'directory':

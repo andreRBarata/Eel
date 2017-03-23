@@ -7,7 +7,6 @@
 
 const Highland			= require('highland');
 const stream			= require('stream');
-const streamToPromise	= require('stream-to-promise');
 const Type				= require('type-of-is');
 
 /**
@@ -118,14 +117,6 @@ class Process extends stream.Duplex {
 	}
 
 	/**
-	*	Turns process output into promise
-	* 	@returns {Promise}
-	*/
-	toPromise() {
-		return streamToPromise(this);
-	}
-
-	/**
 	*	Sets configurations for the process
 	* 	@param {{parent, preprocessor}} config - Config object
 	* 	@returns {Process}
@@ -154,7 +145,8 @@ class Process extends stream.Duplex {
 	/**
 	*	Pipe Current processes output into
 	*	other processes input
-	*	@param {Process} process - The process to pipe into.
+	*	@param {Stream} destination - The stream to pipe into.
+	*	@param {Object} options - Options for the pipe
 	*	@returns {Process}
 	*/
 	pipe(destination, options) {
@@ -171,11 +163,37 @@ class Process extends stream.Duplex {
 		return super.pipe(destination, options);
 	}
 
+	/**
+	*	Use preprocessor to map the process output
+	*	@param {String} mimetype
+	*	@returns {Process}
+	*/
+	lens(mimetype) {
+		let transform = (this._preprocessor)?
+			this._preprocessor(mimetype):
+			null;
+
+		if (transform) {
+			return new Process(({stdout, emit}) => {
+				this.on('data', (data) => {
+					transform.write(data);
+				});
+
+				this.on('error', (err) => {
+					emit('error', err);
+				});
+
+				transform.pipe(stdout);
+			});
+		}
+	}
+
 	//TODO: Warning for readonly processes id:2
 	/**
 	*	Pipe processes together
 	* 	@static
-	*	@param {Function|Array|Number|string|stream.Readable} args - Processes to be piped
+	*	@param {Function|Array|Number|string|stream.Readable} _input - Element to be piped into
+	*	@param {Stream} _output - Stream to pipe to
 	*	@returns {Process}
 	*/
 	static pipe(_input, _output) {
@@ -193,13 +211,12 @@ class Process extends stream.Duplex {
 			}
 		}
 		let input = asStream(_input);
-		let output = asStream(_output);
 
 		input.on('error', (err) =>
-			output.emit('error', err)
+			_output.emit('error', err)
 		);
 
-		return input.pipe(output);
+		return input.pipe(_output);
 	}
 }
 

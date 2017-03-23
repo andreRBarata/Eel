@@ -1,14 +1,14 @@
 const path = require('path');
 
 angular.module('termApp')
-	.directive('localLink', () => {
+	.directive('pathLink', () => {
 
 		return {
 			scope: {
 				of: '='
 			},
 			controller:
-				function localLinkDirective($scope, commandService) {
+				function pathLink($scope, commandService) {
 					$scope.$watch('of', (newval, oldval) => {
 						let part = $scope.of
 							.split(path.sep);
@@ -29,16 +29,10 @@ angular.module('termApp')
 							});
 
 					});
-
-					$scope.go = (path) => {
-						commandService.execute(`#cd "${
-							path
-						}"`)
-					};
 				},
 			template: `
 				<span ng-repeat="part in parts track by $index">
-					<a ng-click="go(part.path)">{{part.segment}}</a>
+					<a local-ref="part.path">{{part.segment}}</a>
 						{{$last ? '' : seperator}}
 				</span>
 			`
