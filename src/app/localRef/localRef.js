@@ -15,7 +15,7 @@ angular.module('termApp')
 							if (stat.isDirectory()) {
 								commandService.execute(`#cd "${
 									$scope.localRef
-										.replace('\\',
+										.replace(/\\/g,
 											'\\\\'
 										)
 								}"`);
@@ -23,6 +23,7 @@ angular.module('termApp')
 							else {
 								opn($scope.localRef);
 							}
+
 						});
 					});
 				}
