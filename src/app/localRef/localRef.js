@@ -12,16 +12,18 @@ angular.module('termApp')
 				function localRef($scope, commandService, $element) {
 					$element.on('click', () => {
 						fs.stat($scope.localRef, (err, stat) => {
+							let path = $scope.localRef
+								.replace(/\\/g,
+									'\\\\'
+								);
+
 							if (stat.isDirectory()) {
 								commandService.execute(`#cd "${
-									$scope.localRef
-										.replace(/\\/g,
-											'\\\\'
-										)
+									path
 								}"`);
 							}
 							else {
-								opn($scope.localRef);
+								opn(path);
 							}
 
 						});
