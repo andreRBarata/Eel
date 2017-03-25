@@ -28,14 +28,18 @@ h4 {
 	margin-bottom: 1em;
 }
 
-.seg-box:hover {
-	background-color: white;
+.seg-box:hover .glyphicon, .seg-box.open .glyphicon {
+	display: none;
 }
 
-.seg-box:hover div {
+.seg-box:hover div, .seg-box.open div {
+	word-break: break-all;
+	white-space: normal;
+	width: auto;
+	position: absolute;
 	border-bottom: 2px solid #429be4;
 	transition: 0.5s ease-in-out;
-	overflow: visible;
+	overflow: auto;
 }
 
 .seg-box div {

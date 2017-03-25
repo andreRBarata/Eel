@@ -71,24 +71,20 @@ module.exports =
 						emit('error', err);
 					}
 
-					if (parsedArgs.help) {
-						push('command.usage()');
-					}
-					else {
-						command.action()(Object.assign({
-								$stdin: stdin,
-								$stdout: stdout,
-							}, parsedArgs),
-							(data) => {
-								if (Type.is(data, Error)) {
-									emit('error', data);
-								}
-								else {
-									push(data);
-								}
+
+					command.action()(Object.assign({
+							$stdin: stdin,
+							$stdout: stdout,
+						}, parsedArgs),
+						(data) => {
+							if (Type.is(data, Error)) {
+								emit('error', data);
 							}
-						);
-					}
+							else {
+								push(data);
+							}
+						}
+					);
 				}, options);
 			},
 			chainingObject({
@@ -128,10 +124,10 @@ module.exports =
 								{description: description}
 							);
 						}, {multiple: true, default: [
-								commandAPI
-									.options
-									.flaglist
-									.parse('-h, --help').value
+								// commandAPI
+								// 	.options
+								// 	.flaglist
+								// 	.parse('-h, --help').value
 							]
 						}
 					],

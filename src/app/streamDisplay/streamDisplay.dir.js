@@ -15,57 +15,60 @@ angular.module('termApp')
 						tmpscope.src = ele.scope;
 
 						component = $compile(
-							`<section ng-cloak>${ele.html}</section>`
+							`<section ng-cloak onload="scrollDown()">${ele.html}</section>`
 						)(tmpscope);
 
-						tmpscope.$apply();
+						$timeout(() => {
+							tmpscope.$apply();
+							scrollDown();
+						}, 10)
+
 
 						return component;
 					}
 
-					$scope.$watch(() => scrollDown());
+					function map(data) {
+						if (data.pipe) {
+							let stream = (data.lens)?
+								data.lens('object/scoped-html'):
+								data;
+							let newParent = $compile(
+								`<div class="container-fluid" ng-cloak></div>`
+							)($scope);
+
+							if (data.state !== 'unpiped') {
+								return;
+							}
+
+							stream.on('error', (err) => {
+								if (data.state === 'unpiped') {
+									newParent.append(compile({
+										html:
+										`<div class="alert alert-danger" role="alert">{{src}}</div>`,
+										scope: err.message
+									}));
+								}
+							});
+
+							stream.on('data', (inner) => {
+								if (data.state === 'unpiped') {
+									newParent.append(compile(inner));
+								}
+							});
+
+							return newParent;
+						}
+						else {
+							return compile(data);
+						}
+					}
 
 					$scope.src
-						.map((data) => {
-							if (data.pipe) {
-								let stream = (data.lens)?
-									data.lens('object/scoped-html'):
-									data;
-								let newParent = $compile(
-									`<div class="container-fluid" ng-cloak></div>`
-								)($scope);
-
-								if (data.state !== 'unpiped') {
-									return;
-								}
-
-								stream.on('error', (err) => {
-									if (data.state === 'unpiped') {
-										newParent.append(compile({
-											html:
-											`<div class="alert alert-danger" role="alert">{{src}}</div>`,
-											scope: err.message
-										}));
-									}
-								});
-
-								stream.on('data', (inner) => {
-									if (data.state === 'unpiped') {
-										newParent.append(compile(inner));
-									}
-								});
-
-								return newParent;
-							}
-							else {
-								return compile(data);
-							}
-
-						})
+						.map(map)
 						.compact()
-						.each((ele) =>
-							$element.append(ele)
-						);
+						.each((ele) => {
+							$element.append(ele);
+						});
 				}
 		}
 	});

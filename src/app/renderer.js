@@ -33,6 +33,5 @@ require('./streamDisplay/streamDisplay.dir.js');
 require('./mainComponent/mainComponent.js');
 
 global.scrollDown = () => {
-	console.log('scroll', 0, document.body.scrollHeight);
 	window.scrollTo(0, document.body.scrollHeight);
 }

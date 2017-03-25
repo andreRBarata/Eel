@@ -94,8 +94,10 @@ angular.module('termApp')
 					cmOption
 				);
 
-				$scope.editor
-					.setValue($scope.command || '');
+				$scope.$watch('command', (command='') => {
+					$scope.editor
+						.setValue(command);
+				});
 			}
 		};
 	});
