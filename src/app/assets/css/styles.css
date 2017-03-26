@@ -36,7 +36,7 @@ h4 {
 	word-break: break-all;
 	white-space: normal;
 	width: auto;
-	position: absolute;
+	background-color: white;
 	border-bottom: 2px solid #429be4;
 	transition: 0.5s ease-in-out;
 	overflow: auto;
@@ -45,7 +45,6 @@ h4 {
 .seg-box div {
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: block;
 	white-space: nowrap;
 	padding-bottom: 1em;
 	border-bottom-color: transparent;

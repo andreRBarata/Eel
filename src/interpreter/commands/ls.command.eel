@@ -61,6 +61,12 @@ module.exports = command('ls [location]',
 					if (stat.isDirectory()) {
 						icon = 'glyphicon-folder-open';
 					}
+					else if (mimetype.mime.match(/image\/.*/)) {
+						icon += ' fa fa-file-image-o';
+					}
+					else if (mimetype.mime.match(/video\/.*/)) {
+						icon += ' fa fa-file-video-o';
+					}
 					else if (mimetype.extension) {
 						icon += ` fa-file-${mimetype.extension}-o`;
 					}

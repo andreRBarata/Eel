@@ -9,7 +9,7 @@ angular.module('termApp')
 			execute(command) {
 				commandService
 					.stdout.write({
-						html: `<input-highlight command="src" readonly="oncursor"></input-highlight>`,
+						html: `<input-highlight command="src" readonly="true"></input-highlight>`,
 						scope: command
 					});
 

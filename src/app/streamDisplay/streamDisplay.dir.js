@@ -15,7 +15,7 @@ angular.module('termApp')
 						tmpscope.src = ele.scope;
 
 						component = $compile(
-							`<section ng-cloak onload="scrollDown()">${ele.html}</section>`
+							`<section ng-cloak style="display: inline;" onload="scrollDown()">${ele.html}</section>`
 						)(tmpscope);
 
 						$timeout(() => {
