@@ -16,7 +16,7 @@ module.exports = command('cat [location]', 'Displays the contents of a file (Ima
 			return `<video class="img-rounded img-responsive center" controls ng-src="{{src.path}}" ng-init="scrollDown()"></video>`;
 		}
 		else if (mimetype.match(/audio\/.*/)) {
-			return `<audio class="center" controls ng-src="{{src.path}} ng-init="scrollDown()""></audio>`;
+			return `<audio class="center" controls ng-src="{{src.path}}" ng-init="scrollDown()"></audio>`;
 		}
 
 		return `<div highlighted-block
