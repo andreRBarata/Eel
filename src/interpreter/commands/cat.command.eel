@@ -4,7 +4,8 @@ const util		= require('util');
 const Highland	= require('highland');
 const mime		= require('mime');
 
-module.exports = command('cat [location]', 'Displays the contents of a file (Image, sound, video or text)')
+module.exports = command('cat [location]', `Displays the contents of a file
+	(Image, sound, video or text)`)
 	.option('-n, --number', 'Shows line numbers (if applicable)')
 	.display('text/html', (data) => {
 		let mimetype = data.mimetype || '';

@@ -11,12 +11,11 @@ It adds syntax to allow easy execution of commands native to the system and comm
 **Can be called using either of two methods:**
 
 ## Stringy call (e.g \`#ls src\`)
-All parameters in front of the call are presumed to be a string and split using spaces. To include a space seperated string in a parameters quotes use single ('), double (") or template (\`) quotes.
-
-It is possible to use a variable in this type of call using template simbol \${code}. (e.g \`#ls \${variable}\`)
+All parameters in front of the call are presumed to be strings and are split using spaces. To include a string with spaces as a single parameter quotes either single ('), double (") and template (\`) can be used.
+It is possible to use a variable in this type of call using template symbol \${code}. (e.g \`#ls \${variable}\`)
 
 ## Standard call (e.g \`#ls("src")\`)
-In this form of call works like the standard functions in Javascript.
+In this form of call works like the standard functions in Javascript. Currently does not allow spaces between the command an the parameters (\`#ls ("src")\`).
 
 ---
 
