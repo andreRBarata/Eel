@@ -21,10 +21,32 @@ In this form of call works like the standard functions in Javascript. Currently 
 
 # Pipes and Redirections
 
-It is possible to pipe two commands using the operator "|>".
+It is possible to pipe two commands using the operator \`|>\`, and pipe a command's output to a file using \`>|\` and append to the file using \`>>|\`.
 
-*Example:* \`#ls |> #cat\`
+*Examples:*
+	#ls |> #cat
+	#ls >| "file.txt"
+	#ls >>| "file.txt"
 
+
+---
+
+# Scope
+
+Variables and functions declared are scoped to that line and cant be access in the next line. to have an item to be accessable in all consequent line it should be declared as follows:
+
+
+\`\`\` javascript
+
+func = function () {
+	//code
+}
+
+variable = "something";
+
+\`\`\`
+
+Without the usage of the let or var keywords.
 
 ---
 
