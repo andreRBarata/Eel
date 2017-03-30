@@ -23,7 +23,6 @@ angular.module('termApp')
 							scrollDown();
 						}, 10)
 
-
 						return component;
 					}
 
@@ -58,17 +57,33 @@ angular.module('termApp')
 
 							return newParent;
 						}
-						else {
-							return compile(data);
+
+						if (typeof data.html === 'string') {
+							if (typeof data.scope === 'string') {
+								return compile(data);
+							}
 						}
+
+						return data;
 					}
 
 					$scope.src
+						.map((data) => {
+							if (data instanceof Error) {
+								return compile({
+									html:
+									`<div class="alert alert-danger" role="alert">{{src}}</div>`,
+									scope: data.message
+								});
+							}
+
+							return data;
+						})
 						.map(map)
 						.compact()
 						.each((ele) => {
 							$element.append(ele);
-						});
+						})
 				}
 		}
 	});

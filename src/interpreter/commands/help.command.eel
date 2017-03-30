@@ -11,7 +11,7 @@ It adds syntax to allow easy execution of commands native to the system and comm
 **Can be called using either of two methods:**
 
 ## Stringy call (e.g \`#ls src\`)
-All parameters in front of the call are presumed to be strings and are split using spaces. To include a string with spaces as a single parameter quotes either single ('), double (") and template (\`) can be used.
+All parameters in front of the call are presumed to be strings and are split using spaces. To include a string with spaces as a single parameter quotes either single ('), double (") and template (\\\`) can be used.
 It is possible to use a variable in this type of call using template symbol \${code}. (e.g \`#ls \${variable}\`)
 
 ## Standard call (e.g \`#ls("src")\`)

@@ -18,7 +18,7 @@ angular.module('termApp')
 				}
 				catch (err) {
 					commandService
-						.stdout.emit('error', err);
+						.stdout.write(err);
 				}
 				finally {
 					if (command && command !== '') {
@@ -48,7 +48,7 @@ angular.module('termApp')
 			.stdout.on('error', (err) => {
 				commandService
 					.stdout
-					.emit('error', err);
+					.write(err);
 			});
 
 		return commandService;
