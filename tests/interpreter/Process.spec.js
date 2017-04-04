@@ -24,7 +24,7 @@ describe('Process', () => {
 		});
 	});
 
-	it('should be receive pipe from Highland Stream', (done) => {
+	it('should receive pipe from Highland Stream', (done) => {
 		let workProcess = new Process(({stdin}) => {
 			stdin.once('data', (data) => {
 				expect(data).toEqual('test');
@@ -34,7 +34,7 @@ describe('Process', () => {
 		Highland.of('test').pipe(workProcess);
 	});
 
-	it('should be receive pipe from other process', (done) => {
+	it('should receive pipe from other process', (done) => {
 		let workProcess = new Process(({stdin}) => {
 			stdin.once('data', (data) => {
 				expect(data).toEqual('test');
@@ -73,7 +73,7 @@ describe('Process', () => {
 
 		expect(testProcess).toNotEqual(null);
 
-		testProcess.toPromise().then((data) => {
+		testProcess.then((data) => {
 			expect(data).toEqual('test');
 			done();
 		}).catch((err) => {

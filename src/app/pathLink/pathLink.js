@@ -1,3 +1,7 @@
+/**
+*	Displays a path as breadcrumbs
+*	@author André Barata
+*/
 const path = require('path');
 
 angular.module('termApp')

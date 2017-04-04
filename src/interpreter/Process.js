@@ -1,5 +1,5 @@
 /**
- * @summary Class that wraps a commands execution.
+ * Class that wraps a commands execution.
  * Is compatible with Streams and Promises
  *
  * @author André Barata

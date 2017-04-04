@@ -1,3 +1,8 @@
+/**
+*	Creates an inputbox for the execution
+*	of commands using codemirror
+*	@author André Barata
+*/
 const CodeMirror = require('codemirror');
 
 angular.module('termApp')

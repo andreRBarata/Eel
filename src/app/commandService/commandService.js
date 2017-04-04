@@ -1,3 +1,8 @@
+/**
+*	Manages the execution of commands
+*	and the connection to the sandbox/back-end
+*	@author André Barata
+*/
 const Highland	= require('highland');
 const vm		= require('../../interpreter/vm');
 

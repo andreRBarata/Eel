@@ -1,3 +1,7 @@
+/**
+*	Sets up the AngularJS app
+*	@author André Barata
+*/
 require('angular-ui-codemirror');
 
 angular.module('termApp', [

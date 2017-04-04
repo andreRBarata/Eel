@@ -1,3 +1,8 @@
+/**
+*	Creates a highlighted code block
+*	using codemirror
+*	@author André Barata
+*/
 angular.module('termApp')
 	.directive('highlightedBlock', () => {
 		return {

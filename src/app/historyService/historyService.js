@@ -1,3 +1,7 @@
+/**
+*	Manages the storage of commands history
+*	@author André Barata
+*/
 const Highland	= require('highland');
 const JsonDB	= require('node-json-db');
 const remote	= require('electron').remote;

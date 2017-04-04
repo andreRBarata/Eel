@@ -1,3 +1,7 @@
+/**
+*	Displays the contents of a stream of html
+*	@author André Barata
+*/
 const Highland = require('highland');
 
 angular.module('termApp')

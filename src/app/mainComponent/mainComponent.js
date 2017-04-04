@@ -1,3 +1,8 @@
+/**
+*	Controls the index page for the app
+*	@author André Barata
+*/
+
 angular.module('termApp')
 	.controller('mainController',
 		($scope, commandService, historyService) => {

@@ -1,5 +1,11 @@
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+/**
+*	Eelscript syntax file for codemirror,
+*	modified from file from CodeMirror,
+*	copyright (c) by Marijn Haverbeke and others
+*
+*	Distributed under an MIT license:
+*	http://codemirror.net/LICENSE
+*/
 
 (function(mod) {
 	if (typeof exports == "object" && typeof module == "object") // CommonJS
