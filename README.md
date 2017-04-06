@@ -5,15 +5,7 @@
 * [Eel Terminal](#eel-terminal)
 	* [Summary](#summary)
 	* [Background and References](#background-and-references)
-		* [Websites](#websites)
-		* [Books](#books)
-	* [Design](#design)
-		* [Syntax](#syntax)
-			* [Basic Example](#basic-example)
-			* [Example with variables](#example-with-variables)
-			* [Examples with pipes](#examples-with-pipes)
-				* [Simple Pipe](#simple-pipe)
-		* [Structure](#structure)
+	* [Installation](#installation)
 
 <!-- tocstop -->
 
@@ -37,66 +29,14 @@ The idea for this project came from the now defunct project TermKit. It had as o
 
 I believe that using the new Electron App Engine it is possible to accomplish what this project intended. However I also intend to try to go beyond the original objective of the project and add the ability to do scripting in this shell using an superset of Javascript. This is possible through the usage of SweetJs which allows the creation of macros for Javascript transpiling.
 
-### Websites
-- TermKit				- https://github.com/unconed/TermKit
-- Electron App Engine - http://electron.atom.io/
-- SweetJs				- http://sweetjs.org/
+## Installation
 
-### Books
+To run from this repo clone it and execute the commands:
 
-- Learning Node Second Edition
+```
+	npm install
 
-## Design
-
-
-### Syntax
-
-The following are examples for the planned of lines of code before and after the SweetJs scripts alter them.
-
-_**These are subject to changes.**_
-
-#### Basic Example
-
-**Input code**
-
-``` javascript
-	ls -r ./;
+	npm start
 ```
 
-**Executed code**
-
-``` javascript
-	ls('-r','./');
-```
-
-#### Example with variables
-
-**Input code**
-
-``` javascript
-	ls -r ${path};
-```
-
-**Executed code**
-
-``` javascript
-	ls('-r',path);
-```
-
-#### Examples with pipes
-
-##### Simple Pipe
-
-**Input code**
-
-``` javascript
-	cat() | ls();
-```
-
-**Executed code**
-
-``` javascript
-	_.pipeline(cat(), ls());
-```
-
-### Structure
+On the project directory.

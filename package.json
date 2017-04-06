@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "mocha $(find './tests' -type f -name '*.spec.js')",
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "author": "André Barata",
   "license": "ISC",
@@ -34,6 +36,13 @@
       "$": false
     }
   },
+  "build": {
+    "appId": "com.gmail.andre.quina.barata.eelterminal",
+    "mac": {
+      "category": "terminal"
+  	},
+	"extraFiles": ["src/**/*.eel", "src/**/*.sjs"]
+  },
   "dependencies": {
     "angular": "^1.6.2",
     "angular-animate": "^1.6.2",
@@ -44,7 +53,6 @@
     "ansi-to-html": "^0.5.0",
     "bootstrap": "^3.3.7",
     "codemirror": "^5.23.0",
-    "electron": "^1.5.0",
     "es6-macros": "0.0.7",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.0.6",
@@ -64,6 +72,7 @@
     "electron": "^1.4.1",
     "expect": "^1.20.2",
     "mocha": "^3.0.2",
+    "electron-builder": "^16.6.1",
     "mocha-each": "^1.0.3"
   }
 }
