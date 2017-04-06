@@ -31,7 +31,7 @@ angular.module('termApp')
 				this.get()
 					.last()
 					.toArray(([last]) => {
-						if (last && last !== element) {
+						if (last && last !== element || !last) {
 							data.push('/history[]', element);
 						}
 					});
