@@ -14,13 +14,13 @@ require('angular');
 global.CodeMirror =
 	require('codemirror/lib/codemirror');
 
-const Highland = require('highland');
-
+const Highland	= require('highland');
+const path		= require('path');
 //TODO: Replace this id:16
 // Loading the syntaxes
 Highland.wrapCallback(
 	require('fs').readdir
-)('node_modules/codemirror/mode')
+)(path.join(__dirname, '../../node_modules/codemirror/mode'))
 	.flatten()
 	.filter((file) => !file.match(/\.js$/))
  	.each((file) => {

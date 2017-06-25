@@ -1,5 +1,6 @@
 const P		= require('parsimmon');
 const sweet	= require('sweet.js');
+const path	= require('path');
 
 function flatten(arr) {
 	const flat = [].concat(...arr);
@@ -7,11 +8,11 @@ function flatten(arr) {
 }
 
 sweet.loadMacro(
-	'./src/interpreter/shared/syntax.sjs'
+	path.join(__dirname, 'syntax.sjs')
 );
 
 sweet.loadMacro(
-	'es6-macros'
+	require.resolve('es6-macros')
 );
 
 const eelscript = {

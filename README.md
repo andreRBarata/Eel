@@ -40,3 +40,5 @@ To run from this repo clone it and execute the commands:
 ```
 
 On the project directory.
+
+A compiled build is also available for Linux Debian 64x.

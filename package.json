@@ -40,8 +40,7 @@
     "appId": "com.gmail.andre.quina.barata.eelterminal",
     "mac": {
       "category": "terminal"
-  	},
-	"extraFiles": ["src/**/*.eel", "src/**/*.sjs"]
+  	}
   },
   "dependencies": {
     "angular": "^1.6.2",
