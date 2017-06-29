@@ -3,9 +3,9 @@
 <!-- toc orderedList:0 -->
 
 * [Eel Terminal](#eel-terminal)
-	* [Summary](#summary)
-	* [Background and References](#background-and-references)
-	* [Installation](#installation)
+    * [Summary](#summary)
+    * [Background and References](#background-and-references)
+    * [Installation](#installation)
 
 <!-- tocstop -->
 
@@ -42,3 +42,5 @@ To run from this repo clone it and execute the commands:
 On the project directory.
 
 A compiled build is also available for Linux Debian 64x.
+
+Check the wiki for usage info.
