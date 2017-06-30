@@ -18,30 +18,17 @@
 		<link rel="stylesheet" type="text/css"
 			href="../../node_modules/font-awesome/css/font-awesome.css">
 		<link rel="stylesheet" type="text/css" href="assets/css/styles.css">
+		<script src="../../node_modules/vue/dist/vue.js"></script>
 		<script>
 			// You can also require other files to run in this process
 			require('./renderer.js');
+
 		</script>
 	</head>
-	<body ng-app="termApp" ng-controller="mainController">
-		<div class="container-fluid" id="container">
-			<stream-display src="stdout">
-			</stream-display>
-			<div class="command-pane"
-				popover-enable="firstRun()"
-				popover-placement="bottom-left"
-				uib-popover="Type #help for intructions on the syntax and a list of commands">
-					<input-highlight onexec="execute">
-					</input-highlight>
-			</div>
+	<body>
+		<div id="app">
 		</div>
 
-		<footer class="navbar navbar-inverse navbar-fixed-bottom">
-			<div class="container">
-				<div class="navbar-text">
-					<path-link of="cwd"/>
-				</div>
-			</div>
-		</footer>
+		<script src="./app.js"></script>
 	</body>
 </html>
