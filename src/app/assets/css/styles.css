@@ -82,36 +82,36 @@ span.cm-command {
     border-radius: 3px;
 }
 
-input-highlight .form-control {
+.command-pane .form-control {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-input-highlight .form-control.readonly {
+.command-pane .form-control.readonly {
 	box-shadow: none;
 }
 
-input-highlight .CodeMirror {
+.command-pane .CodeMirror {
 	padding: 0;
 	font-size: 14px;
 	margin: -3px;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
-input-highlight .form-control {
+.command-pane .form-control {
 	height: auto;
 }
 
-input-highlight .form-control,
-input-highlight .CodeMirror {
+.command-pane .form-control,
+.command-pane .CodeMirror {
 	background: #f5f2f0;
 }
 
-input-highlight .prev {
+.command-pane .prev {
 	white-space: pre-wrap;
 }
 
-input-highlight input {
+.command-pane input {
 	border: none;
 	outline: none;
 	padding: 0;

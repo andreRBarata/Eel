@@ -3,6 +3,8 @@
 *	@author André Barata
 */
 
+const highland = require('highland');
+
 module.exports = Vue.component(
 	'main-component', {
 		components: [
@@ -11,14 +13,17 @@ module.exports = Vue.component(
 		template: `
 			<div>
 				<div class="container-fluid" id="container">
-					<stream-display src="stdout">
+					<stream-display :src="stdout">
 					</stream-display>
-					<div class="command-pane"
-						popover-enable="firstRun()"
-						popover-placement="bottom-left"
-						uib-popover="Type #help for intructions on the syntax and a list of commands">
-							<input-highlight onexec="execute">
-							</input-highlight>
+					<div class="command-pane">
+						<b-popover placement="bottom"
+							content="Type #help for intructions on the syntax and a list of commands">
+								<div class="form-control">
+									<codemirror v-model="command"
+										:options="editorOptions">
+									</codemirror>
+								</div>
+						</b-popover>
 					</div>
 				</div>
 
@@ -33,21 +38,48 @@ module.exports = Vue.component(
 		`,
 		data() {
 			return {
-				stdout: null/*commandService
+				stdout: new highland()/*commandService
 					.stdout*/,
 				cwd: process.cwd(),
-				command: ''
+				command: '',
+				editorOptions: {
+					lineNumbers: false,
+					indentWithTabs: true,
+					lineWrapping: true,
+					mode: 'eelscript',
+					cursorHeight: 1,
+					readOnly: false,
+					extraKeys: {
+						Enter(cm) {
+						},
+						Up(cm) {
+							if (cm.getCursor().line === 0) {
+								return cm.execCommand('autocomplete');
+							}
+							else {
+								return CodeMirror.Pass;
+							}
+						},
+						Down(cm) {
+							if (cm.getCursor().line === cm.lastLine()) {
+								return cm.execCommand('autocomplete');
+							}
+							else {
+								return CodeMirror.Pass;
+							}
+						},
+						'Ctrl-Space': 'autocomplete'
+					}
+				}
 			}
 		},
-		method: {
-			firstRun() {
-				historyService.get()
-					.toArray((history) => {
-						firstRun = history.length === 0;
-					});
+		created() {
+			historyService.get()
+				.toArray((history) => {
+					firstRun = history.length === 0;
+				});
 
-				return firstRun;
-			}
+			return firstRun;
 		}
 	}
 );
