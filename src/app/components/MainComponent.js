@@ -3,12 +3,15 @@
 *	@author André Barata
 */
 
-const highland = require('highland');
+const Highland			= require('highland');
+const historyService	= require('../api/historyService');
+const commandService	= require('../api/commandService');
 
 module.exports = Vue.component(
 	'main-component', {
 		components: [
-			require('../streamDisplay/streamDisplay')
+			require('../components/StreamDisplay'),
+			require('../components/PathLink')
 		],
 		template: `
 			<div>
@@ -30,7 +33,7 @@ module.exports = Vue.component(
 				<footer class="navbar navbar-inverse navbar-fixed-bottom">
 					<div class="container">
 						<div class="navbar-text">
-							<path-link of="cwd"/>
+							<path-link :of="cwd"/>
 						</div>
 					</div>
 				</footer>
@@ -38,8 +41,8 @@ module.exports = Vue.component(
 		`,
 		data() {
 			return {
-				stdout: new highland()/*commandService
-					.stdout*/,
+				stdout: commandService
+					.stdout,
 				cwd: process.cwd(),
 				command: '',
 				editorOptions: {
@@ -51,6 +54,11 @@ module.exports = Vue.component(
 					readOnly: false,
 					extraKeys: {
 						Enter(cm) {
+							commandService.execute(
+								cm.getValue()
+							);
+
+							cm.setValue('');
 						},
 						Up(cm) {
 							if (cm.getCursor().line === 0) {
@@ -76,10 +84,12 @@ module.exports = Vue.component(
 		created() {
 			historyService.get()
 				.toArray((history) => {
-					firstRun = history.length === 0;
+					this.firstRun = history.length === 0;
 				});
 
-			return firstRun;
+			this.stdout.on('cwdchange', (cwd) => {
+				this.cwd = cwd;
+			})
 		}
 	}
 );

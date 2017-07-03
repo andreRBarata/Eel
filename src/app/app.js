@@ -12,7 +12,7 @@ Vue.use(BootstrapVue);
 const app = new Vue({
 	el: '#app',
 	components: [
-		require('./mainComponent/mainComponent')
+		require('./components/MainComponent')
 	],
 	data: {
 

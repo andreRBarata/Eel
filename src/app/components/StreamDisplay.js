@@ -4,7 +4,11 @@
 */
 const Highland = require('highland');
 
-function map() {
+function map(data) {
+	console.log(data);
+}
+
+function compile() {
 	
 }
 

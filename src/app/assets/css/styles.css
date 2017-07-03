@@ -96,6 +96,7 @@ span.cm-command {
 	font-size: 14px;
 	margin: -3px;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+	height: auto;
 }
 
 .command-pane .form-control {
