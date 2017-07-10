@@ -10,7 +10,7 @@ module.exports = command('echo [text...]', 'Displays text or objects')
 					return '<br/>';
 				}
 
-				return `{{src}}&nbsp;`;
+				return `<span>{{)}&nbsp;</span>`;
 			default:
 				return `<json-formatter json="src" open="1"></json-formatter>`;
 		}

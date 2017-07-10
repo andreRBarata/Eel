@@ -5,7 +5,7 @@ module.exports = command('mimetype <file>',
 	'Get the mimetype of a file'
 )
 .display('text/html', (data) => `
-	{{src.file}}: {{src.mime}}
+	<div>{{src.file}}: {{src.mime}}</div>
 `)
 .action(({_: [file]}, push) => {
 	let extension = file.match(/.*\.(.*)$/);

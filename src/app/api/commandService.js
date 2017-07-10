@@ -11,18 +11,11 @@ module.exports = (() => {
 	let vmInstance = vm.getInstance();
 	let commandService = {
 		stdout: new Highland(),
-		get vmInstance() {
-			if (!this._vmInstance) {
-
-			}
-
-			return this._vmInstance;
-		},
+		vmInstance: vmInstance,
 		execute(command) {
-			this.stdout.write({
-					html: `<input-highlight command="src" readonly="true"></input-highlight>`,
-					scope: command
-				});
+			this.stdout.write(
+				`<input-highlight command="${command}" readonly="true"></input-highlight>`
+			);
 
 			try {
 				this.vmInstance.run(command);

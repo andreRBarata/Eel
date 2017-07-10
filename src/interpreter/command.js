@@ -1,8 +1,8 @@
 const Type			= require('type-of-is');
 const Highland		= require('highland');
+const Handlebars	= require('handlebars');
 const stream		= require('stream');
 const P				= require('parsimmon');
-
 
 const Process			= require('./Process');
 const commandAPI		= require('./shared/commandAPI.parser');
@@ -134,12 +134,9 @@ module.exports =
 				display:
 					['display',
 						(mimetype = '', template = '') => [mimetype, template], {map: true, default: new Map([
-							['object/scoped-html', (data) => {
-								return {
-									scope: data,
-									html: command.display('text/html')(data)
-								};
-							}],
+							['object/scoped-html', (data) =>
+								command.display('text/html')(data)
+							],
 							['text/html', (data) => '{{src}}'],
 							['text/x-ansi', (data) => JSON.stringify(data)]//TODO: Add ansi encoding id:13
 						])}
