@@ -4,20 +4,29 @@ const stream	= require('stream');
 const Highland	= require('highland');
 const path		= require('path');
 
-const { tag, helpers, apply } = require('vue-vnode-helper');
-const { section, div } = helpers;
+const { tag, helpers } = require('vue-vnode-helper');
+const { section, div, i, button, span, template } = helpers;
 
 module.exports = command('ls [location]',
 	'Lists the contents of a given directive'
 )
 .display('text/html', (file) =>
-	div('.col-xs-6.col-md-3.col-sm-4.col-lg-4.seg-box', [
-		tag('b-dropdown', [
-			tag('b-dropdown-item', (file.type === 'directory')?
+	tag('b-dropdown', '.seg-box.col-xs-3.col-md-4.col-sm-5.col-lg-4', [
+		template({
+			slot: 'button-content'
+		}, [
+			i(`.glyphicon.text-center.fa-2x.col-3
+				${file.icon}`,
+				{'aria-hidden': true}
+			),
+			span('.col-8', file.name)
+		]),
+		tag('b-dropdown-header', {}, file.name),
+		tag('b-dropdown-item', { props: { href: '#' } },
+			(file.type === 'directory')?
 				'Set to current directory':
 				'Open file'
-			)
-		])
+		)
 	])
 )
 .action(({_: [location], $stdout}) => {
@@ -34,19 +43,19 @@ module.exports = command('ls [location]',
 				.flatten()
 				.collect()
 				.map(([mimetype, stat]) => {
-					let icon = 'fa fa-file';
+					let icon = '.fa.fa-file';
 
 					if (stat.isDirectory()) {
-						icon = 'glyphicon-folder-open';
+						icon = '.fa.fa-folder-open';
 					}
 					else if (mimetype.mime.match(/image\/.*/)) {
-						icon += ' fa fa-file-image-o';
+						icon += '.fa.fa-file-image-o';
 					}
 					else if (mimetype.mime.match(/video\/.*/)) {
-						icon += ' fa fa-file-video-o';
+						icon += '.fa.fa-file-video-o';
 					}
 					else if (mimetype.extension) {
-						icon += ` fa-file-${mimetype.extension}-o`;
+						icon += `.fa-file-${mimetype.extension}-o`;
 					}
 
 					return {

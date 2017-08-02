@@ -1,6 +1,9 @@
 const command	= require('command');
 const Highland	= require('highland');
 
+const { tag, helpers } = require('vue-vnode-helper');
+const { section, div, i, button, li, span } = helpers;
+
 const helptext = `
 Eelscript, the language used on this terminal, is a superset of Javascript.
 It adds syntax to allow easy execution of commands native to the system and commands designed for this shell. Commands are identified by the hash symbol (i.e \`#ls\`). Both native and Eelscript commands are called this way.
@@ -68,7 +71,7 @@ Without the usage of the let or var keywords.
 `;
 
 module.exports = command('help', 'Shows the instructions for this shell')
-	.display('text/html', (data) => data)
+	.display('text/html', (data) => div({ 'v-html': data }))
 	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
 		#handlebars(

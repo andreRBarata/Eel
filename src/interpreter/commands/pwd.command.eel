@@ -1,9 +1,12 @@
 const command = require('command');
+const { tag, helpers } = require('vue-vnode-helper');
+const { section, div } = helpers;
 
 module.exports = command('pwd', 'Shows current directory')
-	.display('text/html', (data) => `
-		<path-link of="src"/>
-	`)
+	.display('text/html', (data) => tag('path-link', {
+			props: {of: data}
+		})
+	)
 	.action(({}, push) => {
 		push(process.cwd());
 		push(null);

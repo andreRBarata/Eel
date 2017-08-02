@@ -172,19 +172,31 @@ class Process extends stream.Duplex {
 		let transform = (this._preprocessor)?
 			this._preprocessor(mimetype):
 			null;
+		let self = this;
 
 		if (transform) {
-			return new Process(({stdout, emit}) => {
-				this.on('data', (data) => {
-					transform.write(data);
-				});
+		 	return new Proxy(
+				new Process(({stdout, emit}) => {
+					this.on('data', (data) => {
+						transform.write(data);
+					});
 
-				this.on('error', (err) => {
-					emit('error', err);
-				});
+					this.on('error', (err) => {
+						emit('error', err);
+					});
 
-				transform.pipe(stdout);
-			});
+					transform.pipe(stdout);
+				}), {
+					get(target, name) {
+						if (name === 'state') {
+							return self.state;
+						}
+
+						return  target[name];
+					}
+				}
+			);
+
 		}
 	}
 

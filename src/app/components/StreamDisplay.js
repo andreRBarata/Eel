@@ -14,8 +14,26 @@ module.exports = Vue.component(
 				cache: []
 			};
 		},
+		methods: {
+			streamMap(stream) {
+				let sectionArray = [];
+
+				new Highland(stream)
+					.batchWithTimeOrCount(10, 100)
+					.each((_data) => {
+						if (stream.state === 'unpiped') {
+							sectionArray.push(
+								_data
+							);
+						}
+					});
+
+				return sectionArray;
+			}
+		},
 		created() {
 			this.src
+				.filter((data) => data.state === 'unpiped')
 				.map((data) => {
 					if (data instanceof Error) {
 						return div({role: 'alert', class: 'alert alert-danger'},
@@ -23,41 +41,22 @@ module.exports = Vue.component(
 						);
 					}
 					else if (data.preprocessor) {
-						let sectionArray = [];
-
-						data.lens('object/scoped-html')
-							.on('data', (_data) => {
-								if (data.state === 'unpiped') {
-									sectionArray.push(
-										_data
-									);
-								}
-							});
-
-						return sectionArray;
+						return this.streamMap(
+							data.lens('object/scoped-html')
+						);
 					}
 					else if (data.pipe) {
-						let sectionArray = [];
-
-						data.on('data', (_data) => {
-							if (data.state === 'unpiped') {
-								sectionArray.push(
-									_data
-								);
-							}
-						});
-
-						return sectionArray;
+						return this.streamMap(data);
 					}
 
 					return data;
 				})
+				.batchWithTimeOrCount(30, 100)
 				.each((ele) => {
-					this.cache.push(ele);
+					this.cache.push(...ele);
 				});
 		},
 		render(createElement) {
-			console.log(this.cache);
 			return apply(
 				createElement,
 				div(
@@ -65,7 +64,7 @@ module.exports = Vue.component(
 						.filter((data) => data.length > 0)
 						.map((data) => section(
 							{
-								style: 'display: inline;'
+								class: 'container-fluid'
 							}, data
 						))
 				)

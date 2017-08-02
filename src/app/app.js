@@ -4,15 +4,15 @@
 */
 
 const VueCodeMirror	= require('vue-codemirror');
-const BootstrapVue	= require('bootstrap-vue');
+const VueBootstrap	= require('bootstrap-vue/dist/bootstrap-vue.common');
 
 Vue.use(VueCodeMirror);
-Vue.use(BootstrapVue);
+Vue.use(VueBootstrap);
 
 const app = new Vue({
 	el: '#app',
 	components: [
-		require('./components/MainComponent')
+		require('./components/MainComponent'),
 	],
 	data: {
 

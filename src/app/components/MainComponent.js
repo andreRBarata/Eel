@@ -4,15 +4,16 @@
 */
 
 const Highland			= require('highland');
+
 const historyService	= require('../api/historyService');
 const commandService	= require('../api/commandService');
 
 module.exports = Vue.component(
 	'main-component', {
-		components: [
-			require('../components/StreamDisplay'),
-			require('../components/PathLink')
-		],
+		components: {
+			'stream-display': require('../components/StreamDisplay'),
+			'path-link': require('../components/PathLink')
+		},
 		template: `
 			<div>
 				<div class="container-fluid" id="container">
@@ -30,7 +31,7 @@ module.exports = Vue.component(
 					</div>
 				</div>
 
-				<footer class="navbar navbar-inverse navbar-fixed-bottom">
+				<footer class="navbar navbar-inverse bg-inverse fixed-bottom">
 					<div class="container">
 						<div class="navbar-text">
 							<path-link :of="cwd"/>
@@ -45,6 +46,7 @@ module.exports = Vue.component(
 					.stdout,
 				cwd: process.cwd(),
 				command: '',
+				firstRun: true,
 				editorOptions: {
 					lineNumbers: false,
 					indentWithTabs: true,
