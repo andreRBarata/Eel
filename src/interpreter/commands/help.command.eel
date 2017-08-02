@@ -71,7 +71,7 @@ Without the usage of the let or var keywords.
 `;
 
 module.exports = command('help', 'Shows the instructions for this shell')
-	.display('text/html', (data) => div({ 'v-html': data }))
+	.display('text/html', (data) => div({ 'html': data }))
 	.display('text/x-ansi', (data) => data)
 	.action(({$stdout}) => {
 		#handlebars(

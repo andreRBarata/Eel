@@ -8,33 +8,26 @@
 const opn	= require('opn');
 const fs	= require('fs');
 
-angular.module('termApp')
-	.directive('localRef', () => {
+const commandService = require('../api/commandService');
 
-		return {
-			scope: {
-				localRef: '='
-			},
-			controller:
-				function localRef($scope, commandService, $element) {
-					$element.on('click', () => {
-						fs.stat($scope.localRef, (err, stat) => {
-							let path = $scope.localRef
-								.replace(/\\/g,
-									'\\\\'
-								);
+module.exports = Vue.directive('localRef', (el, binding) => {
 
-							if (stat.isDirectory()) {
-								commandService.execute(`#cd "${
-									path
-								}"`);
-							}
-							else {
-								opn(path);
-							}
+	el.addEventListener('click', () => {
+		fs.stat(binding.value, (err, stat) => {
+			let path = binding.value
+				.replace(/\\/g,
+					'\\\\'
+				);
 
-						});
-					});
-				}
-		}
+			if (stat.isDirectory()) {
+				commandService.execute(`#cd "${
+					path
+				}"`);
+			}
+			else {
+				opn(path);
+			}
+
+		});
+	});
 });

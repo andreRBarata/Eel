@@ -30,6 +30,7 @@ h4 {
 .seg-box > .btn > span {
 	text-overflow: ellipsis;
     overflow: hidden;
+	text-align: left;
 }
 
 /*.seg-box:hover .glyphicon, .seg-box.open .glyphicon {

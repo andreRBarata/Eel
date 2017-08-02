@@ -31,13 +31,11 @@ module.exports = Vue.component(
 					</div>
 				</div>
 
-				<footer class="navbar navbar-inverse bg-inverse fixed-bottom">
-					<div class="container">
-						<div class="navbar-text">
-							<path-link :of="cwd"/>
-						</div>
+				<nav class="navbar navbar-inverse fixed-bottom bg-inverse">
+					<div class="container text-muted">
+						<path-link :of="cwd"/>
 					</div>
-				</footer>
+				</nav>
 			</div>
 		`,
 		data() {

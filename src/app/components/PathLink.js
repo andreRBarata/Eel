@@ -6,13 +6,15 @@ const path = require('path');
 
 module.exports = Vue.component(
 	'path-link', {
-		components: [
-			//require('./LocalRef')
-		],
+		directives: {
+			localRef: require('./LocalRef')
+		},
 		template: `
 			<div>
 				<span v-for="(part, index) in parts" :key="index">
-					<a local-ref="part.path">{{part.segment}}</a>
+					<a v-local-ref="part.path" class="text-primary">
+						{{part.segment}}
+					</a>
 						{{
 							index === parts.length - 1?
 								'' : seperator

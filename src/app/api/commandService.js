@@ -7,6 +7,9 @@ const Highland			= require('highland');
 const vm				= require('../../interpreter/vm');
 const historyService	= require('./historyService');
 
+const { tag, helpers } = require('vue-vnode-helper');
+const {  } = helpers;
+
 module.exports = (() => {
 	let vmInstance = vm.getInstance();
 	let commandService = {
@@ -14,7 +17,7 @@ module.exports = (() => {
 		vmInstance: vmInstance,
 		execute(command) {
 			this.stdout.write(
-				`<input-highlight command="${command}" readonly="true"></input-highlight>`
+				tag('codemirror', {'v-model': command})
 			);
 
 			try {
